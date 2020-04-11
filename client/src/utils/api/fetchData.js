@@ -1,4 +1,4 @@
-import axios from 'axios'
+import request from "./request"
 
 const renderParams = (root, params) => {
     if (!params) {
@@ -14,22 +14,37 @@ const renderParams = (root, params) => {
     return url
 }
 
-export const getAllUser = (role, searchString = '', filterClass = null, filterGrade = null, filterSubject = null) => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token") || ''}`
-    return axios.get(renderParams('http://localhost:5000/user/getAllUser', { role, searchString, filterClass, filterGrade, filterSubject}), { timeout: 30000 })
-}
+export const getAllUser = (
+    role,
+    searchString = "",
+    filterClass = null,
+    filterGrade = null,
+    filterSubject = null,
+) =>
+    request.get(
+        renderParams("user/getAllUser", {
+            role,
+            searchString,
+            filterClass,
+            filterGrade,
+            filterSubject,
+        }),
+    )
 
-export const getAllClass = () => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token") || ''}`
-    return axios.get('http://localhost:5000/information/getAllClass', { timeout: 30000 })
-}
+export const getAllClass = () => request.get("information/getAllClass")
 
-export const getAllSubject = () => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token") || ''}`
-    return axios.get('http://localhost:5000/information/getAllSubject', { timeout: 30000 })
-}
+export const getAllSubject = () => request.get("information/getAllSubject")
 
-export const deleteUser = (role, id) => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token") || ''}`
-    return axios.delete(`http://localhost:5000/user/${role}/${id}`, { timeout: 30000 })
-}
+export const deleteUser = (role, id) => request.delete(`user/${role}/${id}`)
+
+export const getStudentData = (id) => request.get(`user/student/${id}`)
+
+export const createStudent = (data) => request.post("user/student/create", data)
+
+export const updateStudent = (data, id) =>
+    request.put(`user/student/${id}`, data)
+
+export const getAllClassOfGrade = (grade) =>
+    request.get(`grade/getAllClassOfGrade/${grade}`)
+
+export const getAllGrade = () => request.get("grade/getAllGrade")

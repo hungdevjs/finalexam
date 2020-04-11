@@ -1,13 +1,13 @@
-const jwt = require('jsonwebtoken')
-const shortid = require('shortid')
-const _ = require('lodash')
+const jwt = require("jsonwebtoken")
+const shortid = require("shortid")
+const _ = require("lodash")
 
-const validateDate = require('../utils/validateDate')
+const validateDate = require("../utils/validateDate")
 
-const Parent = require('../models/parent.model')
-const Teacher = require('../models/teacher.model')
-const Admin = require('../models/admin.model')
-const Grade = require('../models/grade.model')
+const Parent = require("../models/parent.model")
+const Teacher = require("../models/teacher.model")
+const Admin = require("../models/admin.model")
+const Grade = require("../models/grade.model")
 
 module.exports.getUserInformation = (req, res) => {
     const token = req.headers.authorization
@@ -19,15 +19,15 @@ module.exports.getUserInformation = (req, res) => {
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
         switch (userInfo.role) {
-            case 'admin':
+            case "admin":
                 return res.status(200).json({
                     data: {
                         email: userInfo.email,
-                        role: 'admin'
-                    }
+                        role: "admin",
+                    },
                 })
 
-            case 'teacher':
+            case "teacher":
                 return res.status(200).json({
                     data: {
                         name: userInfo.name,
@@ -38,24 +38,23 @@ module.exports.getUserInformation = (req, res) => {
                         mainTeacherOfClass: userInfo.mainTeacherOfClass,
                         teacherOfClass: userInfo.teacherOfClass,
                         subject: userInfo.subject,
-                        role: 'teacher'
-                    }
+                        role: "teacher",
+                    },
                 })
 
-            case 'parent':
+            case "parent":
                 return res.status(200).json({
                     data: {
                         studentId: userInfo.studentId,
                         studentName: userInfo.studentName,
                         class: userInfo.class,
-                        role: 'parent'
-                    }
+                        role: "parent",
+                    },
                 })
 
             default:
-                return res.status(401).json('Unthorizated')
+                return res.status(401).json("Unthorizated")
         }
-
     } catch (err) {
         res.status(401).send(err.message)
     }
@@ -71,39 +70,57 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
         const userInfo = jwt.decode(token, process.env.REFRESH_TOKEN_SECRET_KEY)
 
         switch (userInfo.role) {
-            case 'admin':
+            case "admin":
                 return Admin.findOne({ refreshToken: token, isDeleted: false })
-                    .then(admin => {
-                        if (admin && jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)) {
+                    .then((admin) => {
+                        if (
+                            admin &&
+                            jwt.verify(
+                                token,
+                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                            )
+                        ) {
                             const data = {
                                 email: admin.email,
-                                role: 'admin'
+                                role: "admin",
                             }
 
                             const access_token = jwt.sign(
                                 data,
                                 process.env.ACCESS_TOKEN_SECRET_KEY,
-                                { expiresIn: process.env.JWT_ACCESS_TOKEN_LIFE }
+                                {
+                                    expiresIn:
+                                        process.env.JWT_ACCESS_TOKEN_LIFE,
+                                },
                             )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
-                                access_from: new Date().getTime()
+                                access_from: new Date().getTime(),
                             })
                         } else {
-                            res.status(401).json('Unthorizated')
+                            res.status(401).json("Unthorizated")
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         res.status(500).send(err.message)
                     })
 
-            case 'teacher':
-                return Teacher.findOne({ refreshToken: token, isDeleted: false })
-                    .then(teacher => {
-                        if (teacher && jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)) {
+            case "teacher":
+                return Teacher.findOne({
+                    refreshToken: token,
+                    isDeleted: false,
+                })
+                    .then((teacher) => {
+                        if (
+                            teacher &&
+                            jwt.verify(
+                                token,
+                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                            )
+                        ) {
                             const data = {
                                 name: teacher.name,
                                 email: teacher.email,
@@ -113,66 +130,76 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 mainTeacherOfClass: teacher.mainTeacherOfClass,
                                 teacherOfClass: teacher.teacherOfClass,
                                 subject: teacher.subject,
-                                role: 'teacher'
+                                role: "teacher",
                             }
 
                             const access_token = jwt.sign(
                                 data,
                                 process.env.ACCESS_TOKEN_SECRET_KEY,
-                                { expiresIn: process.env.JWT_ACCESS_TOKEN_LIFE }
+                                {
+                                    expiresIn:
+                                        process.env.JWT_ACCESS_TOKEN_LIFE,
+                                },
                             )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
-                                access_from: new Date().getTime()
+                                access_from: new Date().getTime(),
                             })
                         } else {
-                            res.status(401).json('Unthorizated')
+                            res.status(401).json("Unthorizated")
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         res.status(500).send(err.message)
                     })
 
-            case 'parent':
+            case "parent":
                 return Parent.findOne({ refreshToken: token, isDeleted: false })
-                    .then(student => {
-                        if (student && jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)) {
+                    .then((student) => {
+                        if (
+                            student &&
+                            jwt.verify(
+                                token,
+                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                            )
+                        ) {
                             const data = {
                                 studentId: student.studentId,
                                 studentName: student.studentName,
                                 class: student.class,
-                                role: 'parent'
+                                role: "parent",
                             }
 
                             const access_token = jwt.sign(
                                 data,
                                 process.env.ACCESS_TOKEN_SECRET_KEY,
-                                { expiresIn: process.env.JWT_ACCESS_TOKEN_LIFE }
+                                {
+                                    expiresIn:
+                                        process.env.JWT_ACCESS_TOKEN_LIFE,
+                                },
                             )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
-                                access_from: new Date().getTime()
+                                access_from: new Date().getTime(),
                             })
                         } else {
-                            res.status(401).json('Unthorizated')
+                            res.status(401).json("Unthorizated")
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         res.status(500).send(err.message)
                     })
 
             default:
-                return res.status(401).json('Unthorizated')
-
+                return res.status(401).json("Unthorizated")
         }
-
-    } catch {
+    } catch (err) {
         res.status(401).send(err.message)
     }
 }
@@ -186,81 +213,109 @@ module.exports.getAllUser = (req, res) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
-        if (userInfo.role !== 'admin') {
-            return res.status(401).send('Unthorizated')
+        if (userInfo.role !== "admin") {
+            return res.status(401).send("Unthorizated")
         }
 
-        const { role, searchString, filterClass, filterGrade, filterSubject } = req.query
+        const {
+            role,
+            searchString,
+            filterClass,
+            filterGrade,
+            filterSubject,
+        } = req.query
 
-        if (role === 'student') {
+        if (role === "student") {
             Parent.find({ isDeleted: false })
-                .then(students => {
+                .then((students) => {
                     if (students) {
                         let data = [...students]
 
                         if (searchString) {
-                            data = data.filter(student => student.studentName.toUpperCase().includes(searchString.toUpperCase()))
+                            data = data.filter((student) =>
+                                student.studentName
+                                    .toUpperCase()
+                                    .includes(searchString.toUpperCase()),
+                            )
                         }
 
                         if (filterClass) {
-                            data = data.filter(student => student.class === filterClass)
+                            data = data.filter(
+                                (student) => student.class === filterClass,
+                            )
                         }
 
                         if (filterGrade) {
-                            data = data.filter(student => student.grade === parseInt(filterGrade))
+                            data = data.filter(
+                                (student) =>
+                                    student.grade === parseInt(filterGrade),
+                            )
                         }
 
                         res.status(200).json({
-                            data: data.map(student => ({
+                            data: data.map((student) => ({
                                 id: student._id,
                                 classRoom: student.classRoom,
                                 grade: student.grade,
-                                studentName: student.studentName
-                            }))
+                                studentName: student.studentName,
+                            })),
                         })
                     } else {
                         res.status(200).json([])
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     res.status(500).send(err.message)
                 })
-        } else if (role === 'teacher') {
+        } else if (role === "teacher") {
             Teacher.find({ isDeleted: false })
-                .then(teachers => {
+                .then((teachers) => {
                     if (teachers) {
                         let data = [...teachers]
 
                         if (searchString) {
-                            data = data.filter(teacher => teacher.name.toUpperCase().includes(searchString.toUpperCase()))
+                            data = data.filter((teacher) =>
+                                teacher.name
+                                    .toUpperCase()
+                                    .includes(searchString.toUpperCase()),
+                            )
                         }
 
                         if (filterClass) {
-                            data = data.filter(teacher => teacher.teacherOfClass.includes(filterClass) || teacher.mainTeacherOfClass.includes(filterClass))
+                            data = data.filter(
+                                (teacher) =>
+                                    teacher.teacherOfClass.includes(
+                                        filterClass,
+                                    ) ||
+                                    teacher.mainTeacherOfClass.includes(
+                                        filterClass,
+                                    ),
+                            )
                         }
 
                         if (filterSubject) {
-                            data = data.filter(teacher => teacher.subject === filterSubject)
+                            data = data.filter(
+                                (teacher) => teacher.subject === filterSubject,
+                            )
                         }
 
                         res.status(200).json({
-                            data: data.map(teacher => ({
+                            data: data.map((teacher) => ({
                                 id: teacher._id,
                                 name: teacher.name,
-                                email: teacher.email
-                            }))
+                                email: teacher.email,
+                            })),
                         })
                     } else {
                         res.status(200).json([])
                     }
                 })
-                .catch(err => {
+                .catch((err) => {
                     res.status(500).send(err.message)
                 })
         } else {
-            res.status(400).send('Bad request')
+            res.status(400).send("Bad request")
         }
-
     } catch (err) {
         res.status(401).send(err.message)
     }
@@ -275,34 +330,33 @@ module.exports.deleteUser = (req, res) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
-        if (userInfo.role !== 'admin') {
-            return res.status(401).send('Unthorizated')
+        if (userInfo.role !== "admin") {
+            return res.status(401).send("Unthorizated")
         }
 
         const { role, id } = req.params
 
         switch (role) {
-            case 'student':
+            case "student":
                 return Parent.findOne({ _id: id })
-                    .then(async student => {
+                    .then(async (student) => {
                         if (student) {
                             student.isDeleted = true
                             await student.save()
-                            res.status(200).json('Student is deleted')
+                            res.status(200).json("Student is deleted")
                         } else {
-                            res.status(400).json('Bad request')
+                            res.status(400).json("Bad request")
                         }
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         res.status(500).json(err.message)
                     })
 
-            case 'teacher':
+            case "teacher":
                 return
             default:
-                return res.status(400).json('Bad request')
+                return res.status(400).json("Bad request")
         }
-
     } catch (err) {
         res.status(401).send(err.message)
     }
@@ -317,25 +371,27 @@ module.exports.createStudent = (req, res) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
-        if (userInfo.role !== 'admin' && userInfo.role !== 'teacher') {
-            return res.status(401).send('Unthorizated')
+        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
+            return res.status(401).send("Unthorizated")
         }
 
         const data = req.body
         const { grade, classRoom, dateOfBirth } = data
 
         Grade.findOne({ isDeleted: false, grade })
-            .then(gr => {
-                if (!validateDate(dateOfBirth)) throw new Error('Date of birth is not valid')
+            .then((gr) => {
+                if (!validateDate(dateOfBirth))
+                    throw new Error("Date of birth is not valid")
 
-                if (!gr) throw new Error('Student grade doesn\'t exist')
+                if (!gr) throw new Error("Student grade doesn't exist")
 
-                if (gr && !gr.classRoom.includes(classRoom)) throw new Error('Student class doesn\'t exist')
+                if (gr && !gr.classRoom.includes(classRoom))
+                    throw new Error("Student class doesn't exist")
 
                 data.studentId = shortid.generate()
 
-                if (process.env.ENVIRONMENT === 'DEVELOPMENT') {
-                    data.password = '12345678'
+                if (process.env.ENVIRONMENT === "DEVELOPMENT") {
+                    data.password = "12345678"
                 } else {
                     data.password = shortid.generate()
                 }
@@ -345,13 +401,11 @@ module.exports.createStudent = (req, res) => {
 
                 const newStudent = new Parent(data)
 
-                newStudent.save()
-                    .then(() => res.status(201).json(data))
+                newStudent.save().then(() => res.status(201).json(data))
             })
-            .catch(err => {
+            .catch((err) => {
                 res.status(400).send(err.message)
             })
-
     } catch (err) {
         res.status(500).send(err.message)
     }
@@ -366,16 +420,28 @@ module.exports.getStudent = (req, res) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
-        if (userInfo.role !== 'admin' && userInfo.role !== 'teacher') {
-            return res.status(401).send('Unthorizated')
+        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
+            return res.status(401).send("Unthorizated")
         }
 
         const id = req.params.id
 
-        Parent.findOne({_id: id, isDeleted: false})
-            .then(student => {
-                if(student) {
-                    const { _id, studentName, gender, grade, classRoom, dateOfBirth, address, note, studentId, father, mother } = student
+        Parent.findOne({ _id: id, isDeleted: false })
+            .then((student) => {
+                if (student) {
+                    const {
+                        _id,
+                        studentName,
+                        gender,
+                        grade,
+                        classRoom,
+                        dateOfBirth,
+                        address,
+                        note,
+                        studentId,
+                        father,
+                        mother,
+                    } = student
                     const data = {
                         _id,
                         studentName,
@@ -387,18 +453,18 @@ module.exports.getStudent = (req, res) => {
                         note,
                         studentId,
                         father,
-                        mother
+                        mother,
                     }
 
                     res.status(200).json(data)
                 } else {
-                    res.status(200).json('Student doesn\'t exist')
+                    res.status(200).json("Student doesn't exist")
                 }
             })
-            .catch(err => {
+            .catch((err) => {
                 res.status(500).send(err.message)
             })
-    } catch(err) {
+    } catch (err) {
         res.status(500).send(err.message)
     }
 }
@@ -412,61 +478,69 @@ module.exports.updateStudent = (req, res) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
-        if (userInfo.role !== 'admin' && userInfo.role !== 'teacher') {
-            return res.status(401).send('Unthorizated')
+        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
+            return res.status(401).send("Unthorizated")
         }
 
         const id = req.params.id
-        
 
         Parent.findOne({ _id: id })
-            .then(student => {
+            .then((student) => {
                 if (student) {
                     const data = req.body
-                    const { studentName, gender, grade, classRoom, dateOfBirth, address, note, father, mother } = data
+                    const {
+                        studentName,
+                        gender,
+                        grade,
+                        classRoom,
+                        dateOfBirth,
+                        address,
+                        note,
+                        father,
+                        mother,
+                    } = data
 
                     const updateArr = [
-                        { field: 'studentName', value: studentName },
-                        { field: 'gender', value: gender },
-                        { field: 'grade', value: grade },
-                        { field: 'classRoom', value: classRoom },
-                        { field: 'dateOfBirth', value: dateOfBirth },
-                        { field: 'address', value: address },
-                        { field: 'note', value: note },
-                        { field: 'father', value: father },
-                        { field: 'mother', value: mother }
+                        { field: "studentName", value: studentName },
+                        { field: "gender", value: gender },
+                        { field: "grade", value: grade },
+                        { field: "classRoom", value: classRoom },
+                        { field: "dateOfBirth", value: dateOfBirth },
+                        { field: "address", value: address },
+                        { field: "note", value: note },
+                        { field: "father", value: father },
+                        { field: "mother", value: mother },
                     ]
 
                     Grade.findOne({ isDeleted: false, grade })
-                        .then(async gr => {
-                            if (!validateDate(dateOfBirth))  throw new Error('Date of birth is not valid')
+                        .then(async (gr) => {
+                            if (!validateDate(dateOfBirth))
+                                throw new Error("Date of birth is not valid")
 
-                            if (!gr) throw new Error('Student grade doesn\'t exist')
+                            if (!gr)
+                                throw new Error("Student grade doesn't exist")
 
-                            if (gr && !gr.classRoom.includes(classRoom)) throw new Error('Student class doesn\'t exist')
+                            if (gr && !gr.classRoom.includes(classRoom))
+                                throw new Error("Student class doesn't exist")
 
-                            updateArr.forEach(item => {
+                            updateArr.forEach((item) => {
                                 student[item.field] = item.value
                             })
-        
+
                             await student.save()
-                            res.status(200).send('Update successfully')
+                            res.status(200).send("Update successfully")
                         })
-                        .catch(err => {
+                        .catch((err) => {
                             res.status(400).send(err.message)
                         })
-                        
-                    
-
                 } else {
-                    res.status(400).send('Student doesn\'t exist')
+                    res.status(400).send("Student doesn't exist")
                 }
-            }) 
-            .catch(err => {
+            })
+            .catch((err) => {
                 res.status(500).send(err.message)
             })
-    
-    } catch(err) {
+    } catch (err) {
         res.status(500).send(err.message)
     }
 }

@@ -1,7 +1,3 @@
-import axios from 'axios'
+import request from "./request"
 
-
-export default () => {
-    axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("access_token")}`
-    return axios.get("http://localhost:5000/user/getUserInformation", { timeout: 30000 })
-}
+export default () => request.get("user/getUserInformation")
