@@ -1,2 +1,5 @@
-// this project is a Manage Information System (MIS) to help school manage information of students as score, health,...
-// my MIS also let parent log in and see their children information 
+Admin: - CRUD teachers - CRUD students - CRUD highlights - CRUD notifications - CRUD classes - Change class all student after a year (optional) - Send email to students, teachers
+
+Teacher: - CRUD transcript - Send email to admin - Read schedule
+
+Parent (Student): - Read schedule, transcript - Send email to teacher
