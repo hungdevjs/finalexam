@@ -91,12 +91,14 @@ function Navigate(props) {
                     ) : null,
                 )}
                 <div className="flex-grow-1" />
-                <Nav {...props} onClick={() => signOut(props)}>
-                    <NavIcon {...props}>
-                        <i className="fas fa-sign-out-alt" />
-                    </NavIcon>
-                    <NavName {...props}>Sign out</NavName>
-                </Nav>
+                <div title="Sign out">
+                    <Nav {...props} onClick={() => signOut(props)}>
+                        <NavIcon {...props}>
+                            <i className="fas fa-sign-out-alt" />
+                        </NavIcon>
+                        <NavName {...props}>Sign out</NavName>
+                    </Nav>
+                </div>
             </NavContainer>
         </NavigateContainer>
     )
