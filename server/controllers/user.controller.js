@@ -241,7 +241,7 @@ module.exports.getAllUser = (req, res) => {
 
                         if (filterClass) {
                             data = data.filter(
-                                (student) => student.class === filterClass,
+                                (student) => student.classRoom === filterClass,
                             )
                         }
 

@@ -88,7 +88,7 @@ function StudentTeacher(props) {
 
     const onGradeSelected = e => {
         setOptionGrade(e.value)
-        const classArray = e.class.map(item => ({ value: item, label: item }))
+        const classArray = e.classRoom.map(item => ({ value: item, label: item }))
         setFilterClassStudent(classArray)
     }
 
@@ -156,7 +156,7 @@ function StudentTeacher(props) {
                                 item.email}
                         </td>
                         <td>
-                            <DeleteBtn onClick={() => props.setModal({isOpen: true, message: 'Do you want to delete this user ?', type: 'warning', onConfirm: () => removeUser(role, item.id)}) } />
+                            <DeleteBtn onClick={() => props.setModal({ isOpen: true, message: 'Do you want to delete this user ?', type: 'warning', onConfirm: () => removeUser(role, item.id) })} />
                         </td>
                     </tr>)}
                 </tbody>

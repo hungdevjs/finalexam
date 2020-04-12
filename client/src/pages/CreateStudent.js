@@ -96,10 +96,6 @@ export default function (props) {
                     studentId,
                 } = res.data
 
-                console.log(
-                    genderOptions.find((option) => option.value === gender),
-                )
-
                 getAllClassOfGrade(grade).then((res) => {
                     const options = res.data.map((option) => ({
                         value: option,
@@ -420,9 +416,9 @@ export default function (props) {
                                 value={
                                     gender.value !== ""
                                         ? genderOptions.find(
-                                              (option) =>
-                                                  option.value === gender.value,
-                                          )
+                                            (option) =>
+                                                option.value === gender.value,
+                                        )
                                         : null
                                 }
                                 onChange={(e) =>
@@ -479,9 +475,9 @@ export default function (props) {
                                 value={
                                     classRoom.value
                                         ? {
-                                              value: classRoom.value,
-                                              label: classRoom.value,
-                                          }
+                                            value: classRoom.value,
+                                            label: classRoom.value,
+                                        }
                                         : ""
                                 }
                                 options={classOptions}
@@ -595,9 +591,9 @@ export default function (props) {
                         value={
                             father && father.yearOfBirth
                                 ? {
-                                      value: father.yearOfBirth,
-                                      label: father.yearOfBirth,
-                                  }
+                                    value: father.yearOfBirth,
+                                    label: father.yearOfBirth,
+                                }
                                 : ""
                         }
                         onChange={(e) =>
@@ -673,9 +669,9 @@ export default function (props) {
                         value={
                             mother && mother.yearOfBirth
                                 ? {
-                                      value: mother.yearOfBirth,
-                                      label: mother.yearOfBirth,
-                                  }
+                                    value: mother.yearOfBirth,
+                                    label: mother.yearOfBirth,
+                                }
                                 : ""
                         }
                         onChange={(e) =>

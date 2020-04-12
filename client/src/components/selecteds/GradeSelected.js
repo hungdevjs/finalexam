@@ -20,13 +20,6 @@ export default function (props) {
     return (
         <Select
             placeholder={props.placeholder || "Select grade"}
-            value={
-                props.gradeSelect
-                    ? options.find(
-                          (option) => option.value === props.gradeSelect,
-                      )
-                    : null
-            }
             options={options}
             onChange={props.onChange}
             {...props}
