@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import SearchBox from '../SearchBox'
 import CreateBtn from '../buttons/CreateBtn'
 
-const HomeListContainer = styled.div`
+const HighlightContainer = styled.div`
     padding: 16px;
     margin-bottom: 8px;
     border: 1px solid #ccc;
@@ -19,7 +19,7 @@ export default function (props) {
     const url = props.listType === 'Notifications' ? '/notifications' : '/highlights'
 
     return (
-        <HomeListContainer>
+        <HighlightContainer>
             <Row className='mb-2'>
                 <Col md={2} className='d-flex align-items-center'>
                     <Link to={url}><h5 className='mb-2'>{props.listType}</h5></Link>
@@ -31,6 +31,6 @@ export default function (props) {
                     <CreateBtn />
                 </Col>
             </Row>
-        </HomeListContainer>
+        </HighlightContainer>
     )
 }

@@ -3,7 +3,7 @@ import moment from 'moment'
 import { Col, Row } from 'reactstrap'
 
 import StudentTeacher from '../../components/Admin/StudentTeacher'
-import HomeList from '../../components/Admin/HomeList'
+import Highlight from '../../components/Admin/Hightlight'
 
 export default function (props) {
     return (
@@ -17,11 +17,7 @@ export default function (props) {
             </Col>
 
             <Col md={12} className='mb-2'>
-                <HomeList listType='Notifications' />
-            </Col>
-
-            <Col md={12} className='mb-2'>
-                <HomeList listType='Highlights' />
+                <Highlight listType='Highlights' />
             </Col>
         </Row>
     )

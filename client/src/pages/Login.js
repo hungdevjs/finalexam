@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { Input, Button, Form, FormGroup, Label } from 'reactstrap'
 import Select from 'react-select'
 
-import  logIn from '../redux/action/login'
+import logIn from '../redux/action/login'
 import renderNoti from '../utils/renderNoti'
 
 const LoginContainer = styled.div`
@@ -18,7 +18,7 @@ const LoginContainer = styled.div`
     height: 100vh;
     margin-top: -64px;
 `
-    
+
 const LoginForm = styled.div`
     border-radius: 4px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.4);
@@ -49,9 +49,9 @@ function LogIn(props) {
     const [role, setRole] = useState('teacher')
 
     const options = [
-        {label: 'Admin', value: 'admin'},
-        {label: 'Teacher', value: 'teacher'},
-        {label: 'Parent', value: 'parent'}
+        { label: 'Admin', value: 'admin' },
+        { label: 'Teacher', value: 'teacher' },
+        { label: 'Parent', value: 'parent' }
     ]
 
     return (
@@ -62,7 +62,7 @@ function LogIn(props) {
                         width: '30px',
                         height: '30px',
                         marginRight: '8px'
-                    }}/>
+                    }} />
                     <h3 className='m-0'>Log in</h3>
                 </LoginTitle>
                 <p>Log in to your account</p>
@@ -72,23 +72,23 @@ function LogIn(props) {
                     props.logIn({ identity, password, role })
                         .then(logInStatus => {
                             if (!logInStatus) {
-                                renderNoti({ 
-                                    title: 'Log in failed', 
-                                    message: 'Something is wrong.', 
-                                    type: 'danger' 
+                                renderNoti({
+                                    title: 'Log in failed',
+                                    message: 'Something is wrong.',
+                                    type: 'danger'
                                 })
                             }
                         })
                 }}>
                     <FormGroup>
                         <Label>You are:</Label>
-                        <Select className='mb-2' options={options} value={options.find(option => option.value === role)} onChange={e => setRole(e.value)}/>
+                        <Select className='mb-2' options={options} value={options.find(option => option.value === role)} onChange={e => setRole(e.value)} />
 
                         <Input type={role === 'parent' ? 'text' : 'email'} className='mb-2' placeholder={role === 'parent' ? 'Student ID' : 'Email'} value={identity} onChange={e => setIdentity(e.target.value)} />
 
-                        <Input type='password' className='mb-2' placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} />  
+                        <Input type='password' className='mb-2' placeholder='Password' value={password} onChange={e => setPassword(e.target.value)} />
 
-                        <Button color='link' className='p-0 mb-2 d-block' onClick={() => {}}>Forgot your password</Button>
+                        <Button color='link' className='p-0 mb-2 d-block' onClick={() => { }}>Forgot your password</Button>
 
                         <Button type='submit' color='primary'>Log in</Button>
                     </FormGroup>

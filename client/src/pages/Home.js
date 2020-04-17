@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import Admin from './Admin'
-import Teacher from '../components/Teacher'
-import Parent from '../components/Parent'
+import Teacher from './Teacher'
+import Parent from './Parent'
 
 function Home(props) {
     const [role, setRole] = useState('')
@@ -16,13 +16,13 @@ function Home(props) {
 
     return (
         <div>
-            {role === 'admin' ? 
+            {role === 'admin' ?
                 <Admin /> :
-                role === 'teacher' ? 
+                role === 'teacher' ?
                     <Teacher /> :
                     role === 'parent' ?
-                    <Parent /> :
-                    '' }
+                        <Parent /> :
+                        ''}
         </div>
     )
 }

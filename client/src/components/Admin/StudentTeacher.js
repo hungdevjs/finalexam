@@ -113,7 +113,7 @@ function StudentTeacher(props) {
                     onChange={e => onGradeSelected(e)}
                 />}
                 {role === 'teacher' && <FilterSelect
-                    placeholder='Subject filter'
+                    placeholder='Filter subject'
                     className='flex-grow-1 mr-1'
                     options={filterSubject}
                     onChange={e => setOptionSubject(e.value)}

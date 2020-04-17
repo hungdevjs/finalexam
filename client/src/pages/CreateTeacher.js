@@ -117,11 +117,12 @@ const CreateTeacher = (props) => {
                                 }
                             />
                         </div>
-                        {props.values.mainTeacher && (
-                            <div>
-                                <AllClassSelected isMulti />
-                            </div>
-                        )}
+                        <div>
+                            <AllClassSelected isMulti isDisabled={!props.values.mainTeacher} />
+                        </div>
+                    </FormGroup>
+                    <FormGroup>
+                        <LabelRequired>Subject</LabelRequired>
                     </FormGroup>
                 </Col>
             </Row>

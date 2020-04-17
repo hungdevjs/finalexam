@@ -8,7 +8,7 @@ export default (state = {
                 option: action.payload
             }
 
-        default: 
+        default:
             return state
     }
 }
