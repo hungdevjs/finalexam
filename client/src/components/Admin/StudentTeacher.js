@@ -62,11 +62,13 @@ function StudentTeacher(props) {
                 setFilterClassTeacher(options)
             })
 
-        getAllSubject()
-            .then(res => {
-                const options = res.data.sort().map(c => ({ label: c, value: c }))
-                setFilterSubject(options)
-            })
+        if (role === 'teacher') {
+            getAllSubject()
+                .then(res => {
+                    const options = res.data.sort().map(c => ({ label: c, value: c }))
+                    setFilterSubject(options)
+                })
+        }
     }
 
     const removeUser = (role, id) => {
