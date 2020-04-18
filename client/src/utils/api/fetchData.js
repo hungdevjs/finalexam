@@ -39,6 +39,8 @@ export const deleteUser = (role, id) => request.delete(`user/${role}/${id}`)
 
 export const getStudentData = (id) => request.get(`user/student/${id}`)
 
+export const getTeacherData = id => request.get(`user/teacher/${id}`)
+
 export const createStudent = (data) => request.post("user/student/create", data)
 
 export const updateStudent = (data, id) =>

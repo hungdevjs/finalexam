@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { withFormik, Form, Field } from "formik"
 import * as yup from "yup"
 import {
@@ -12,10 +12,12 @@ import {
 } from "reactstrap"
 
 import YearSelected from "../components/selecteds/YearSelected"
-import FilterSelected from "../components/selecteds/FilterSelect"
+import FilterSelected from "../components/selecteds/FilterSelected"
 import Feedback from "../components/common/Feedback"
 import LabelRequired from "../components/common/LabelRequired"
 import AllClassSelected from "../components/selecteds/AllClassSelected"
+
+import { getAllSubject, getTeacherData } from "../utils/api/fetchData"
 
 const genderOptions = [
     { value: false, label: "Female" },
@@ -27,6 +29,36 @@ const phoneNumberRegex = /^0\d{9}$/g
 
 const CreateTeacher = (props) => {
     const { id } = props.match.params
+
+    const [data, setData] = useState({})
+    const [filterSubject, setFilterSubject] = useState([])
+
+    useEffect(() => {
+        getAllSubject()
+            .then(res => {
+                const options = res.data.sort().map(c => ({ label: c, value: c }))
+                setFilterSubject(options)
+            })
+
+        if (id) {
+            // get teacher data here
+            getTeacherData(id)
+                .then(res => {
+                    const data = res.data
+                    props.setFieldValue("name", data.name)
+                    props.setFieldValue("yearOfBirth", data.yearOfBirth)
+                    props.setFieldValue("gender", data.gender)
+                    props.setFieldValue("email", data.email)
+                    props.setFieldValue("phoneNumber", data.phoneNumber)
+                    props.setFieldValue("mainTeacher", data.mainTeacherOfClass.length > 0)
+                    props.setFieldValue("mainTeacherClass", data.mainTeacherOfClass)
+                    props.setFieldValue("subject", data.subject)
+
+                })
+        }
+    }, [])
+
+    const { name, yearOfBirth, gender, email, phoneNumber, mainTeacher, mainTeacherClass, subject } = props.values
 
     return (
         <Form>
@@ -54,6 +86,7 @@ const CreateTeacher = (props) => {
                             onChange={(e) =>
                                 props.setFieldValue("yearOfBirth", e.value)
                             }
+                            value={yearOfBirth && { label: yearOfBirth, value: yearOfBirth }}
                         />
                         {props.touched.yearOfBirth && (
                             <Feedback>{props.errors.yearOfBirth}</Feedback>
@@ -69,6 +102,7 @@ const CreateTeacher = (props) => {
                             onChange={(e) =>
                                 props.setFieldValue("gender", e.value)
                             }
+                            value={gender !== null && { value: gender, label: gender ? 'Male' : 'Female' }}
                         />
                         {props.touched.gender && (
                             <Feedback>{props.errors.gender}</Feedback>
@@ -76,7 +110,7 @@ const CreateTeacher = (props) => {
                     </FormGroup>
 
                     <FormGroup>
-                        <LabelRequired>Gender</LabelRequired>
+                        <LabelRequired>Email</LabelRequired>
                         <Field
                             name="email"
                             render={({ field }) => (
@@ -115,14 +149,39 @@ const CreateTeacher = (props) => {
                                         e.target.checked,
                                     )
                                 }
+                                checked={mainTeacher}
                             />
                         </div>
                         <div>
-                            <AllClassSelected isMulti isDisabled={!props.values.mainTeacher} />
+                            <AllClassSelected
+                                isMulti isDisabled={!props.values.mainTeacher}
+                                onChange={e => {
+                                    props.setFieldValue(
+                                        "mainTeacherClass",
+                                        e ? e.map(item => item.value) : []
+                                    )
+                                }}
+                                value={mainTeacherClass && mainTeacherClass.length > 0 && mainTeacherClass.map(item => ({ value: item, label: item }))}
+                            />
+                            {props.touched.mainTeacherClass && (
+                                <Feedback>{props.errors.mainTeacherClass}</Feedback>
+                            )}
                         </div>
                     </FormGroup>
                     <FormGroup>
                         <LabelRequired>Subject</LabelRequired>
+                        <FilterSelected
+                            placeholder='Select subject'
+                            className='flex-grow-1 mr-1'
+                            options={filterSubject}
+                            onChange={e => {
+                                props.setFieldValue("subject", e.value)
+                            }}
+                            value={subject && ({ value: subject, label: subject })}
+                        />
+                        {props.touched.subject && (
+                            <Feedback>{props.errors.subject}</Feedback>
+                        )}
                     </FormGroup>
                 </Col>
             </Row>
@@ -142,6 +201,8 @@ export default withFormik({
         email: "",
         phoneNumber: "",
         mainTeacher: false,
+        mainTeacherClass: [],
+        subject: ""
     }),
     validationSchema: yup.object().shape({
         name: yup.string().required("Teacher name is required"),
@@ -159,5 +220,9 @@ export default withFormik({
             .required("Phone number is required")
             .matches(phoneNumberRegex, "Phone number is invalid"),
         mainTeacher: yup.boolean(),
+        mainTeacherClass: yup.array().when('mainTeacher', { is: true, then: yup.array().min(1, "Class is required") }),
+        subject: yup
+            .string()
+            .required("Subject is required")
     }),
 })(CreateTeacher)

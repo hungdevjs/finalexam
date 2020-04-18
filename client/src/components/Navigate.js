@@ -76,7 +76,7 @@ function Navigate(props) {
             <NavContainer {...props}>
                 {navigates.map((nav, index) =>
                     !nav.roles || nav.roles.includes(role) ? (
-                        <div title={nav.name}>
+                        <div title={nav.name} key={index}>
                             <Nav
                                 {...props}
                                 key={index}

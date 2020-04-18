@@ -7,7 +7,7 @@ import Selected from "react-select"
 
 import "react-datepicker/dist/react-datepicker.css"
 
-import FilterSelect from "../components/selecteds/FilterSelect"
+import FilterSelected from "../components/selecteds/FilterSelected"
 import YearSelected from "../components/selecteds/YearSelected"
 import GradeSelected from "../components/selecteds/GradeSelected"
 
@@ -470,7 +470,7 @@ export default function (props) {
                             <Label>
                                 Class <span className="text-danger">*</span>
                             </Label>
-                            <FilterSelect
+                            <FilterSelected
                                 placeholder="Select class"
                                 value={
                                     classRoom.value

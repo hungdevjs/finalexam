@@ -18,4 +18,6 @@ router.get('/student/:id', controller.getStudent)
 
 router.put('/student/:id', controller.updateStudent)
 
+router.get('/teacher/:id', controller.getTeacher)
+
 module.exports = router

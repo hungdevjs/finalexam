@@ -33,7 +33,7 @@ module.exports.getUserInformation = (req, res) => {
                         name: userInfo.name,
                         email: userInfo.email,
                         phoneNumber: userInfo.phoneNumber,
-                        yearBorn: userInfo.yearBorn,
+                        yearOfBirth: userInfo.yearOfBirth,
                         gender: userInfo.gender,
                         mainTeacherOfClass: userInfo.mainTeacherOfClass,
                         teacherOfClass: userInfo.teacherOfClass,
@@ -125,7 +125,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 name: teacher.name,
                                 email: teacher.email,
                                 phoneNumber: teacher.phoneNumber,
-                                yearBorn: teacher.yearBorn,
+                                yearOfBirth: teacher.yearOfBirth,
                                 gender: teacher.gender,
                                 mainTeacherOfClass: teacher.mainTeacherOfClass,
                                 teacherOfClass: teacher.teacherOfClass,
@@ -484,7 +484,7 @@ module.exports.updateStudent = (req, res) => {
 
         const id = req.params.id
 
-        Parent.findOne({ _id: id })
+        Parent.findOne({ _id: id, isDeleted: false })
             .then((student) => {
                 if (student) {
                     const data = req.body
@@ -535,6 +535,60 @@ module.exports.updateStudent = (req, res) => {
                         })
                 } else {
                     res.status(400).send("Student doesn't exist")
+                }
+            })
+            .catch((err) => {
+                res.status(500).send(err.message)
+            })
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getTeacher = (req, res) => {
+    const token = req.headers.authorization
+        ? req.headers.authorization.split(" ")[1]
+        : ""
+
+    try {
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+
+        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
+            return res.status(401).send("Unthorizated")
+        }
+
+        const id = req.params.id
+
+        Teacher.findOne({ _id: id, isDeleted: false })
+            .then((teacher) => {
+                if (teacher) {
+                    const {
+                        _id,
+                        name,
+                        gender,
+                        email,
+                        yearOfBirth,
+                        phoneNumber,
+                        mainTeacherOfClass,
+                        teacherOfClass,
+                        subject
+                    } = teacher
+                    const data = {
+                        _id,
+                        name,
+                        gender,
+                        email,
+                        yearOfBirth,
+                        phoneNumber,
+                        mainTeacherOfClass,
+                        teacherOfClass,
+                        subject
+                    }
+
+                    res.status(200).json(data)
+                } else {
+                    res.status(200).json("Teacher doesn't exist")
                 }
             })
             .catch((err) => {

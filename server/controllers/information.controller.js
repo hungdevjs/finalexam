@@ -35,9 +35,9 @@ module.exports.getAllClass = (req, res) => {
             .catch(err => {
                 res.status(500).send(err.message)
             })
-    } catch(err) {
+    } catch (err) {
         res.status(500).send(err.message)
-    }  
+    }
 }
 
 module.exports.getAllSubject = (req, res) => {
@@ -53,25 +53,10 @@ module.exports.getAllSubject = (req, res) => {
             return res.status(401).send('Unthorizated')
         }
 
-        Teacher.find()
-            .then(teachers => {
-                if (teachers) {
-                    let subjects = []
+        const subjects = ['Toán', 'Văn', 'Anh', 'Vật lý', 'Hóa học', 'Sinh học'].sort()
 
-                    for (let teacher of teachers) {
-                        subjects = [...subjects, teacher.subject]
-                    }
-
-                    return [...new Set(subjects)]
-                } else {
-                    return []
-                }
-            })
-            .then(data => res.status(200).json(data))
-            .catch(err => {
-                res.status(500).send(err.message)
-            })
-    } catch(err) {
+        res.status(200).send(subjects)
+    } catch (err) {
         res.status(500).send(err.message)
-    }  
+    }
 }

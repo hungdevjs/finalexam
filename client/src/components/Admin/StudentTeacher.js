@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { Button, Table } from 'reactstrap'
 
 import SearchBox from '../SearchBox'
-import FilterSelect from '../selecteds/FilterSelect'
+import FilterSelected from '../selecteds/FilterSelected'
 import GradeSelected from '../selecteds/GradeSelected'
 
 import DeleteBtn from '../buttons/DeleteBtn'
@@ -114,14 +114,14 @@ function StudentTeacher(props) {
                     className='flex-grow-1 mr-1'
                     onChange={e => onGradeSelected(e)}
                 />}
-                {role === 'teacher' && <FilterSelect
+                {role === 'teacher' && <FilterSelected
                     placeholder='Filter subject'
                     className='flex-grow-1 mr-1'
                     options={filterSubject}
                     onChange={e => setOptionSubject(e.value)}
                 />}
 
-                <FilterSelect
+                <FilterSelected
                     placeholder='Class filter'
                     className='flex-grow-1 ml-1'
                     options={role === 'student' ? filterClassStudent : filterClassTeacher}
