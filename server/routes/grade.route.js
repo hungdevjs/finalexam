@@ -1,11 +1,18 @@
-const express = require('express')
+const express = require("express");
+const auth = require("../middlewares/auth");
 
-const router = express.Router()
+const { authAdmin } = auth;
 
-const controller = require('../controllers/grade.controller')
+const router = express.Router();
 
-router.get('/getAllGrade', controller.getAllGrade)
+const controller = require("../controllers/grade.controller");
 
-router.get('/getAllClassOfGrade/:grade', controller.getAllClassOfGrade)
+router.get("/getAllGrade", authAdmin, controller.getAllGrade);
 
-module.exports = router
+router.get(
+    "/getAllClassOfGrade/:grade",
+    authAdmin,
+    controller.getAllClassOfGrade
+);
+
+module.exports = router;

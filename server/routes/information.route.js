@@ -1,13 +1,14 @@
-const express = require('express')
+const express = require("express");
+const auth = require("../middlewares/auth");
 
-const router = express.Router()
+const { authAdmin } = auth;
 
-const controller = require('../controllers/information.controller')
+const router = express.Router();
 
-router.get('/getAllClass', controller.getAllClass)
+const controller = require("../controllers/information.controller");
 
-// router.get('/getAllGrade', controller.getAllGrade)
+router.get("/getAllClass", authAdmin, controller.getAllClass);
 
-router.get('/getAllSubject', controller.getAllSubject)
+router.get("/getAllSubject", authAdmin, controller.getAllSubject);
 
-module.exports = router
+module.exports = router;

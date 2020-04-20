@@ -1,22 +1,22 @@
-const jwt = require("jsonwebtoken")
-const shortid = require("shortid")
-const _ = require("lodash")
+const jwt = require("jsonwebtoken");
+const shortid = require("shortid");
+const _ = require("lodash");
 
-const validateDate = require("../utils/validateDate")
+const validateDate = require("../utils/validateDate");
 
-const Parent = require("../models/parent.model")
-const Teacher = require("../models/teacher.model")
-const Admin = require("../models/admin.model")
-const Grade = require("../models/grade.model")
+const Parent = require("../models/parent.model");
+const Teacher = require("../models/teacher.model");
+const Admin = require("../models/admin.model");
+const Grade = require("../models/grade.model");
 
 module.exports.getUserInformation = (req, res) => {
     const token = req.headers.authorization
         ? req.headers.authorization.split(" ")[1]
-        : ""
+        : "";
 
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
+        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY);
 
         switch (userInfo.role) {
             case "admin":
@@ -25,7 +25,7 @@ module.exports.getUserInformation = (req, res) => {
                         email: userInfo.email,
                         role: "admin",
                     },
-                })
+                });
 
             case "teacher":
                 return res.status(200).json({
@@ -40,7 +40,7 @@ module.exports.getUserInformation = (req, res) => {
                         subject: userInfo.subject,
                         role: "teacher",
                     },
-                })
+                });
 
             case "parent":
                 return res.status(200).json({
@@ -50,24 +50,27 @@ module.exports.getUserInformation = (req, res) => {
                         class: userInfo.class,
                         role: "parent",
                     },
-                })
+                });
 
             default:
-                return res.status(401).json("Unthorizated")
+                return res.status(401).json("Unthorizated");
         }
     } catch (err) {
-        res.status(401).send(err.message)
+        res.status(401).send(err.message);
     }
-}
+};
 
 module.exports.getUserInformationAndNewAccessToken = (req, res) => {
     const token = req.headers.authorization
         ? req.headers.authorization.split(" ")[1]
-        : ""
+        : "";
 
     try {
-        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.REFRESH_TOKEN_SECRET_KEY)
+        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY);
+        const userInfo = jwt.decode(
+            token,
+            process.env.REFRESH_TOKEN_SECRET_KEY
+        );
 
         switch (userInfo.role) {
             case "admin":
@@ -77,13 +80,13 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             admin &&
                             jwt.verify(
                                 token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                                process.env.REFRESH_TOKEN_SECRET_KEY
                             )
                         ) {
                             const data = {
                                 email: admin.email,
                                 role: "admin",
-                            }
+                            };
 
                             const access_token = jwt.sign(
                                 data,
@@ -91,22 +94,22 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
-                                },
-                            )
+                                }
+                            );
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            })
+                            });
                         } else {
-                            res.status(401).json("Unthorizated")
+                            res.status(401).json("Unthorizated");
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
+                        res.status(500).send(err.message);
+                    });
 
             case "teacher":
                 return Teacher.findOne({
@@ -118,7 +121,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             teacher &&
                             jwt.verify(
                                 token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                                process.env.REFRESH_TOKEN_SECRET_KEY
                             )
                         ) {
                             const data = {
@@ -131,7 +134,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 teacherOfClass: teacher.teacherOfClass,
                                 subject: teacher.subject,
                                 role: "teacher",
-                            }
+                            };
 
                             const access_token = jwt.sign(
                                 data,
@@ -139,22 +142,22 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
-                                },
-                            )
+                                }
+                            );
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            })
+                            });
                         } else {
-                            res.status(401).json("Unthorizated")
+                            res.status(401).json("Unthorizated");
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
+                        res.status(500).send(err.message);
+                    });
 
             case "parent":
                 return Parent.findOne({ refreshToken: token, isDeleted: false })
@@ -163,7 +166,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             student &&
                             jwt.verify(
                                 token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY,
+                                process.env.REFRESH_TOKEN_SECRET_KEY
                             )
                         ) {
                             const data = {
@@ -171,7 +174,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 studentName: student.studentName,
                                 class: student.class,
                                 role: "parent",
-                            }
+                            };
 
                             const access_token = jwt.sign(
                                 data,
@@ -179,77 +182,66 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
-                                },
-                            )
+                                }
+                            );
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            })
+                            });
                         } else {
-                            res.status(401).json("Unthorizated")
+                            res.status(401).json("Unthorizated");
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
+                        res.status(500).send(err.message);
+                    });
 
             default:
-                return res.status(401).json("Unthorizated")
+                return res.status(401).json("Unthorizated");
         }
     } catch (err) {
-        res.status(401).send(err.message)
+        res.status(401).send(err.message);
     }
-}
+};
 
 module.exports.getAllUser = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin") {
-            return res.status(401).send("Unthorizated")
-        }
-
         const {
             role,
             searchString,
             filterClass,
             filterGrade,
             filterSubject,
-        } = req.query
+        } = req.query;
 
         if (role === "student") {
             Parent.find({ isDeleted: false })
                 .then((students) => {
                     if (students) {
-                        let data = [...students]
+                        let data = [...students];
 
                         if (searchString) {
                             data = data.filter((student) =>
                                 student.studentName
                                     .toUpperCase()
-                                    .includes(searchString.toUpperCase()),
-                            )
+                                    .includes(searchString.toUpperCase())
+                            );
                         }
 
                         if (filterClass) {
                             data = data.filter(
-                                (student) => student.classRoom === filterClass,
-                            )
+                                (student) => student.classRoom === filterClass
+                            );
                         }
 
                         if (filterGrade) {
                             data = data.filter(
                                 (student) =>
-                                    student.grade === parseInt(filterGrade),
-                            )
+                                    student.grade === parseInt(filterGrade)
+                            );
                         }
 
                         res.status(200).json({
@@ -259,44 +251,44 @@ module.exports.getAllUser = (req, res) => {
                                 grade: student.grade,
                                 studentName: student.studentName,
                             })),
-                        })
+                        });
                     } else {
-                        res.status(200).json([])
+                        res.status(200).json([]);
                     }
                 })
                 .catch((err) => {
-                    res.status(500).send(err.message)
-                })
+                    res.status(500).send(err.message);
+                });
         } else if (role === "teacher") {
             Teacher.find({ isDeleted: false })
                 .then((teachers) => {
                     if (teachers) {
-                        let data = [...teachers]
+                        let data = [...teachers];
 
                         if (searchString) {
                             data = data.filter((teacher) =>
                                 teacher.name
                                     .toUpperCase()
-                                    .includes(searchString.toUpperCase()),
-                            )
+                                    .includes(searchString.toUpperCase())
+                            );
                         }
 
                         if (filterClass) {
                             data = data.filter(
                                 (teacher) =>
                                     teacher.teacherOfClass.includes(
-                                        filterClass,
+                                        filterClass
                                     ) ||
                                     teacher.mainTeacherOfClass.includes(
-                                        filterClass,
-                                    ),
-                            )
+                                        filterClass
+                                    )
+                            );
                         }
 
                         if (filterSubject) {
                             data = data.filter(
-                                (teacher) => teacher.subject === filterSubject,
-                            )
+                                (teacher) => teacher.subject === filterSubject
+                            );
                         }
 
                         res.status(200).json({
@@ -305,126 +297,93 @@ module.exports.getAllUser = (req, res) => {
                                 name: teacher.name,
                                 email: teacher.email,
                             })),
-                        })
+                        });
                     } else {
-                        res.status(200).json([])
+                        res.status(200).json([]);
                     }
                 })
                 .catch((err) => {
-                    res.status(500).send(err.message)
-                })
+                    res.status(500).send(err.message);
+                });
         } else {
-            res.status(400).send("Bad request")
+            res.status(400).send("Bad request");
         }
     } catch (err) {
-        res.status(401).send(err.message)
+        res.status(401).send(err.message);
     }
-}
+};
 
 module.exports.deleteUser = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin") {
-            return res.status(401).send("Unthorizated")
-        }
-
-        const { role, id } = req.params
+        const { role, id } = req.params;
 
         switch (role) {
             case "student":
                 return Parent.findOne({ _id: id })
                     .then(async (student) => {
                         if (student) {
-                            student.isDeleted = true
-                            await student.save()
-                            res.status(200).json("Student is deleted")
+                            student.isDeleted = true;
+                            await student.save();
+                            res.status(200).json("Student is deleted");
                         } else {
-                            res.status(400).json("Bad request")
+                            res.status(400).json("Bad request");
                         }
                     })
                     .catch((err) => {
-                        res.status(500).json(err.message)
-                    })
+                        res.status(500).json(err.message);
+                    });
 
             case "teacher":
-                return
+                return;
             default:
-                return res.status(400).json("Bad request")
+                return res.status(400).json("Bad request");
         }
     } catch (err) {
-        res.status(401).send(err.message)
+        res.status(401).send(err.message);
     }
-}
+};
 
 module.exports.createStudent = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
-            return res.status(401).send("Unthorizated")
-        }
-
-        const data = req.body
-        const { grade, classRoom, dateOfBirth } = data
+        const data = req.body;
+        const { grade, classRoom, dateOfBirth } = data;
 
         Grade.findOne({ isDeleted: false, grade })
             .then((gr) => {
                 if (!validateDate(dateOfBirth))
-                    throw new Error("Date of birth is not valid")
+                    throw new Error("Date of birth is not valid");
 
-                if (!gr) throw new Error("Student grade doesn't exist")
+                if (!gr) throw new Error("Student grade doesn't exist");
 
                 if (gr && !gr.classRoom.includes(classRoom))
-                    throw new Error("Student class doesn't exist")
+                    throw new Error("Student class doesn't exist");
 
-                data.studentId = shortid.generate()
+                data.studentId = shortid.generate();
 
                 if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-                    data.password = "12345678"
+                    data.password = "12345678";
                 } else {
-                    data.password = shortid.generate()
+                    data.password = shortid.generate();
                 }
 
-                data.score = {}
-                data.isDeleted = false
+                data.score = {};
+                data.isDeleted = false;
 
-                const newStudent = new Parent(data)
+                const newStudent = new Parent(data);
 
-                newStudent.save().then(() => res.status(201).json(data))
+                newStudent.save().then(() => res.status(201).json(data));
             })
             .catch((err) => {
-                res.status(400).send(err.message)
-            })
+                res.status(400).send(err.message);
+            });
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};
 
 module.exports.getStudent = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
-            return res.status(401).send("Unthorizated")
-        }
-
-        const id = req.params.id
+        const id = req.params.id;
 
         Parent.findOne({ _id: id, isDeleted: false })
             .then((student) => {
@@ -441,7 +400,7 @@ module.exports.getStudent = (req, res) => {
                         studentId,
                         father,
                         mother,
-                    } = student
+                    } = student;
                     const data = {
                         _id,
                         studentName,
@@ -454,40 +413,29 @@ module.exports.getStudent = (req, res) => {
                         studentId,
                         father,
                         mother,
-                    }
+                    };
 
-                    res.status(200).json(data)
+                    res.status(200).json(data);
                 } else {
-                    res.status(200).json("Student doesn't exist")
+                    res.status(200).json("Student doesn't exist");
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message)
-            })
+                res.status(500).send(err.message);
+            });
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};
 
 module.exports.updateStudent = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
-            return res.status(401).send("Unthorizated")
-        }
-
-        const id = req.params.id
+        const id = req.params.id;
 
         Parent.findOne({ _id: id, isDeleted: false })
             .then((student) => {
                 if (student) {
-                    const data = req.body
+                    const data = req.body;
                     const {
                         studentName,
                         gender,
@@ -498,7 +446,7 @@ module.exports.updateStudent = (req, res) => {
                         note,
                         father,
                         mother,
-                    } = data
+                    } = data;
 
                     const updateArr = [
                         { field: "studentName", value: studentName },
@@ -510,55 +458,44 @@ module.exports.updateStudent = (req, res) => {
                         { field: "note", value: note },
                         { field: "father", value: father },
                         { field: "mother", value: mother },
-                    ]
+                    ];
 
                     Grade.findOne({ isDeleted: false, grade })
                         .then(async (gr) => {
                             if (!validateDate(dateOfBirth))
-                                throw new Error("Date of birth is not valid")
+                                throw new Error("Date of birth is not valid");
 
                             if (!gr)
-                                throw new Error("Student grade doesn't exist")
+                                throw new Error("Student grade doesn't exist");
 
                             if (gr && !gr.classRoom.includes(classRoom))
-                                throw new Error("Student class doesn't exist")
+                                throw new Error("Student class doesn't exist");
 
                             updateArr.forEach((item) => {
-                                student[item.field] = item.value
-                            })
+                                student[item.field] = item.value;
+                            });
 
-                            await student.save()
-                            res.status(200).send("Update successfully")
+                            await student.save();
+                            res.status(200).send("Update successfully");
                         })
                         .catch((err) => {
-                            res.status(400).send(err.message)
-                        })
+                            res.status(400).send(err.message);
+                        });
                 } else {
-                    res.status(400).send("Student doesn't exist")
+                    res.status(400).send("Student doesn't exist");
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message)
-            })
+                res.status(500).send(err.message);
+            });
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};
 
 module.exports.getTeacher = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
-            return res.status(401).send("Unthorizated")
-        }
-
-        const id = req.params.id
+        const id = req.params.id;
 
         Teacher.findOne({ _id: id, isDeleted: false })
             .then((teacher) => {
@@ -572,8 +509,8 @@ module.exports.getTeacher = (req, res) => {
                         phoneNumber,
                         mainTeacherOfClass,
                         teacherOfClass,
-                        subject
-                    } = teacher
+                        subject,
+                    } = teacher;
                     const data = {
                         _id,
                         name,
@@ -583,18 +520,29 @@ module.exports.getTeacher = (req, res) => {
                         phoneNumber,
                         mainTeacherOfClass,
                         teacherOfClass,
-                        subject
-                    }
+                        subject,
+                    };
 
-                    res.status(200).json(data)
+                    res.status(200).json(data);
                 } else {
-                    res.status(200).json("Teacher doesn't exist")
+                    res.status(200).json("Teacher doesn't exist");
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message)
-            })
+                res.status(500).send(err.message);
+            });
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};
+
+module.exports.createTeacher = (req, res) => {
+    try {
+        // check if teacher email exist
+        // check if teacher phoneNumber exist
+        // check if mainClass exist
+        // check if subject-teacherClass exist
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+};

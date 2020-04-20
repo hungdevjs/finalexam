@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from "react"
-import history from "../config/history"
-import _ from "lodash"
-import DatePicker from "react-datepicker"
-import { Row, Col, Input, Label, Button } from "reactstrap"
-import Selected from "react-select"
+import React, { useState, useEffect } from "react";
+import history from "../config/history";
+import _ from "lodash";
+import DatePicker from "react-datepicker";
+import { Row, Col, Input, Label, Button } from "reactstrap";
+import Selected from "react-select";
 
-import "react-datepicker/dist/react-datepicker.css"
+import "react-datepicker/dist/react-datepicker.css";
 
-import FilterSelected from "../components/selecteds/FilterSelected"
-import YearSelected from "../components/selecteds/YearSelected"
-import GradeSelected from "../components/selecteds/GradeSelected"
+import FilterSelected from "../components/selecteds/FilterSelected";
+import YearSelected from "../components/selecteds/YearSelected";
+import GradeSelected from "../components/selecteds/GradeSelected";
 
-import renderNoti from "../utils/renderNoti"
+import renderNoti from "../utils/renderNoti";
 
-import validation from "../utils/validation"
-import { createStudent } from "../utils/api/fetchData"
-import { updateStudent } from "../utils/api/fetchData"
+import validation from "../utils/validation";
+import { createStudent } from "../utils/api/fetchData";
+import { updateStudent } from "../utils/api/fetchData";
 
-import { getStudentData } from "../utils/api/fetchData"
-import { getAllClassOfGrade } from "../utils/api/fetchData"
+import { getStudentData } from "../utils/api/fetchData";
+import { getAllClassOfGrade } from "../utils/api/fetchData";
 
 export default function (props) {
-    const { id } = props.match.params
+    const { id } = props.match.params;
 
     const genderOptions = [
         { value: true, label: "Male" },
         { value: false, label: "Female" },
-    ]
+    ];
 
     const [state, setState] = useState({
         name: {
@@ -74,9 +74,9 @@ export default function (props) {
             note: "",
             invalid: false,
         },
-    })
+    });
 
-    const [classOptions, setClassOptions] = useState([])
+    const [classOptions, setClassOptions] = useState([]);
 
     // load student data
     useEffect(() => {
@@ -94,15 +94,15 @@ export default function (props) {
                     mother,
                     _id,
                     studentId,
-                } = res.data
+                } = res.data;
 
                 getAllClassOfGrade(grade).then((res) => {
                     const options = res.data.map((option) => ({
                         value: option,
                         label: option,
-                    }))
-                    setClassOptions(options)
-                })
+                    }));
+                    setClassOptions(options);
+                });
 
                 setState({
                     name: {
@@ -141,10 +141,10 @@ export default function (props) {
                     },
                     _id,
                     studentId,
-                })
-            })
+                });
+            });
         }
-    }, [])
+    }, []);
 
     const checkSingleInput = (key) => {
         if (
@@ -158,7 +158,7 @@ export default function (props) {
                     ...key,
                     invalid: true,
                 },
-            })
+            });
         } else {
             setState({
                 ...state,
@@ -166,17 +166,17 @@ export default function (props) {
                     ...key,
                     invalid: false,
                 },
-            })
+            });
         }
-    }
+    };
 
     const checkPhoneNummber = (phoneNumber) => {
         if (validation.phoneNumber(phoneNumber)) {
-            return true
+            return true;
         }
 
-        return false
-    }
+        return false;
+    };
 
     const ErrorMessage = (key) => (
         <p
@@ -188,7 +188,7 @@ export default function (props) {
         >
             {_.capitalize(_.startCase(key.field).toLowerCase())} is empty
         </p>
-    )
+    );
 
     const canSubmit = () => {
         const {
@@ -199,27 +199,27 @@ export default function (props) {
             dateOfBirth,
             father,
             mother,
-        } = state
-        const arr = [name, gender, grade, classRoom, dateOfBirth]
+        } = state;
+        const arr = [name, gender, grade, classRoom, dateOfBirth];
 
         const fatherValid =
             father.name.trim() &&
             father.yearOfBirth.trim() &&
-            father.phoneNumber.trim()
+            father.phoneNumber.trim();
         const motherValid =
             mother.name.trim() &&
             mother.yearOfBirth.trim() &&
-            mother.phoneNumber.trim()
+            mother.phoneNumber.trim();
 
         const phoneNumberNotEmpty =
             father.phoneNumber.trim().length > 0 ||
-            mother.phoneNumber.trim().length > 0
+            mother.phoneNumber.trim().length > 0;
 
-        let flag = true
+        let flag = true;
 
         for (let item of arr) {
             if (!item.value.toString().trim()) {
-                flag = false
+                flag = false;
             }
         }
 
@@ -229,11 +229,11 @@ export default function (props) {
                 message:
                     "Please fill out all basic information of student includes name, gender, grade, class, date of birth",
                 type: "danger",
-            })
+            });
         }
 
         if (!fatherValid && !motherValid) {
-            flag = false
+            flag = false;
             setState({
                 ...state,
                 father: {
@@ -244,14 +244,14 @@ export default function (props) {
                     ...mother,
                     invalid: true,
                 },
-            })
+            });
 
             renderNoti({
                 title: "Failed",
                 message:
                     "Please fill out all basic information of at least Father or Mother",
                 type: "danger",
-            })
+            });
         } else {
             if (fatherValid) {
                 setState({
@@ -260,7 +260,7 @@ export default function (props) {
                         ...father,
                         invalid: false,
                     },
-                })
+                });
             } else {
                 setState({
                     ...state,
@@ -268,7 +268,7 @@ export default function (props) {
                         ...mother,
                         invalid: false,
                     },
-                })
+                });
             }
         }
 
@@ -277,12 +277,12 @@ export default function (props) {
             !checkPhoneNummber(father.phoneNumber) &&
             !checkPhoneNummber(mother.phoneNumber)
         ) {
-            flag = false
+            flag = false;
             renderNoti({
                 title: "Failed",
                 message: "Parent phone number is not valid",
                 type: "danger",
-            })
+            });
         }
 
         if (
@@ -292,25 +292,25 @@ export default function (props) {
             (!checkPhoneNummber(father.phoneNumber) ||
                 !checkPhoneNummber(mother.phoneNumber))
         ) {
-            flag = false
+            flag = false;
             renderNoti({
                 title: "Failed",
                 message: "Parent phone number is not valid",
                 type: "danger",
-            })
+            });
         }
 
-        if (!flag) return false
+        if (!flag) return false;
 
-        return true
-    }
+        return true;
+    };
 
     const onSubmit = () => {
         if (!canSubmit()) {
-            return
+            return;
         }
 
-        let submit = id ? updateStudent : createStudent
+        let submit = id ? updateStudent : createStudent;
 
         const {
             name,
@@ -322,7 +322,7 @@ export default function (props) {
             note,
             father,
             mother,
-        } = state
+        } = state;
         const data = {
             studentName: name.value,
             gender: gender.value,
@@ -343,7 +343,7 @@ export default function (props) {
                 phoneNumber: mother.phoneNumber,
                 note: mother.note,
             },
-        }
+        };
 
         submit(data, id)
             .then(() =>
@@ -351,10 +351,10 @@ export default function (props) {
                     title: "Success",
                     message: `${id ? "Update" : "Create"} student successfully`,
                     type: "success",
-                }),
+                })
             )
-            .then(() => history.push("/"))
-    }
+            .then(() => history.push("/"));
+    };
 
     const {
         name,
@@ -366,7 +366,7 @@ export default function (props) {
         note,
         father,
         mother,
-    } = state
+    } = state;
 
     return (
         <div>
@@ -416,9 +416,9 @@ export default function (props) {
                                 value={
                                     gender.value !== ""
                                         ? genderOptions.find(
-                                            (option) =>
-                                                option.value === gender.value,
-                                        )
+                                              (option) =>
+                                                  option.value === gender.value
+                                          )
                                         : null
                                 }
                                 onChange={(e) =>
@@ -440,7 +440,12 @@ export default function (props) {
                                 Grade <span className="text-danger">*</span>
                             </Label>
                             <GradeSelected
-                                gradeSelect={grade.value || ""}
+                                value={
+                                    grade.value && {
+                                        label: grade.value,
+                                        value: grade.value,
+                                    }
+                                }
                                 onChange={(e) => {
                                     setState({
                                         ...state,
@@ -452,14 +457,14 @@ export default function (props) {
                                             ...classRoom,
                                             value: e.classRoom[0],
                                         },
-                                    })
+                                    });
                                     const classArray = e.classRoom.map(
                                         (item) => ({
                                             value: item,
                                             label: item,
-                                        }),
-                                    )
-                                    setClassOptions(classArray)
+                                        })
+                                    );
+                                    setClassOptions(classArray);
                                 }}
                                 onBlur={() => checkSingleInput(grade)}
                             />
@@ -475,9 +480,9 @@ export default function (props) {
                                 value={
                                     classRoom.value
                                         ? {
-                                            value: classRoom.value,
-                                            label: classRoom.value,
-                                        }
+                                              value: classRoom.value,
+                                              label: classRoom.value,
+                                          }
                                         : ""
                                 }
                                 options={classOptions}
@@ -591,9 +596,9 @@ export default function (props) {
                         value={
                             father && father.yearOfBirth
                                 ? {
-                                    value: father.yearOfBirth,
-                                    label: father.yearOfBirth,
-                                }
+                                      value: father.yearOfBirth,
+                                      label: father.yearOfBirth,
+                                  }
                                 : ""
                         }
                         onChange={(e) =>
@@ -669,9 +674,9 @@ export default function (props) {
                         value={
                             mother && mother.yearOfBirth
                                 ? {
-                                    value: mother.yearOfBirth,
-                                    label: mother.yearOfBirth,
-                                }
+                                      value: mother.yearOfBirth,
+                                      label: mother.yearOfBirth,
+                                  }
                                 : ""
                         }
                         onChange={(e) =>
@@ -732,5 +737,5 @@ export default function (props) {
                 </Col>
             </Row>
         </div>
-    )
+    );
 }

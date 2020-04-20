@@ -1,62 +1,47 @@
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
 
-let Parent = require('../models/parent.model')
-let Teacher = require('../models/teacher.model')
-let Grade = require('../models/grade.model')
+let Parent = require("../models/parent.model");
+let Teacher = require("../models/teacher.model");
+let Grade = require("../models/grade.model");
 
 module.exports.getAllClass = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        if (userInfo.role !== 'admin') {
-            return res.status(401).send('Unthorizated')
-        }
-
         Grade.find()
-            .then(grades => {
+            .then((grades) => {
                 if (grades) {
-                    let classes = []
+                    let classes = [];
 
                     for (let grade of grades) {
-                        classes = [...classes, ...grade.classRoom]
+                        classes = [...classes, ...grade.classRoom];
                     }
 
-                    return classes.sort()
+                    return classes.sort();
                 } else {
-                    return []
+                    return [];
                 }
             })
-            .then(data => res.status(200).json(data))
-            .catch(err => {
-                res.status(500).send(err.message)
-            })
+            .then((data) => res.status(200).json(data))
+            .catch((err) => {
+                res.status(500).send(err.message);
+            });
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};
 
 module.exports.getAllSubject = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+        const subjects = [
+            "Toán",
+            "Văn",
+            "Anh",
+            "Vật lý",
+            "Hóa học",
+            "Sinh học",
+        ].sort();
 
-        if (userInfo.role !== 'admin') {
-            return res.status(401).send('Unthorizated')
-        }
-
-        const subjects = ['Toán', 'Văn', 'Anh', 'Vật lý', 'Hóa học', 'Sinh học'].sort()
-
-        res.status(200).send(subjects)
+        res.status(200).send(subjects);
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(500).send(err.message);
     }
-}
+};

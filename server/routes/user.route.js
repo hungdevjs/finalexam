@@ -1,23 +1,29 @@
-const express = require('express')
+const express = require("express");
+const auth = require("../middlewares/auth");
 
-const router = express.Router()
+const { authAdmin, authAdminTeacher } = auth;
 
-const controller = require('../controllers/user.controller')
+const router = express.Router();
 
-router.get('/getUserInformation', controller.getUserInformation)
+const controller = require("../controllers/user.controller");
 
-router.get('/getUserInformationAndNewAccessToken', controller.getUserInformationAndNewAccessToken)
+router.get("/getUserInformation", controller.getUserInformation);
 
-router.get('/getAllUser', controller.getAllUser)
+router.get(
+    "/getUserInformationAndNewAccessToken",
+    controller.getUserInformationAndNewAccessToken
+);
 
-router.delete('/:role/:id', controller.deleteUser)
+router.get("/getAllUser", authAdmin, controller.getAllUser);
 
-router.post('/student/create', controller.createStudent)
+router.delete("/:role/:id", authAdmin, controller.deleteUser);
 
-router.get('/student/:id', controller.getStudent)
+router.post("/student/create", authAdmin, controller.createStudent);
 
-router.put('/student/:id', controller.updateStudent)
+router.get("/student/:id", authAdminTeacher, controller.getStudent);
 
-router.get('/teacher/:id', controller.getTeacher)
+router.put("/student/:id", authAdmin, controller.updateStudent);
 
-module.exports = router
+router.get("/teacher/:id", authAdmin, controller.getTeacher);
+
+module.exports = router;
