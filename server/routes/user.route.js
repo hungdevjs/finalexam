@@ -28,4 +28,6 @@ router.get("/teacher/:id", authAdmin, controller.getTeacher);
 
 router.post("/teacher/create", authAdmin, controller.createTeacher);
 
+router.put("/teacher/:id", authAdmin, controller.updateTeacher);
+
 module.exports = router;

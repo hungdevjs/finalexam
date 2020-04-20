@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const shortid = require("shortid");
 const _ = require("lodash");
+const passwordHash = require("password-hash");
 
 const validateDate = require("../utils/validateDate");
 
@@ -250,6 +251,11 @@ module.exports.getAllUser = (req, res) => {
                                 classRoom: student.classRoom,
                                 grade: student.grade,
                                 studentName: student.studentName,
+                                father: student.father,
+                                mother: student.mother,
+                                note: student.note,
+                                address: student.address,
+                                dateOfBirth: student.dateOfBirth,
                             })),
                         });
                     } else {
@@ -348,6 +354,8 @@ module.exports.createStudent = (req, res) => {
         const data = req.body;
         const { grade, classRoom, dateOfBirth } = data;
 
+        console.log(data);
+
         Grade.findOne({ isDeleted: false, grade })
             .then((gr) => {
                 if (!validateDate(dateOfBirth))
@@ -371,7 +379,10 @@ module.exports.createStudent = (req, res) => {
 
                 const newStudent = new Parent(data);
 
-                newStudent.save().then(() => res.status(201).json(data));
+                newStudent
+                    .save()
+                    .then(() => res.status(201).json(data))
+                    .catch((err) => res.status(400).send(err.message));
             })
             .catch((err) => {
                 res.status(400).send(err.message);
@@ -574,9 +585,9 @@ module.exports.createTeacher = async (req, res) => {
                     throw new Error("Class doesn't exist");
                 }
 
-                const mainClass = await Teacher.find().distinct(
-                    "mainTeacherOfClass"
-                );
+                const mainClass = await Teacher.find({
+                    isDeleted: false,
+                }).distinct("mainTeacherOfClass");
 
                 const invalidMainclass = mainTeacherOfClass.filter((item) =>
                     mainClass.includes(item)
@@ -616,8 +627,94 @@ module.exports.createTeacher = async (req, res) => {
         }
 
         const newTeacher = new Teacher(data);
-        newTeacher.save().then(() => res.status(201).json(data));
+        await newTeacher.save();
+        res.status(201).json(data);
     } catch (err) {
-        res.status(500).send(err.message);
+        res.json({ error: err.message });
+    }
+};
+
+module.exports.updateTeacher = async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        const currentTeacher = await Teacher.findOne({
+            _id: id,
+            isDeleted: false,
+        });
+
+        if (!currentTeacher) {
+            throw new Error("Teacher doesn't exist");
+        }
+
+        const data = req.body;
+        const {
+            name,
+            yearOfBirth,
+            gender,
+            email,
+            phoneNumber,
+            mainTeacherOfClass,
+            subject,
+            teacherOfClass,
+        } = data;
+
+        // check if mainClass exist
+        const teachers = await Teacher.find();
+        const teacherSameMainClass = teachers.filter((teacher) => {
+            return (
+                teacher.id !== id &&
+                teacher.mainTeacherOfClass.filter((room) =>
+                    mainTeacherOfClass.includes(room)
+                ).length > 0
+            );
+        });
+
+        if (teacherSameMainClass.length > 0) {
+            throw new Error(
+                `This user conflicts main class with ${teacherSameMainClass
+                    .map((tc) => tc.name)
+                    .join(", ")}`
+            );
+        }
+
+        // check subject-class exist
+        const teacherSameSubjectClass = teachers.filter((teacher) => {
+            return (
+                teacher.id !== id &&
+                teacher.teacherOfClass.filter((room) => {
+                    teacherOfClass.includes(room);
+                }).length > 0
+            );
+        });
+
+        if (teacherSameSubjectClass.length > 0) {
+            throw new Error(
+                `This user conflicts class with ${teacherSameMainClass
+                    .map((tc) => tc.name)
+                    .join(", ")}`
+            );
+        }
+
+        // update teacher
+        const updateArr = [
+            { field: "name", value: name },
+            { field: "yearOfBirth", value: yearOfBirth },
+            { field: "gender", value: gender },
+            { field: "email", value: email },
+            { field: "phoneNumber", value: phoneNumber },
+            { field: "mainTeacherOfClass", value: mainTeacherOfClass },
+            { field: "subject", value: subject },
+            { field: "teacherOfClass", value: teacherOfClass },
+        ];
+
+        updateArr.forEach((item) => {
+            currentTeacher[item.field] = item.value;
+        });
+
+        await currentTeacher.save();
+        res.status(200).send("Update successfully");
+    } catch (err) {
+        res.json({ error: err.message });
     }
 };

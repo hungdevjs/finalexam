@@ -11,17 +11,23 @@ import {
     CustomInput,
 } from "reactstrap";
 
-import YearSelected from "../components/selecteds/YearSelected";
-import FilterSelected from "../components/selecteds/FilterSelected";
-import Feedback from "../components/common/Feedback";
-import LabelRequired from "../components/common/LabelRequired";
-import AllClassSelected from "../components/selecteds/AllClassSelected";
+import YearSelected from "../../components/selecteds/YearSelected";
+import FilterSelected from "../../components/selecteds/FilterSelected";
+import Feedback from "../../components/common/Feedback";
+import LabelRequired from "../../components/common/LabelRequired";
+import AllClassSelected from "../../components/selecteds/AllClassSelected";
+
+import BackBtn from "../../components/buttons/BackBtn";
+
+import history from "../../config/history";
+import renderNoti from "../../utils/renderNoti";
 
 import {
     getAllSubject,
     getTeacherData,
     createTeacher,
-} from "../utils/api/fetchData";
+    updateTeacher,
+} from "../../utils/api/fetchData";
 
 const genderOptions = [
     { value: false, label: "Female" },
@@ -81,7 +87,14 @@ const CreateTeacher = (props) => {
 
     return (
         <Form>
-            <h3 className="mb-2">{id ? "EDIT" : "CREATE"} TEACHER</h3>
+            <Row>
+                <Col md={8}>
+                    <h3 className="mb-2">{id ? "EDIT" : "CREATE"} TEACHER</h3>
+                </Col>
+                <Col md={4} className="text-right">
+                    <BackBtn title="home" onClick={() => history.push("/")} />
+                </Col>
+            </Row>
 
             <Row>
                 <Col md={6}>
@@ -301,7 +314,34 @@ export default withFormik({
             .required("Teacher class is required")
             .min(1, "Teacher class is required"),
     }),
-    handleSubmit: (values) => {
-        createTeacher(values);
+    handleSubmit: async (values, { props }) => {
+        try {
+            const {
+                match: {
+                    params: { id },
+                },
+            } = props;
+
+            const res = await (id
+                ? updateTeacher(id, values)
+                : createTeacher(values));
+
+            if (res.data && res.data.error) {
+                throw new Error(res.data.error);
+            }
+
+            renderNoti({
+                type: "success",
+                title: "Success",
+                message: `${id ? "Update" : "Create"} teacher successfully`,
+            });
+            history.push("/");
+        } catch (err) {
+            renderNoti({
+                type: "danger",
+                title: "Failed",
+                message: err.message,
+            });
+        }
     },
 })(CreateTeacher);

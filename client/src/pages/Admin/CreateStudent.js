@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import history from "../config/history";
+import history from "../../config/history";
 import _ from "lodash";
 import DatePicker from "react-datepicker";
 import { Row, Col, Input, Label, Button } from "reactstrap";
@@ -7,18 +7,20 @@ import Selected from "react-select";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import FilterSelected from "../components/selecteds/FilterSelected";
-import YearSelected from "../components/selecteds/YearSelected";
-import GradeSelected from "../components/selecteds/GradeSelected";
+import FilterSelected from "../../components/selecteds/FilterSelected";
+import YearSelected from "../../components/selecteds/YearSelected";
+import GradeSelected from "../../components/selecteds/GradeSelected";
 
-import renderNoti from "../utils/renderNoti";
+import BackBtn from "../../components/buttons/BackBtn";
 
-import validation from "../utils/validation";
-import { createStudent } from "../utils/api/fetchData";
-import { updateStudent } from "../utils/api/fetchData";
+import renderNoti from "../../utils/renderNoti";
 
-import { getStudentData } from "../utils/api/fetchData";
-import { getAllClassOfGrade } from "../utils/api/fetchData";
+import validation from "../../utils/validation";
+import { createStudent } from "../../utils/api/fetchData";
+import { updateStudent } from "../../utils/api/fetchData";
+
+import { getStudentData } from "../../utils/api/fetchData";
+import { getAllClassOfGrade } from "../../utils/api/fetchData";
 
 export default function (props) {
     const { id } = props.match.params;
@@ -370,17 +372,24 @@ export default function (props) {
 
     return (
         <div>
-            <h3 className="mb-2">{id ? "EDIT" : "CREATE"} STUDENT</h3>
+            <Row>
+                <Col md={8}>
+                    <h3 className="mb-2">{id ? "EDIT" : "CREATE"} STUDENT</h3>
 
-            {id && (
-                <Button
-                    color="link"
-                    className="pl-0"
-                    onClick={() => history.push(`/transcript/${id}`)}
-                >
-                    View transcript
-                </Button>
-            )}
+                    {id && (
+                        <Button
+                            color="link"
+                            className="pl-0"
+                            onClick={() => history.push(`/transcript/${id}`)}
+                        >
+                            View transcript
+                        </Button>
+                    )}
+                </Col>
+                <Col md={4} className="text-right">
+                    <BackBtn title="home" onClick={() => history.push("/")} />
+                </Col>
+            </Row>
 
             <Row className="mb-2">
                 <Col md={6} sm={12}>

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Button, Table } from "reactstrap";
 
-import SearchBox from "../SearchBox";
+import SearchBox from "../common/SearchBox";
 import FilterSelected from "../selecteds/FilterSelected";
 import GradeSelected from "../selecteds/GradeSelected";
 
@@ -92,7 +92,13 @@ function StudentTeacher(props) {
                 })
             )
             .then(() => getData())
-            .catch((err) => {});
+            .catch((err) => {
+                renderNoti({
+                    type: "danger",
+                    title: "Failed",
+                    message: "Delete user failed",
+                });
+            });
     };
 
     useEffect(() => {
