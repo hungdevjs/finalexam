@@ -1,1 +1,1 @@
-module.exports.pageSize = 1;
+module.exports.pageSize = 2;

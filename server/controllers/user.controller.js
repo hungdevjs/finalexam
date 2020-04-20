@@ -256,7 +256,7 @@ module.exports.getAllUser = (req, res) => {
                         if (currentPage > 0) {
                             totalPage = Math.ceil(data.length / pageSize) || 1;
                             data = data.slice(
-                                currentPage - 1,
+                                (currentPage - 1) * pageSize,
                                 currentPage * pageSize
                             );
                         }
@@ -323,7 +323,7 @@ module.exports.getAllUser = (req, res) => {
                         if (currentPage > 0) {
                             totalPage = Math.ceil(data.length / pageSize);
                             data = data.slice(
-                                currentPage - 1,
+                                (currentPage - 1) * pageSize,
                                 currentPage * pageSize
                             );
                         }
