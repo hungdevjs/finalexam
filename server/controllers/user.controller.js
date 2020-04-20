@@ -4,6 +4,7 @@ const _ = require("lodash");
 const passwordHash = require("password-hash");
 
 const validateDate = require("../utils/validateDate");
+const { pageSize } = require("../utils/constant");
 
 const Parent = require("../models/parent.model");
 const Teacher = require("../models/teacher.model");
@@ -216,12 +217,14 @@ module.exports.getAllUser = (req, res) => {
             filterClass,
             filterGrade,
             filterSubject,
+            currentPage,
         } = req.query;
 
         if (role === "student") {
             Parent.find({ isDeleted: false })
                 .then((students) => {
                     if (students) {
+                        let totalPage = 1;
                         let data = [...students].sort((student1, student2) => {
                             return student1.studentName.toLowerCase() <
                                 student2.studentName.toLowerCase()
@@ -250,6 +253,14 @@ module.exports.getAllUser = (req, res) => {
                             );
                         }
 
+                        if (currentPage > 0) {
+                            totalPage = Math.ceil(data.length / pageSize) || 1;
+                            data = data.slice(
+                                currentPage - 1,
+                                currentPage * pageSize
+                            );
+                        }
+
                         res.status(200).json({
                             data: data.map((student) => ({
                                 id: student._id,
@@ -262,6 +273,7 @@ module.exports.getAllUser = (req, res) => {
                                 address: student.address,
                                 dateOfBirth: student.dateOfBirth,
                             })),
+                            totalPage,
                         });
                     } else {
                         res.status(200).json([]);
@@ -274,6 +286,7 @@ module.exports.getAllUser = (req, res) => {
             Teacher.find({ isDeleted: false })
                 .then((teachers) => {
                     if (teachers) {
+                        let totalPage = 1;
                         let data = [...teachers].sort((teacher1, teacher2) => {
                             return teacher1.name.toLowerCase() <
                                 teacher2.name.toLowerCase()
@@ -307,12 +320,21 @@ module.exports.getAllUser = (req, res) => {
                             );
                         }
 
+                        if (currentPage > 0) {
+                            totalPage = Math.ceil(data.length / pageSize);
+                            data = data.slice(
+                                currentPage - 1,
+                                currentPage * pageSize
+                            );
+                        }
+
                         res.status(200).json({
                             data: data.map((teacher) => ({
                                 id: teacher._id,
                                 name: teacher.name,
                                 email: teacher.email,
                             })),
+                            totalPage,
                         });
                     } else {
                         res.status(200).json([]);

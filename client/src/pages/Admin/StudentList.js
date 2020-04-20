@@ -9,12 +9,12 @@ import GradeSelected from "../../components/selecteds/GradeSelected";
 import FilterSelected from "../../components/selecteds/FilterSelected";
 import DeleteBtn from "../../components/buttons/DeleteBtn";
 import NewTabLink from "../../components/common/NewTabLink";
+import Pagination from "../../components/common/Pagination";
 
 import getAllUser from "../../redux/action/getAllUser";
 import setModal from "../../redux/action/setModal";
 import { deleteUser } from "../../utils/api/fetchData";
 import renderNoti from "../../utils/renderNoti";
-import { render } from "react-dom";
 
 const StudentList = (props) => {
     const [searchString, setSearchString] = useState("");
@@ -23,19 +23,25 @@ const StudentList = (props) => {
     const [filterClassStudent, setFilterClassStudent] = useState([]);
     const [data, setData] = useState([]);
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+
     useEffect(() => {
         getData();
     }, []);
 
     const getData = async () => {
         try {
-            const data = await props.getAllUser(
+            const res = await props.getAllUser(
                 "student",
                 searchString,
                 optionClass,
-                optionGrade
+                optionGrade,
+                "",
+                currentPage
             );
-            setData(data);
+            setData(res.data);
+            setTotalPage(res.totalPage);
         } catch (err) {
             renderNoti({
                 type: "danger",
@@ -72,9 +78,10 @@ const StudentList = (props) => {
     useEffect(() => {
         getData();
         //eslint-disable-next-line
-    }, [optionClass, optionGrade]);
+    }, [optionClass, optionGrade, currentPage]);
 
     const onGradeSelected = (e) => {
+        setCurrentPage(1);
         if (e) {
             setOptionGrade(e.value);
             const classArray = e.classRoom.map((item) => ({
@@ -100,7 +107,13 @@ const StudentList = (props) => {
                 <Col md={6}>
                     <SearchBox
                         onChange={(e) => setSearchString(e.target.value)}
-                        onSearch={() => getData()}
+                        onSearch={() => {
+                            if (currentPage !== 1) {
+                                setCurrentPage(1);
+                            } else {
+                                getData();
+                            }
+                        }}
                     />
                 </Col>
                 <Col md={3}>
@@ -116,6 +129,7 @@ const StudentList = (props) => {
                         placeholder="Filter class"
                         options={filterClassStudent}
                         onChange={(e) => {
+                            setCurrentPage(1);
                             if (e) {
                                 setOptionClass(e.value);
                             } else {
@@ -192,6 +206,11 @@ const StudentList = (props) => {
                     )}
                 </Col>
             </Row>
+            <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPage={totalPage}
+            />
         </div>
     );
 };

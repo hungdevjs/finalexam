@@ -12,6 +12,7 @@ import GradeSelected from "../selecteds/GradeSelected";
 
 import DeleteBtn from "../buttons/DeleteBtn";
 import CreateBtn from "../buttons/CreateBtn";
+import Pagination from "../common/Pagination";
 
 import getAllUser from "../../redux/action/getAllUser";
 import setModal from "../../redux/action/setModal";
@@ -46,11 +47,14 @@ function StudentTeacher(props) {
     const [optionGrade, setOptionGrade] = useState("");
     const [optionSubject, setOptionSubject] = useState("");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(1);
+
     //eslint-disable-next-line
     useEffect(() => {
         getData();
         //eslint-disable-next-line
-    }, [optionClass, optionGrade, optionSubject]);
+    }, [optionClass, optionGrade, optionSubject, currentPage]);
 
     //eslint-disable-next-line
     const getData = () => {
@@ -60,9 +64,13 @@ function StudentTeacher(props) {
                 searchString,
                 optionClass,
                 optionGrade,
-                optionSubject
+                optionSubject,
+                currentPage
             )
-            .then((data) => setData(data))
+            .then((res) => {
+                setData(res.data);
+                setTotalPage(res.totalPage);
+            })
             .catch((err) => {});
     };
 
@@ -108,6 +116,7 @@ function StudentTeacher(props) {
     }, [role]);
 
     const onGradeSelected = (e) => {
+        setCurrentPage(1);
         if (e) {
             setOptionGrade(e.value);
             const classArray = e.classRoom.map((item) => ({
@@ -140,7 +149,13 @@ function StudentTeacher(props) {
 
             <SearchBox
                 onChange={(e) => setSearchString(e.target.value)}
-                onSearch={() => getData()}
+                onSearch={() => {
+                    if (currentPage !== 1) {
+                        setCurrentPage(1);
+                    } else {
+                        getData();
+                    }
+                }}
             />
 
             <div className="d-flex align-items-center w-100 mb-2">
@@ -159,6 +174,7 @@ function StudentTeacher(props) {
                         className="flex-grow-1 mr-1"
                         options={filterSubject}
                         onChange={(e) => {
+                            setCurrentPage(1);
                             if (e) {
                                 setOptionSubject(e.value);
                             } else {
@@ -178,6 +194,7 @@ function StudentTeacher(props) {
                             : filterClassTeacher
                     }
                     onChange={(e) => {
+                        setCurrentPage(1);
                         if (e) {
                             setOptionClass(e.value);
                         } else {
@@ -239,6 +256,11 @@ function StudentTeacher(props) {
                         ))}
                 </tbody>
             </Table>
+            <Pagination
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                totalPage={totalPage}
+            />
         </StudentTeacherContainer>
     );
 }

@@ -17,9 +17,10 @@ const renderParams = (root, params) => {
 export const getAllUser = (
     role,
     searchString = "",
-    filterClass = null,
-    filterGrade = null,
-    filterSubject = null
+    filterClass = "",
+    filterGrade = "",
+    filterSubject = "",
+    currentPage = 0
 ) =>
     request.get(
         renderParams("user/getAllUser", {
@@ -28,6 +29,7 @@ export const getAllUser = (
             filterClass,
             filterGrade,
             filterSubject,
+            currentPage,
         })
     );
 

@@ -6,7 +6,8 @@ export default (
     searchString = "",
     filterClass = "",
     filterGrade = "",
-    filterSubject = ""
+    filterSubject = "",
+    currentPage = 0
 ) => async (dispatch) => {
     dispatch(setLoading(true));
 
@@ -16,10 +17,11 @@ export default (
             searchString,
             filterClass,
             filterGrade,
-            filterSubject
+            filterSubject,
+            currentPage
         );
         dispatch(setLoading(false));
-        return res.data.data;
+        return res.data;
     } catch (err) {
         console.log(err.message);
     }
