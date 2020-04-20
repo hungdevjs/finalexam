@@ -1,25 +1,25 @@
-import request from "./request"
+import request from "./request";
 
 const renderParams = (root, params) => {
     if (!params) {
-        return root
+        return root;
     }
 
-    let url = `${root}/?`
+    let url = `${root}/?`;
 
     for (let key of Object.keys(params)) {
-        url += `${key}=${params[key]}&`
+        url += `${key}=${params[key]}&`;
     }
 
-    return url
-}
+    return url;
+};
 
 export const getAllUser = (
     role,
     searchString = "",
     filterClass = null,
     filterGrade = null,
-    filterSubject = null,
+    filterSubject = null
 ) =>
     request.get(
         renderParams("user/getAllUser", {
@@ -28,25 +28,29 @@ export const getAllUser = (
             filterClass,
             filterGrade,
             filterSubject,
-        }),
-    )
+        })
+    );
 
-export const getAllClass = () => request.get("information/getAllClass")
+export const getAllClass = () => request.get("information/getAllClass");
 
-export const getAllSubject = () => request.get("information/getAllSubject")
+export const getAllSubject = () => request.get("information/getAllSubject");
 
-export const deleteUser = (role, id) => request.delete(`user/${role}/${id}`)
+export const deleteUser = (role, id) => request.delete(`user/${role}/${id}`);
 
-export const getStudentData = (id) => request.get(`user/student/${id}`)
+export const getStudentData = (id) => request.get(`user/student/${id}`);
 
-export const getTeacherData = id => request.get(`user/teacher/${id}`)
+export const getTeacherData = (id) => request.get(`user/teacher/${id}`);
 
-export const createStudent = (data) => request.post("user/student/create", data)
+export const createStudent = (data) =>
+    request.post("user/student/create", data);
+
+export const createTeacher = (data) =>
+    request.post("/user/teacher/create", data);
 
 export const updateStudent = (data, id) =>
-    request.put(`user/student/${id}`, data)
+    request.put(`user/student/${id}`, data);
 
 export const getAllClassOfGrade = (grade) =>
-    request.get(`grade/getAllClassOfGrade/${grade}`)
+    request.get(`grade/getAllClassOfGrade/${grade}`);
 
-export const getAllGrade = () => request.get("grade/getAllGrade")
+export const getAllGrade = () => request.get("grade/getAllGrade");

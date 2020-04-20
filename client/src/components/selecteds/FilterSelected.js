@@ -4,7 +4,6 @@ import Select from "react-select";
 export default function (props) {
     return (
         <Select
-            isClearable
             placeholder={props.placeholder || "Filter"}
             options={props.options}
             onChange={props.onChange}

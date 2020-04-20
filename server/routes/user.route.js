@@ -26,4 +26,6 @@ router.put("/student/:id", authAdmin, controller.updateStudent);
 
 router.get("/teacher/:id", authAdmin, controller.getTeacher);
 
+router.post("/teacher/create", authAdmin, controller.createTeacher);
+
 module.exports = router;

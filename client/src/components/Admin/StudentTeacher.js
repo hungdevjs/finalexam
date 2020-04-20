@@ -139,6 +139,7 @@ function StudentTeacher(props) {
             <div className="d-flex align-items-center w-100 mb-2">
                 {role === "student" && (
                     <GradeSelected
+                        isClearable
                         placeholder="Filter grade"
                         className="flex-grow-1 mr-1"
                         onChange={(e) => onGradeSelected(e)}
@@ -146,6 +147,7 @@ function StudentTeacher(props) {
                 )}
                 {role === "teacher" && (
                     <FilterSelected
+                        isClearable
                         placeholder="Filter subject"
                         className="flex-grow-1 mr-1"
                         options={filterSubject}
@@ -160,6 +162,7 @@ function StudentTeacher(props) {
                 )}
 
                 <FilterSelected
+                    isClearable
                     placeholder="Class filter"
                     className="flex-grow-1 ml-1"
                     options={

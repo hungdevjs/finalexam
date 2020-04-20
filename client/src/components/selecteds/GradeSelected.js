@@ -19,7 +19,6 @@ export default function (props) {
 
     return (
         <Select
-            isClearable
             placeholder={props.placeholder || "Select grade"}
             options={options}
             onChange={props.onChange}

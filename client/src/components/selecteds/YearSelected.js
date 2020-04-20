@@ -13,7 +13,6 @@ for (let year = minYear; year < maxYear; year++) {
 export default function (props) {
     return (
         <Select
-            isClearable
             placeholder={props.placeholder || "Select year"}
             options={options}
             onChange={props.onChange}

@@ -361,7 +361,7 @@ module.exports.createStudent = (req, res) => {
                 data.studentId = shortid.generate();
 
                 if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-                    data.password = "12345678";
+                    data.password = passwordHash.generate("12345678");
                 } else {
                     data.password = shortid.generate();
                 }
@@ -536,12 +536,87 @@ module.exports.getTeacher = (req, res) => {
     }
 };
 
-module.exports.createTeacher = (req, res) => {
+module.exports.createTeacher = async (req, res) => {
     try {
+        const data = req.body;
+        const {
+            name,
+            yearOfBirth,
+            gender,
+            email,
+            phoneNumber,
+            mainTeacherOfClass,
+            subject,
+            teacherOfClass,
+        } = data;
+
         // check if teacher email exist
-        // check if teacher phoneNumber exist
+        const teacher = await Teacher.findOne({ email, isDeleted: false });
+        if (teacher) {
+            throw new Error("Teacher email exist");
+        }
+
         // check if mainClass exist
+        if (
+            Array.isArray(mainTeacherOfClass) ||
+            mainTeacherOfClass.length > 0
+        ) {
+            let classes = [];
+            const grades = await Grade.find();
+            if (grades) {
+                for (const item of grades) {
+                    classes = [...classes, ...item.classRoom];
+                }
+            }
+
+            for (room of mainTeacherOfClass) {
+                if (!classes.includes(room)) {
+                    throw new Error("Class doesn't exist");
+                }
+
+                const mainClass = await Teacher.find().distinct(
+                    "mainTeacherOfClass"
+                );
+
+                const invalidMainclass = mainTeacherOfClass.filter((item) =>
+                    mainClass.includes(item)
+                );
+
+                if (invalidMainclass.length > 0) {
+                    throw new Error(
+                        `Class ${invalidMainclass.join(", ")} had main teacher`
+                    );
+                }
+            }
+        }
+
         // check if subject-teacherClass exist
+        const classSameSubject = await Teacher.find({
+            subject,
+            isDeleted: false,
+        }).distinct("teacherOfClass");
+
+        const invalidSubjectClass = teacherOfClass.filter((item) =>
+            classSameSubject.includes(item)
+        );
+
+        if (invalidSubjectClass.length > 0) {
+            throw new Error(
+                `Class ${invalidSubjectClass.join(
+                    ", "
+                )} had teacher for ${subject}`
+            );
+        }
+
+        data.isDeleted = false;
+        if (process.env.ENVIRONMENT === "DEVELOPMENT") {
+            data.password = passwordHash.generate("12345678");
+        } else {
+            data.password = shortid.generate();
+        }
+
+        const newTeacher = new Teacher(data);
+        newTeacher.save().then(() => res.status(201).json(data));
     } catch (err) {
         res.status(500).send(err.message);
     }

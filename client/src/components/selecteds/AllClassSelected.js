@@ -13,7 +13,6 @@ export default (props) => {
 
     return (
         <Select
-            isClearable
             placeholder="Select class"
             options={options}
             onChange={props.onChange}
