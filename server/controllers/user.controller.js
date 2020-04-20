@@ -222,7 +222,12 @@ module.exports.getAllUser = (req, res) => {
             Parent.find({ isDeleted: false })
                 .then((students) => {
                     if (students) {
-                        let data = [...students];
+                        let data = [...students].sort((student1, student2) => {
+                            return student1.studentName.toLowerCase() <
+                                student2.studentName.toLowerCase()
+                                ? -1
+                                : 1;
+                        });
 
                         if (searchString) {
                             data = data.filter((student) =>
@@ -269,7 +274,12 @@ module.exports.getAllUser = (req, res) => {
             Teacher.find({ isDeleted: false })
                 .then((teachers) => {
                     if (teachers) {
-                        let data = [...teachers];
+                        let data = [...teachers].sort((teacher1, teacher2) => {
+                            return teacher1.name.toLowerCase() <
+                                teacher2.name.toLowerCase()
+                                ? -1
+                                : 1;
+                        });
 
                         if (searchString) {
                             data = data.filter((teacher) =>
