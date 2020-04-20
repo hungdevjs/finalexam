@@ -113,6 +113,7 @@ function StudentTeacher(props) {
             setOptionGrade("");
             setFilterClassStudent([]);
         }
+        setOptionClass("");
     };
 
     const header = role === "student" ? "Students" : "Teachers";
@@ -177,6 +178,12 @@ function StudentTeacher(props) {
                             setOptionClass("");
                         }
                     }}
+                    value={
+                        optionClass && {
+                            value: optionClass,
+                            label: optionClass,
+                        }
+                    }
                     isDisabled={
                         role === "student" && filterClassStudent.length === 0
                     }
