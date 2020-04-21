@@ -3,13 +3,16 @@ import { Link } from "react-router-dom";
 import { Table, Row, Col } from "reactstrap";
 import { connect } from "react-redux";
 import moment from "moment";
+import history from "../../config/history";
 
 import SearchBox from "../../components/common/SearchBox";
 import GradeSelected from "../../components/selecteds/GradeSelected";
 import FilterSelected from "../../components/selecteds/FilterSelected";
 import DeleteBtn from "../../components/buttons/DeleteBtn";
+import BackBtn from "../../components/buttons/BackBtn";
 import NewTabLink from "../../components/common/NewTabLink";
 import Pagination from "../../components/common/Pagination";
+import ViewModal from "../../components/modal/ViewModal";
 
 import getAllUser from "../../redux/action/getAllUser";
 import setModal from "../../redux/action/setModal";
@@ -25,6 +28,9 @@ const StudentList = (props) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+
+    const [isOpen, toggle] = useState(false);
+    const [parent, setParent] = useState({});
 
     useEffect(() => {
         getData();
@@ -70,9 +76,13 @@ const StudentList = (props) => {
             });
     };
 
-    const renderParent = (parent) => {
+    const renderParent = (parent, position) => {
         if (!parent || Object.keys(parent).length === 0) return null;
-        return <Link>{parent.name}</Link>;
+        return (
+            <Link onClick={() => setParentInfoToModal(parent, position)}>
+                {parent.name}
+            </Link>
+        );
     };
 
     useEffect(() => {
@@ -96,11 +106,47 @@ const StudentList = (props) => {
         setOptionClass("");
     };
 
+    const renderModal = () => {
+        if (Object.keys(parent).length === 0) return null;
+
+        return (
+            <ViewModal
+                isOpen={isOpen}
+                toggle={() => toggle(!isOpen)}
+                title={`${
+                    parent.position === "father" ? "Father" : "Mother"
+                } information`}
+                viewOnly
+            >
+                {parent.name && <p>Name: {parent.name}</p>}
+                {parent.yearOfBirth && (
+                    <p>Year of birth: {parent.yearOfBirth}</p>
+                )}
+                {parent.phoneNumber && (
+                    <p>Phone number: {parent.phoneNumber}</p>
+                )}
+                {parent.note && <p>Note: {parent.note}</p>}
+            </ViewModal>
+        );
+    };
+
+    const setParentInfoToModal = (parent, position) => {
+        setParent({
+            position,
+            ...parent,
+        });
+        toggle(true);
+    };
+
     return (
         <div>
-            <Row>
-                <Col md={12}>
+            {renderModal()}
+            <Row className="mb-2">
+                <Col md={8}>
                     <h5>STUDENT LIST</h5>
+                </Col>
+                <Col md={4} className="text-right">
+                    <BackBtn title="home" onClick={() => history.push("/")} />
                 </Col>
             </Row>
             <Row className="mb-2">
@@ -179,8 +225,18 @@ const StudentList = (props) => {
                                                 "DD/MM/YYYY"
                                             )}
                                         </td>
-                                        <td>{renderParent(student.father)}</td>
-                                        <td>{renderParent(student.mother)}</td>
+                                        <td>
+                                            {renderParent(
+                                                student.father,
+                                                "father"
+                                            )}
+                                        </td>
+                                        <td>
+                                            {renderParent(
+                                                student.mother,
+                                                "mother"
+                                            )}
+                                        </td>
                                         <td>{student.address}</td>
                                         <td>{student.note}</td>
                                         <td className="text-center">
