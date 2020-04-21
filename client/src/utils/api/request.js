@@ -1,23 +1,24 @@
-import axios from "axios"
-import getAccessToken from '../getAccessToken'
+import axios from "axios";
+import getAccessToken from "../getAccessToken";
+import { BASE_URL } from "../constant";
 
 const request = axios.create({
-    baseURL: "http://localhost:5000/",
+    baseURL: BASE_URL,
     timeout: 3000,
     headers: {
         "Content-Type": "application/json",
-    }
-})
+    },
+});
 
 request.interceptors.request.use(
-    config => {
+    (config) => {
         const token = getAccessToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
-        return config
+        return config;
     },
-    error => Promise.reject(error)
-)
+    (error) => Promise.reject(error)
+);
 
-export default request
+export default request;
