@@ -8,6 +8,7 @@ import history from "../../config/history";
 import SearchBox from "../../components/common/SearchBox";
 import GradeSelected from "../../components/selecteds/GradeSelected";
 import FilterSelected from "../../components/selecteds/FilterSelected";
+import CreateBtnBig from "../../components/buttons/CreateBtnBig";
 import DeleteBtn from "../../components/buttons/DeleteBtn";
 import BackBtn from "../../components/buttons/BackBtn";
 import NewTabLink from "../../components/common/NewTabLink";
@@ -31,10 +32,6 @@ const StudentList = (props) => {
 
     const [isOpen, toggle] = useState(false);
     const [parent, setParent] = useState({});
-
-    useEffect(() => {
-        getData();
-    }, []);
 
     const getData = async () => {
         try {
@@ -146,6 +143,11 @@ const StudentList = (props) => {
                     <h5>STUDENT LIST</h5>
                 </Col>
                 <Col md={4} className="text-right">
+                    <CreateBtnBig
+                        title="student"
+                        className="mr-2"
+                        onClick={() => history.push("/user/student/create")}
+                    />
                     <BackBtn title="home" onClick={() => history.push("/")} />
                 </Col>
             </Row>
@@ -199,6 +201,7 @@ const StudentList = (props) => {
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Gender</th>
                                     <th>Grade</th>
                                     <th>Class</th>
                                     <th>Date of birth</th>
@@ -217,6 +220,9 @@ const StudentList = (props) => {
                                                 title={student.studentName}
                                                 to={`/user/student/edit/${student.id}`}
                                             />
+                                        </td>
+                                        <td>
+                                            {student.gender ? "Male" : "Female"}
                                         </td>
                                         <td>{student.grade}</td>
                                         <td>{student.classRoom}</td>
