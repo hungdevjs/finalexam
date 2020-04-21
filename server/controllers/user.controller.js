@@ -4,7 +4,12 @@ const _ = require("lodash");
 const passwordHash = require("password-hash");
 
 const validateDate = require("../utils/validateDate");
-const { pageSize } = require("../utils/constant");
+const sendSms = require("../utils/sendSms");
+const {
+    pageSize,
+    createStudentText,
+    createTeacherText,
+} = require("../utils/constant");
 
 const Parent = require("../models/parent.model");
 const Teacher = require("../models/teacher.model");
@@ -266,6 +271,7 @@ module.exports.getAllUser = (req, res) => {
                                 id: student._id,
                                 classRoom: student.classRoom,
                                 grade: student.grade,
+                                gender: student.gender,
                                 studentName: student.studentName,
                                 father: student.father,
                                 mother: student.mother,
@@ -333,6 +339,12 @@ module.exports.getAllUser = (req, res) => {
                                 id: teacher._id,
                                 name: teacher.name,
                                 email: teacher.email,
+                                yearOfBirth: teacher.yearOfBirth,
+                                gender: teacher.gender,
+                                phoneNumber: teacher.phoneNumber,
+                                mainTeacherOfClass: teacher.mainTeacherOfClass,
+                                teacherOfClass: teacher.teacherOfClass,
+                                subject: teacher.subject,
                             })),
                             totalPage,
                         });
@@ -386,8 +398,6 @@ module.exports.createStudent = (req, res) => {
         const data = req.body;
         const { grade, classRoom, dateOfBirth } = data;
 
-        console.log(data);
-
         Grade.findOne({ isDeleted: false, grade })
             .then((gr) => {
                 if (!validateDate(dateOfBirth))
@@ -400,11 +410,14 @@ module.exports.createStudent = (req, res) => {
 
                 data.studentId = shortid.generate();
 
+                let password = "";
                 if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-                    data.password = passwordHash.generate("12345678");
+                    password = "12345678";
                 } else {
-                    data.password = shortid.generate();
+                    password = shortid.generate();
                 }
+
+                data.password = passwordHash.generate(password);
 
                 data.score = {};
                 data.isDeleted = false;
@@ -413,7 +426,25 @@ module.exports.createStudent = (req, res) => {
 
                 newStudent
                     .save()
-                    .then(() => res.status(201).json(data))
+                    .then(() => {
+                        // send sms with studentId and password to parent
+                        const body = createStudentText
+                            .replace("$studentName$", data.studentName)
+                            .replace("$studentId$", data.studentId)
+                            .replace("$password$", password);
+
+                        const to =
+                            process.env.ENVIRONMENT === "DEVELOPMENT"
+                                ? "+84335210659"
+                                : (
+                                      data.father.phoneNumber ||
+                                      data.mother.phoneNumber
+                                  ).replace("0", "+84");
+
+                        sendSms(to, body);
+
+                        res.status(201).json(data);
+                    })
                     .catch((err) => res.status(400).send(err.message));
             })
             .catch((err) => {
@@ -652,14 +683,32 @@ module.exports.createTeacher = async (req, res) => {
         }
 
         data.isDeleted = false;
+
+        let password = "";
         if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-            data.password = passwordHash.generate("12345678");
+            password = "12345678";
         } else {
-            data.password = shortid.generate();
+            password = shortid.generate();
         }
+
+        data.password = passwordHash.generate(password);
 
         const newTeacher = new Teacher(data);
         await newTeacher.save();
+
+        // send sms with email and password for teacher
+        const body = createTeacherText
+            .replace("$teacherName$", data.name)
+            .replace("$teacherEmail$", data.email)
+            .replace("$password$", password);
+
+        const to =
+            process.env.ENVIRONMENT === "DEVELOPMENT"
+                ? "+84335210659"
+                : data.phoneNumber.replace("0", "+84");
+
+        sendSms(to, body);
+
         res.status(201).json(data);
     } catch (err) {
         res.json({ error: err.message });
