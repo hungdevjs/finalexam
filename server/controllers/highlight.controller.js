@@ -7,7 +7,12 @@ module.exports.getAllHighlight = async (req, res) => {
         const { currentPage, searchString } = req.query;
         const hightlights = await Highlight.find({ isDeleted: false });
 
-        let data = [...hightlights].reverse();
+        let data = [...hightlights].sort((item1, item2) => {
+            return new Date(item1.time).getTime() <
+                new Date(item2.time).getTime()
+                ? 1
+                : -1;
+        });
 
         if (searchString) {
             data = data.filter((highlight) =>
