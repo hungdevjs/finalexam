@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Table, Row, Col } from "reactstrap";
+import { Table, Row, Col, Alert } from "reactstrap";
 
 import history from "../../config/history";
 import CreateBtnBig from "../../components/buttons/CreateBtnBig";
@@ -144,7 +144,7 @@ const TeacherList = (props) => {
             </Row>
             <Row>
                 <Col md={12}>
-                    {data && data.length > 0 && (
+                    {data && data.length > 0 ? (
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
@@ -186,6 +186,8 @@ const TeacherList = (props) => {
                                 ))}
                             </tbody>
                         </Table>
+                    ) : (
+                        <Alert color="primary">No teacher to display</Alert>
                     )}
                 </Col>
             </Row>

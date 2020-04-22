@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Table, Row, Col } from "reactstrap";
+import { Table, Row, Col, Alert } from "reactstrap";
 import { connect } from "react-redux";
 import moment from "moment";
 import history from "../../config/history";
@@ -196,7 +196,7 @@ const StudentList = (props) => {
             </Row>
             <Row>
                 <Col md={12}>
-                    {data && data.length > 0 && (
+                    {data && data.length > 0 ? (
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
@@ -265,14 +265,18 @@ const StudentList = (props) => {
                                 ))}
                             </tbody>
                         </Table>
+                    ) : (
+                        <Alert color="primary">No student to display</Alert>
                     )}
                 </Col>
             </Row>
-            <Pagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPage={totalPage}
-            />
+            {data && data.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalPage={totalPage}
+                />
+            )}
         </div>
     );
 };

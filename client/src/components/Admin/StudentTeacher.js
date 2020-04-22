@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import styled from "styled-components";
-import { Button, Table } from "reactstrap";
+import { Alert, Table } from "reactstrap";
 
 import SearchBox from "../common/SearchBox";
 import FilterSelected from "../selecteds/FilterSelected";
@@ -213,18 +213,18 @@ function StudentTeacher(props) {
                 />
             </div>
 
-            <Table bordered striped hover size="sm" responsive>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>{role === "student" ? "Class" : "Email"}</th>
-                        <th></th>
-                    </tr>
-                </thead>
+            {data && data.length > 0 ? (
+                <Table bordered striped hover size="sm" responsive>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>{role === "student" ? "Class" : "Email"}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    {data &&
-                        data.map((item, index) => (
+                    <tbody>
+                        {data.map((item, index) => (
                             <tr key={index}>
                                 <td>
                                     <Link to={`/user/${role}/edit/${item.id}`}>
@@ -254,13 +254,18 @@ function StudentTeacher(props) {
                                 </td>
                             </tr>
                         ))}
-                </tbody>
-            </Table>
-            <Pagination
-                currentPage={currentPage}
-                setCurrentPage={setCurrentPage}
-                totalPage={totalPage}
-            />
+                    </tbody>
+                </Table>
+            ) : (
+                <Alert color="primary">No {role} to display</Alert>
+            )}
+            {data && data.length > 0 && (
+                <Pagination
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    totalPage={totalPage}
+                />
+            )}
         </StudentTeacherContainer>
     );
 }

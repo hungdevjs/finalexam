@@ -59,3 +59,18 @@ export const getAllClassOfGrade = (grade) =>
     request.get(`grade/getAllClassOfGrade/${grade}`);
 
 export const getAllGrade = () => request.get("grade/getAllGrade");
+
+export const getAllHighlight = (searchString = "", currentPage = 0) =>
+    request.get(
+        renderParams("highlight", {
+            searchString,
+            currentPage,
+        })
+    );
+
+export const deleteHighlight = (id) => request.delete(`highlight/${id}`);
+
+export const getHighlight = (id) => request.get(`highlight/${id}`);
+
+export const createOrUpdateHighlight = (data) =>
+    request.post(`highlight/create-update`, data);
