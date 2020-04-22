@@ -32,7 +32,7 @@ const Highlight = (props) => {
 
     const getData = () => {
         props.getAllHighlight(searchString, currentPage).then((res) => {
-            setData(res.data);
+            setData(res.data || []);
             setTotalPage(res.totalPage);
         });
     };
