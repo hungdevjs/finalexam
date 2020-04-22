@@ -33,7 +33,7 @@ const Highlight = (props) => {
     const getData = () => {
         props.getAllHighlight(searchString, currentPage).then((res) => {
             setData((res && res.data) || [])
-            setTotalPage(res.totalPage || 1)
+            setTotalPage((res && res.totalPage) || 1)
         })
     }
 
