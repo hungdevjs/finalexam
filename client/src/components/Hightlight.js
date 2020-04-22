@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { Row, Col, Alert } from "reactstrap";
-import styled from "styled-components";
+import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
+import { Row, Col, Alert } from "reactstrap"
+import styled from "styled-components"
 
-import history from "../config/history";
-import SearchBox from "./common/SearchBox";
-import CreateBtn from "./buttons/CreateBtn";
-import Pagination from "./common/Pagination";
-import HighlightDetail from "./HighlightDetail";
+import history from "../config/history"
+import SearchBox from "./common/SearchBox"
+import CreateBtn from "./buttons/CreateBtn"
+import Pagination from "./common/Pagination"
+import HighlightDetail from "./HighlightDetail"
 
-import getAllHighlight from "../redux/action/getAllHighlight";
+import getAllHighlight from "../redux/action/getAllHighlight"
 
 const HighlightContainer = styled.div`
     padding: 16px;
@@ -18,24 +18,24 @@ const HighlightContainer = styled.div`
     white-space: nowrap;
     max-height: 800px;
     overflow: auto;
-`;
+`
 
 const Highlight = (props) => {
-    const [data, setData] = useState([]);
-    const [searchString, setSearchString] = useState("");
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
+    const [data, setData] = useState([])
+    const [searchString, setSearchString] = useState("")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1)
 
     useEffect(() => {
-        getData();
-    }, [currentPage]);
+        getData()
+    }, [currentPage])
 
     const getData = () => {
         props.getAllHighlight(searchString, currentPage).then((res) => {
-            setData((res && res.data) || []);
-            setTotalPage(res.totalPage);
-        });
-    };
+            setData((res && res.data) || [])
+            setTotalPage(res.totalPage || 1)
+        })
+    }
 
     return (
         <HighlightContainer>
@@ -48,9 +48,9 @@ const Highlight = (props) => {
                         onChange={(e) => setSearchString(e.target.value)}
                         onSearch={() => {
                             if (currentPage !== 1) {
-                                setCurrentPage(1);
+                                setCurrentPage(1)
                             } else {
-                                getData();
+                                getData()
                             }
                         }}
                     />
@@ -93,11 +93,11 @@ const Highlight = (props) => {
                 />
             )}
         </HighlightContainer>
-    );
-};
+    )
+}
 
 const mapDispatchToProps = {
     getAllHighlight,
-};
+}
 
-export default connect(null, mapDispatchToProps)(Highlight);
+export default connect(null, mapDispatchToProps)(Highlight)
