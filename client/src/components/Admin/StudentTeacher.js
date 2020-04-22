@@ -110,10 +110,9 @@ function StudentTeacher(props) {
     };
 
     useEffect(() => {
-        getData();
         getFilters();
         //eslint-disable-next-line
-    }, [role]);
+    }, []);
 
     const onGradeSelected = (e) => {
         setCurrentPage(1);
