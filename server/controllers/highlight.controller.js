@@ -60,7 +60,10 @@ module.exports.deleteHighlight = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const highlight = await Highlight.findOne({ _id: id });
+        const highlight = await Highlight.findOne({
+            _id: id,
+            isDeleted: false,
+        });
 
         if (!highlight) {
             throw new Error("Highlight doesn't exist");

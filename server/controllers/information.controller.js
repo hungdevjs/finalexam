@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { subjects } = require("../utils/constant");
 
 let Parent = require("../models/parent.model");
 let Teacher = require("../models/teacher.model");
@@ -6,7 +7,7 @@ let Grade = require("../models/grade.model");
 
 module.exports.getAllClass = (req, res) => {
     try {
-        Grade.find()
+        Grade.find({ isDeleted: false })
             .then((grades) => {
                 if (grades) {
                     let classes = [];
@@ -31,16 +32,7 @@ module.exports.getAllClass = (req, res) => {
 
 module.exports.getAllSubject = (req, res) => {
     try {
-        const subjects = [
-            "Toán",
-            "Văn",
-            "Anh",
-            "Vật lý",
-            "Hóa học",
-            "Sinh học",
-        ].sort();
-
-        res.status(200).send(subjects);
+        res.status(200).send(subjects.sort());
     } catch (err) {
         res.status(500).send(err.message);
     }

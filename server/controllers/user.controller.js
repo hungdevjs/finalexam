@@ -375,7 +375,7 @@ module.exports.deleteUser = (req, res) => {
 
         switch (role) {
             case "student":
-                return Parent.findOne({ _id: id })
+                return Parent.findOne({ _id: id, isDeleted: false })
                     .then(async (student) => {
                         if (student) {
                             student.isDeleted = true;
@@ -390,7 +390,19 @@ module.exports.deleteUser = (req, res) => {
                     });
 
             case "teacher":
-                return;
+                return Teacher.findOne({ _id: id, isDeleted: false })
+                    .then(async (teacher) => {
+                        if (teacher) {
+                            teacher.isDeleted = true;
+                            await teacher.save();
+                            res.status(200).json("Student is deleted");
+                        } else {
+                            res.status(400).json("Bad request");
+                        }
+                    })
+                    .catch((err) => {
+                        res.status(500).json(err.message);
+                    });
             default:
                 return res.status(400).json("Bad request");
         }
