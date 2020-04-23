@@ -1,39 +1,39 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { Table, Row, Col, Alert } from "reactstrap";
+import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
+import { Table, Row, Col, Alert } from "reactstrap"
 
-import history from "../../config/history";
-import CreateBtnBig from "../../components/buttons/CreateBtnBig";
-import BackBtn from "../../components/buttons/BackBtn";
-import DeleteBtn from "../../components/buttons/DeleteBtn";
-import SearchBox from "../../components/common/SearchBox";
-import FilterSelected from "../../components/selecteds/FilterSelected";
-import NewTabLink from "../../components/common/NewTabLink";
-import Pagination from "../../components/common/Pagination";
+import history from "../../config/history"
+import CreateBtnBig from "../../components/buttons/CreateBtnBig"
+import BackBtn from "../../components/buttons/BackBtn"
+import DeleteBtn from "../../components/buttons/DeleteBtn"
+import SearchBox from "../../components/common/SearchBox"
+import FilterSelected from "../../components/selecteds/FilterSelected"
+import NewTabLink from "../../components/common/NewTabLink"
+import Pagination from "../../components/common/Pagination"
 
-import renderNoti from "../../utils/renderNoti";
-import getAllUser from "../../redux/action/getAllUser";
-import setModal from "../../redux/action/setModal";
+import renderNoti from "../../utils/renderNoti"
+import getAllUser from "../../redux/action/getAllUser"
+import setModal from "../../redux/action/setModal"
 import {
     getAllClass,
     getAllSubject,
     deleteUser,
-} from "../../utils/api/fetchData";
+} from "../../utils/api/fetchData"
 
 const TeacherList = (props) => {
-    const [searchString, setSearchString] = useState("");
-    const [optionClass, setOptionClass] = useState("");
-    const [optionSubject, setOptionSubject] = useState("");
-    const [filterClassTeacher, setFilterClassTeacher] = useState([]);
-    const [filterSubject, setFilterSubject] = useState([]);
-    const [data, setData] = useState([]);
+    const [searchString, setSearchString] = useState("")
+    const [optionClass, setOptionClass] = useState("")
+    const [optionSubject, setOptionSubject] = useState("")
+    const [filterClassTeacher, setFilterClassTeacher] = useState([])
+    const [filterSubject, setFilterSubject] = useState([])
+    const [data, setData] = useState([])
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
-    const [totalUser, setTotalUser] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1)
+    const [totalUser, setTotalUser] = useState(0)
 
-    const [isOpen, toggle] = useState(false);
+    const [isOpen, toggle] = useState(false)
 
     const getData = () => {
         props
@@ -43,40 +43,38 @@ const TeacherList = (props) => {
                 optionClass,
                 "",
                 optionSubject,
-                currentPage
+                currentPage,
             )
             .then((res) => {
-                setData(res.data);
-                setTotalPage(res.totalPage);
-                setTotalUser(res.totalUser);
+                setData(res.data)
+                setTotalPage(res.totalPage)
+                setTotalUser(res.totalUser)
             })
             .catch((err) => {
                 renderNoti({
                     type: "danger",
                     title: "Failed",
                     message: "Load teacher list failed",
-                });
-            });
-    };
+                })
+            })
+    }
 
     useEffect(() => {
         getAllClass().then((res) => {
-            const options = res.data.map((c) => ({ label: c, value: c }));
-            setFilterClassTeacher(options);
-        });
+            const options = res.data.map((c) => ({ label: c, value: c }))
+            setFilterClassTeacher(options)
+        })
 
         getAllSubject().then((res) => {
-            const options = res.data
-                .sort()
-                .map((c) => ({ label: c, value: c }));
-            setFilterSubject(options);
-        });
-    }, []);
+            const options = res.data.sort().map((c) => ({ label: c, value: c }))
+            setFilterSubject(options)
+        })
+    }, [])
 
     useEffect(() => {
-        getData();
+        getData()
         //eslint-disable-next-line
-    }, [optionClass, optionSubject, currentPage]);
+    }, [optionClass, optionSubject, currentPage])
 
     return (
         <div>
@@ -84,7 +82,7 @@ const TeacherList = (props) => {
                 <Col md={8}>
                     <h5>TEACHER LIST</h5>
                 </Col>
-                <Col md={4} className="text-right">
+                <Col md={4} className="text-lg-right text-md-left">
                     <CreateBtnBig
                         title="teacher"
                         className="mr-2"
@@ -99,9 +97,9 @@ const TeacherList = (props) => {
                         onChange={(e) => setSearchString(e.target.value)}
                         onSearch={() => {
                             if (currentPage !== 1) {
-                                setCurrentPage(1);
+                                setCurrentPage(1)
                             } else {
-                                getData();
+                                getData()
                             }
                         }}
                     />
@@ -113,11 +111,11 @@ const TeacherList = (props) => {
                         className="flex-grow-1 mr-1"
                         options={filterSubject}
                         onChange={(e) => {
-                            setCurrentPage(1);
+                            setCurrentPage(1)
                             if (e) {
-                                setOptionSubject(e.value);
+                                setOptionSubject(e.value)
                             } else {
-                                setOptionSubject("");
+                                setOptionSubject("")
                             }
                         }}
                     />
@@ -128,11 +126,11 @@ const TeacherList = (props) => {
                         placeholder="Filter class"
                         options={filterClassTeacher}
                         onChange={(e) => {
-                            setCurrentPage(1);
+                            setCurrentPage(1)
                             if (e) {
-                                setOptionClass(e.value);
+                                setOptionClass(e.value)
                             } else {
-                                setOptionClass("");
+                                setOptionClass("")
                             }
                         }}
                         value={
@@ -186,7 +184,7 @@ const TeacherList = (props) => {
                                         </td>
                                         <td>
                                             {teacher.mainTeacherOfClass.join(
-                                                ", "
+                                                ", ",
                                             )}
                                         </td>
                                     </tr>
@@ -204,12 +202,12 @@ const TeacherList = (props) => {
                 totalPage={totalPage}
             />
         </div>
-    );
-};
+    )
+}
 
 const mapDispatchToProps = {
     getAllUser,
     setModal,
-};
+}
 
-export default connect(null, mapDispatchToProps)(TeacherList);
+export default connect(null, mapDispatchToProps)(TeacherList)

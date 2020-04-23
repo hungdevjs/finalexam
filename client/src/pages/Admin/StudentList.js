@@ -1,38 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { Table, Row, Col, Alert } from "reactstrap";
-import { connect } from "react-redux";
-import moment from "moment";
-import history from "../../config/history";
+import React, { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
+import { Table, Row, Col, Alert } from "reactstrap"
+import { connect } from "react-redux"
+import moment from "moment"
+import history from "../../config/history"
 
-import SearchBox from "../../components/common/SearchBox";
-import GradeSelected from "../../components/selecteds/GradeSelected";
-import FilterSelected from "../../components/selecteds/FilterSelected";
-import CreateBtnBig from "../../components/buttons/CreateBtnBig";
-import DeleteBtn from "../../components/buttons/DeleteBtn";
-import BackBtn from "../../components/buttons/BackBtn";
-import NewTabLink from "../../components/common/NewTabLink";
-import Pagination from "../../components/common/Pagination";
-import ViewModal from "../../components/modal/ViewModal";
+import SearchBox from "../../components/common/SearchBox"
+import GradeSelected from "../../components/selecteds/GradeSelected"
+import FilterSelected from "../../components/selecteds/FilterSelected"
+import CreateBtnBig from "../../components/buttons/CreateBtnBig"
+import DeleteBtn from "../../components/buttons/DeleteBtn"
+import BackBtn from "../../components/buttons/BackBtn"
+import NewTabLink from "../../components/common/NewTabLink"
+import Pagination from "../../components/common/Pagination"
+import ViewModal from "../../components/modal/ViewModal"
 
-import getAllUser from "../../redux/action/getAllUser";
-import setModal from "../../redux/action/setModal";
-import { deleteUser } from "../../utils/api/fetchData";
-import renderNoti from "../../utils/renderNoti";
+import getAllUser from "../../redux/action/getAllUser"
+import setModal from "../../redux/action/setModal"
+import { deleteUser } from "../../utils/api/fetchData"
+import renderNoti from "../../utils/renderNoti"
 
 const StudentList = (props) => {
-    const [searchString, setSearchString] = useState("");
-    const [optionClass, setOptionClass] = useState("");
-    const [optionGrade, setOptionGrade] = useState("");
-    const [filterClassStudent, setFilterClassStudent] = useState([]);
-    const [data, setData] = useState([]);
+    const [searchString, setSearchString] = useState("")
+    const [optionClass, setOptionClass] = useState("")
+    const [optionGrade, setOptionGrade] = useState("")
+    const [filterClassStudent, setFilterClassStudent] = useState([])
+    const [data, setData] = useState([])
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
-    const [totalUser, setTotalUser] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1)
+    const [totalUser, setTotalUser] = useState(0)
 
-    const [isOpen, toggle] = useState(false);
-    const [parent, setParent] = useState({});
+    const [isOpen, toggle] = useState(false)
+    const [parent, setParent] = useState({})
 
     const getData = async () => {
         try {
@@ -42,19 +42,19 @@ const StudentList = (props) => {
                 optionClass,
                 optionGrade,
                 "",
-                currentPage
-            );
-            setData(res.data);
-            setTotalPage(res.totalPage);
-            setTotalUser(res.totalUser);
+                currentPage,
+            )
+            setData(res.data)
+            setTotalPage(res.totalPage)
+            setTotalUser(res.totalUser)
         } catch (err) {
             renderNoti({
                 type: "danger",
                 title: "Failed",
                 message: "Load student list failed",
-            });
+            })
         }
-    };
+    }
 
     const deleteStudent = (id) => {
         deleteUser("student", id)
@@ -63,7 +63,7 @@ const StudentList = (props) => {
                     title: "Success",
                     message: "Delete student successfully",
                     type: "success",
-                })
+                }),
             )
             .then(() => getData())
             .catch((err) => {
@@ -71,42 +71,42 @@ const StudentList = (props) => {
                     type: "danger",
                     title: "Failed",
                     message: "Delete student failed",
-                });
-            });
-    };
+                })
+            })
+    }
 
     const renderParent = (parent, position) => {
-        if (!parent || Object.keys(parent).length === 0) return null;
+        if (!parent || Object.keys(parent).length === 0) return null
         return (
             <Link onClick={() => setParentInfoToModal(parent, position)}>
                 {parent.name}
             </Link>
-        );
-    };
+        )
+    }
 
     useEffect(() => {
-        getData();
+        getData()
         //eslint-disable-next-line
-    }, [optionClass, optionGrade, currentPage]);
+    }, [optionClass, optionGrade, currentPage])
 
     const onGradeSelected = (e) => {
-        setCurrentPage(1);
+        setCurrentPage(1)
         if (e) {
-            setOptionGrade(e.value);
+            setOptionGrade(e.value)
             const classArray = e.classRoom.map((item) => ({
                 value: item,
                 label: item,
-            }));
-            setFilterClassStudent(classArray);
+            }))
+            setFilterClassStudent(classArray)
         } else {
-            setOptionGrade("");
-            setFilterClassStudent([]);
+            setOptionGrade("")
+            setFilterClassStudent([])
         }
-        setOptionClass("");
-    };
+        setOptionClass("")
+    }
 
     const renderModal = () => {
-        if (Object.keys(parent).length === 0) return null;
+        if (Object.keys(parent).length === 0) return null
 
         return (
             <ViewModal
@@ -126,16 +126,16 @@ const StudentList = (props) => {
                 )}
                 {parent.note && <p>Note: {parent.note}</p>}
             </ViewModal>
-        );
-    };
+        )
+    }
 
     const setParentInfoToModal = (parent, position) => {
         setParent({
             position,
             ...parent,
-        });
-        toggle(true);
-    };
+        })
+        toggle(true)
+    }
 
     return (
         <div>
@@ -144,7 +144,7 @@ const StudentList = (props) => {
                 <Col md={8}>
                     <h5>STUDENT LIST</h5>
                 </Col>
-                <Col md={4} className="text-right">
+                <Col md={4} className="text-lg-right text-md-left">
                     <CreateBtnBig
                         title="student"
                         className="mr-2"
@@ -159,9 +159,9 @@ const StudentList = (props) => {
                         onChange={(e) => setSearchString(e.target.value)}
                         onSearch={() => {
                             if (currentPage !== 1) {
-                                setCurrentPage(1);
+                                setCurrentPage(1)
                             } else {
-                                getData();
+                                getData()
                             }
                         }}
                     />
@@ -179,11 +179,11 @@ const StudentList = (props) => {
                         placeholder="Filter class"
                         options={filterClassStudent}
                         onChange={(e) => {
-                            setCurrentPage(1);
+                            setCurrentPage(1)
                             if (e) {
-                                setOptionClass(e.value);
+                                setOptionClass(e.value)
                             } else {
-                                setOptionClass("");
+                                setOptionClass("")
                             }
                         }}
                         value={
@@ -235,19 +235,19 @@ const StudentList = (props) => {
                                         <td>{student.classRoom}</td>
                                         <td>
                                             {moment(student.dateOfBirth).format(
-                                                "DD/MM/YYYY"
+                                                "DD/MM/YYYY",
                                             )}
                                         </td>
                                         <td>
                                             {renderParent(
                                                 student.father,
-                                                "father"
+                                                "father",
                                             )}
                                         </td>
                                         <td>
                                             {renderParent(
                                                 student.mother,
-                                                "mother"
+                                                "mother",
                                             )}
                                         </td>
                                         <td>{student.address}</td>
@@ -262,9 +262,9 @@ const StudentList = (props) => {
                                                         type: "warning",
                                                         onConfirm: () =>
                                                             deleteStudent(
-                                                                student.id
+                                                                student.id,
                                                             ),
-                                                    });
+                                                    })
                                                 }}
                                             />
                                         </td>
@@ -285,12 +285,12 @@ const StudentList = (props) => {
                 />
             )}
         </div>
-    );
-};
+    )
+}
 
 const mapDispatchToProps = {
     getAllUser,
     setModal,
-};
+}
 
-export default connect(null, mapDispatchToProps)(StudentList);
+export default connect(null, mapDispatchToProps)(StudentList)

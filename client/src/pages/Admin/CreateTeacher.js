@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { withFormik, Form, Field } from "formik";
-import * as yup from "yup";
+import React, { useEffect, useState } from "react"
+import { withFormik, Form, Field } from "formik"
+import * as yup from "yup"
 import {
     Input,
     Label,
@@ -9,69 +9,67 @@ import {
     Row,
     Col,
     CustomInput,
-} from "reactstrap";
+} from "reactstrap"
 
-import YearSelected from "../../components/selecteds/YearSelected";
-import FilterSelected from "../../components/selecteds/FilterSelected";
-import Feedback from "../../components/common/Feedback";
-import LabelRequired from "../../components/common/LabelRequired";
-import AllClassSelected from "../../components/selecteds/AllClassSelected";
+import YearSelected from "../../components/selecteds/YearSelected"
+import FilterSelected from "../../components/selecteds/FilterSelected"
+import Feedback from "../../components/common/Feedback"
+import LabelRequired from "../../components/common/LabelRequired"
+import AllClassSelected from "../../components/selecteds/AllClassSelected"
 
-import BackBtn from "../../components/buttons/BackBtn";
+import BackBtn from "../../components/buttons/BackBtn"
 
-import history from "../../config/history";
-import renderNoti from "../../utils/renderNoti";
+import history from "../../config/history"
+import renderNoti from "../../utils/renderNoti"
 
 import {
     getAllSubject,
     getTeacherData,
     createTeacher,
     updateTeacher,
-} from "../../utils/api/fetchData";
+} from "../../utils/api/fetchData"
 
 const genderOptions = [
     { value: false, label: "Female" },
     { value: true, label: "Male" },
-];
+]
 
-const yearOfBirthRegex = /^\d{4}$/g;
-const phoneNumberRegex = /^0\d{9}$/g;
+const yearOfBirthRegex = /^\d{4}$/g
+const phoneNumberRegex = /^0\d{9}$/g
 
 const CreateTeacher = (props) => {
-    const { id } = props.match.params;
+    const { id } = props.match.params
 
-    const [filterSubject, setFilterSubject] = useState([]);
+    const [filterSubject, setFilterSubject] = useState([])
 
     useEffect(() => {
         getAllSubject().then((res) => {
-            const options = res.data
-                .sort()
-                .map((c) => ({ label: c, value: c }));
-            setFilterSubject(options);
-        });
+            const options = res.data.sort().map((c) => ({ label: c, value: c }))
+            setFilterSubject(options)
+        })
 
         if (id) {
             // get teacher data here
             getTeacherData(id).then((res) => {
-                const data = res.data;
-                props.setFieldValue("name", data.name);
-                props.setFieldValue("yearOfBirth", data.yearOfBirth);
-                props.setFieldValue("gender", data.gender);
-                props.setFieldValue("email", data.email);
-                props.setFieldValue("phoneNumber", data.phoneNumber);
+                const data = res.data
+                props.setFieldValue("name", data.name)
+                props.setFieldValue("yearOfBirth", data.yearOfBirth)
+                props.setFieldValue("gender", data.gender)
+                props.setFieldValue("email", data.email)
+                props.setFieldValue("phoneNumber", data.phoneNumber)
                 props.setFieldValue(
                     "mainTeacher",
-                    data.mainTeacherOfClass.length > 0
-                );
+                    data.mainTeacherOfClass.length > 0,
+                )
                 props.setFieldValue(
                     "mainTeacherOfClass",
-                    data.mainTeacherOfClass
-                );
-                props.setFieldValue("subject", data.subject);
-                props.setFieldValue("teacherOfClass", data.teacherOfClass);
-            });
+                    data.mainTeacherOfClass,
+                )
+                props.setFieldValue("subject", data.subject)
+                props.setFieldValue("teacherOfClass", data.teacherOfClass)
+            })
         }
-    }, []);
+    }, [])
 
     const {
         name,
@@ -83,17 +81,32 @@ const CreateTeacher = (props) => {
         mainTeacherOfClass,
         subject,
         teacherOfClass,
-    } = props.values;
+    } = props.values
 
     return (
         <Form>
             <Row>
-                <Col md={8}>
-                    <h3 className="mb-2">{id ? "EDIT" : "CREATE"} TEACHER</h3>
-                </Col>
-                <Col md={4} className="text-right">
+                <Col md={12} className="d-flex align-items-start">
+                    <div className="flex-grow-1">
+                        <h3 className="mb-2">
+                            {id ? "EDIT" : "CREATE"} TEACHER
+                        </h3>
+                        {id && (
+                            <Button
+                                color="link"
+                                className="pl-0"
+                                onClick={() =>
+                                    history.push(`/teacher/transcript/${id}`)
+                                }
+                            >
+                                View transcript
+                            </Button>
+                        )}
+                    </div>
+
                     <BackBtn title="home" onClick={() => history.push("/")} />
                 </Col>
+                <Col md={4} className="text-right"></Col>
             </Row>
 
             <Row>
@@ -188,13 +201,13 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacher",
-                                        e.target.checked
-                                    );
+                                        e.target.checked,
+                                    )
                                     if (!e.target.checked) {
                                         props.setFieldValue(
                                             "mainTeacherOfClass",
-                                            []
-                                        );
+                                            [],
+                                        )
                                     }
                                 }}
                                 checked={mainTeacher}
@@ -207,8 +220,8 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacherOfClass",
-                                        e ? e.map((item) => item.value) : []
-                                    );
+                                        e ? e.map((item) => item.value) : [],
+                                    )
                                 }}
                                 value={
                                     mainTeacherOfClass &&
@@ -233,7 +246,7 @@ const CreateTeacher = (props) => {
                             className="flex-grow-1 mr-1"
                             options={filterSubject}
                             onChange={(e) => {
-                                props.setFieldValue("subject", e.value);
+                                props.setFieldValue("subject", e.value)
                             }}
                             value={
                                 subject && { value: subject, label: subject }
@@ -250,8 +263,8 @@ const CreateTeacher = (props) => {
                             onChange={(e) => {
                                 props.setFieldValue(
                                     "teacherOfClass",
-                                    e ? e.map((item) => item.value) : []
-                                );
+                                    e ? e.map((item) => item.value) : [],
+                                )
                             }}
                             value={
                                 teacherOfClass &&
@@ -273,8 +286,8 @@ const CreateTeacher = (props) => {
                 {id ? "Update" : "Create"}
             </Button>
         </Form>
-    );
-};
+    )
+}
 
 export default withFormik({
     mapPropsToValues: () => ({
@@ -320,28 +333,28 @@ export default withFormik({
                 match: {
                     params: { id },
                 },
-            } = props;
+            } = props
 
             const res = await (id
                 ? updateTeacher(id, values)
-                : createTeacher(values));
+                : createTeacher(values))
 
             if (res.data && res.data.error) {
-                throw new Error(res.data.error);
+                throw new Error(res.data.error)
             }
 
             renderNoti({
                 type: "success",
                 title: "Success",
                 message: `${id ? "Update" : "Create"} teacher successfully`,
-            });
-            history.push("/");
+            })
+            history.push("/")
         } catch (err) {
             renderNoti({
                 type: "danger",
                 title: "Failed",
                 message: err.message,
-            });
+            })
         }
     },
-})(CreateTeacher);
+})(CreateTeacher)

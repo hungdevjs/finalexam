@@ -26,6 +26,8 @@ const Highlight = (props) => {
     const [currentPage, setCurrentPage] = useState(1)
     const [totalPage, setTotalPage] = useState(1)
 
+    const [isPhone, setIsPhone] = useState(window.innerWidth < 768)
+
     useEffect(() => {
         getData()
     }, [currentPage])
@@ -37,11 +39,18 @@ const Highlight = (props) => {
         })
     }
 
+    window.addEventListener("resize", () => setIsPhone(window.innerWidth < 768))
+
     return (
         <HighlightContainer>
-            <Row className="mb-2">
-                <Col md={2} className="d-flex align-items-center">
-                    <h5 className="mb-2">Highlights</h5>
+            <Row className="mb-2 d-flex align-items-start">
+                <Col md={2} className="mb-2 d-flex align-items-center">
+                    <h5 className="mb-2 flex-grow-1">Highlights</h5>
+                    {isPhone && (
+                        <CreateBtn
+                            onClick={() => history.push("/highlight/create")}
+                        />
+                    )}
                 </Col>
                 <Col md={8}>
                     <SearchBox
@@ -55,14 +64,16 @@ const Highlight = (props) => {
                         }}
                     />
                 </Col>
-                <Col
-                    md={2}
-                    className="d-flex align-items-start justify-content-end"
-                >
-                    <CreateBtn
-                        onClick={() => history.push("/highlight/create")}
-                    />
-                </Col>
+                {!isPhone && (
+                    <Col
+                        md={2}
+                        className="d-flex align-items-start justify-content-end"
+                    >
+                        <CreateBtn
+                            onClick={() => history.push("/highlight/create")}
+                        />
+                    </Col>
+                )}
             </Row>
             <Row>
                 {data &&
@@ -71,7 +82,13 @@ const Highlight = (props) => {
                         <Col md={12} key={index}>
                             <HighlightDetail
                                 highlight={highlight}
-                                afterDelete={() => setCurrentPage(1)}
+                                afterDelete={() => {
+                                    if (currentPage === 1) {
+                                        getData()
+                                        return
+                                    }
+                                    setCurrentPage(1)
+                                }}
                             />
                         </Col>
                     ))}

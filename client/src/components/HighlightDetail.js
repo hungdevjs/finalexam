@@ -1,16 +1,16 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
-import { Row, Col } from "reactstrap";
-import moment from "moment";
+import React, { useEffect } from "react"
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
+import { Row, Col } from "reactstrap"
+import moment from "moment"
 
-import DeleteBtn from "../components/buttons/DeleteBtn";
-import { deleteHighlight } from "../utils/api/fetchData";
-import renderNoti from "../utils/renderNoti";
-import setModal from "../redux/action/setModal";
+import DeleteBtn from "../components/buttons/DeleteBtn"
+import { deleteHighlight } from "../utils/api/fetchData"
+import renderNoti from "../utils/renderNoti"
+import setModal from "../redux/action/setModal"
 
 const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
-    const { _id, title, content, time } = highlight;
+    const { _id, title, content, time } = highlight
 
     const removeHighlight = (id) => {
         try {
@@ -19,40 +19,50 @@ const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
                 type: "warning",
                 message: "Do you want to delete this highlight ?",
                 onConfirm: async () => {
-                    const res = await deleteHighlight(id);
+                    const res = await deleteHighlight(id)
 
                     if (res.data !== true) {
-                        throw new Error("Delete highlight failed");
+                        throw new Error("Delete highlight failed")
                     }
 
                     renderNoti({
                         type: "success",
                         title: "Success",
                         message: "Delete highlight successfully",
-                    });
-                    afterDelete();
+                    })
+                    afterDelete()
                 },
-            });
+            })
         } catch (err) {
             renderNoti({
                 type: "danger",
                 title: "Failed",
                 message: err.message,
-            });
+            })
         }
-    };
+    }
 
     {
         /* remove tag in html content */
     }
-    const pureContent = content.replace(/<(\/)*(\w)*(\/d)*>/g, "");
+
+    const htmlContent = document.createElement("p")
+    htmlContent.innerHTML = content
+    const pureContent = htmlContent.innerText
+
+    useEffect(() => {
+        return () => htmlContent.remove()
+    }, [])
 
     return (
         <Row className="mb-2">
-            <Col md={11}>
-                <Link to={`highlight/edit/${_id}`}>
-                    <b>{title}</b>
-                </Link>
+            <Col md={12} className="d-flex flex-column">
+                <div className="d-flex align-items-start">
+                    <Link to={`highlight/edit/${_id}`} className="flex-grow-1">
+                        <b>{title}</b>
+                    </Link>
+                    <DeleteBtn onClick={() => removeHighlight(_id)} />
+                </div>
                 <p className="mb-2" style={{ fontSize: "0.7rem" }}>
                     Last updated at{" "}
                     {time ? moment(time).format("HH:mm DD/MM/YYYY") : ""}
@@ -61,15 +71,12 @@ const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
                     pureContent.length > 100 ? "..." : ""
                 }`}</p>
             </Col>
-            <Col md={1} className="text-right">
-                <DeleteBtn onClick={() => removeHighlight(_id)} />
-            </Col>
         </Row>
-    );
-};
+    )
+}
 
 const mapDispatchToProps = {
     setModal,
-};
+}
 
-export default connect(null, mapDispatchToProps)(HighlightDetail);
+export default connect(null, mapDispatchToProps)(HighlightDetail)
