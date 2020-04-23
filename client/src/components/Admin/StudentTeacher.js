@@ -49,6 +49,7 @@ function StudentTeacher(props) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [totalUser, setTotalUser] = useState(0);
 
     //eslint-disable-next-line
     useEffect(() => {
@@ -70,6 +71,7 @@ function StudentTeacher(props) {
             .then((res) => {
                 setData(res.data);
                 setTotalPage(res.totalPage);
+                setTotalUser(res.totalUser);
             })
             .catch((err) => {});
     };
@@ -210,6 +212,12 @@ function StudentTeacher(props) {
                         role === "student" && filterClassStudent.length === 0
                     }
                 />
+            </div>
+
+            <div className="text-right mb-2">
+                <b>
+                    Total {role}s: {totalUser}
+                </b>
             </div>
 
             {data && data.length > 0 ? (

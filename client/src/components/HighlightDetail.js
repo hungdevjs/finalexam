@@ -48,7 +48,7 @@ const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
     const pureContent = content.replace(/<(\/)*(\w)*(\/d)*>/g, "");
 
     return (
-        <Row>
+        <Row className="mb-2">
             <Col md={11}>
                 <Link to={`highlight/edit/${_id}`}>
                     <b>{title}</b>

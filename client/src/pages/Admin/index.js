@@ -11,10 +11,10 @@ export default function (props) {
             <Col md={12} style={{ padding: "0 15px 8px" }}>
                 {moment(new Date()).format("DD/MM/YYYY")}
             </Col>
-            <Col md={6} className="mb-2">
+            <Col md={6} className="mb-3">
                 <StudentTeacher role="student" />
             </Col>
-            <Col md={6} className="mb-2">
+            <Col md={6} className="mb-3">
                 <StudentTeacher role="teacher" />
             </Col>
 

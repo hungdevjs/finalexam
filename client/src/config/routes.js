@@ -8,7 +8,7 @@ import CreateHighlight from "../pages/CreateHighlight";
 
 export default [
     { path: "/", component: Home },
-    { path: "/profile", component: Profile },
+    { path: "/profile", component: Profile, roles: ["teacher", "parent"] },
     { path: "/user/:role/create", component: CreateUser, roles: ["admin"] },
     { path: "/user/:role/edit/:id", component: CreateUser },
     { path: "/gradeAndClass", component: GradeAndClass, roles: ["admin"] },

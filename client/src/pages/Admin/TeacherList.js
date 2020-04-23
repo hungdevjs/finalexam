@@ -31,6 +31,7 @@ const TeacherList = (props) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [totalUser, setTotalUser] = useState(0);
 
     const [isOpen, toggle] = useState(false);
 
@@ -47,6 +48,7 @@ const TeacherList = (props) => {
             .then((res) => {
                 setData(res.data);
                 setTotalPage(res.totalPage);
+                setTotalUser(res.totalUser);
             })
             .catch((err) => {
                 renderNoti({
@@ -140,6 +142,11 @@ const TeacherList = (props) => {
                             }
                         }
                     />
+                </Col>
+            </Row>
+            <Row className="mb-2">
+                <Col md={12} className="text-right">
+                    <b>Total teachers: {totalUser}</b>
                 </Col>
             </Row>
             <Row>

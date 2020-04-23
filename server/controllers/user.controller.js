@@ -237,6 +237,8 @@ module.exports.getAllUser = (req, res) => {
                                 : 1;
                         });
 
+                        const totalUser = data.length;
+
                         if (searchString) {
                             data = data.filter((student) =>
                                 student.studentName
@@ -280,6 +282,7 @@ module.exports.getAllUser = (req, res) => {
                                 dateOfBirth: student.dateOfBirth,
                             })),
                             totalPage,
+                            totalUser,
                         });
                     } else {
                         res.status(200).json([]);
@@ -299,6 +302,8 @@ module.exports.getAllUser = (req, res) => {
                                 ? -1
                                 : 1;
                         });
+
+                        const totalUser = data.length;
 
                         if (searchString) {
                             data = data.filter((teacher) =>
@@ -347,6 +352,7 @@ module.exports.getAllUser = (req, res) => {
                                 subject: teacher.subject,
                             })),
                             totalPage,
+                            totalUser,
                         });
                     } else {
                         res.status(200).json([]);

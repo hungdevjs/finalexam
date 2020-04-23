@@ -29,6 +29,7 @@ const StudentList = (props) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(1);
+    const [totalUser, setTotalUser] = useState(0);
 
     const [isOpen, toggle] = useState(false);
     const [parent, setParent] = useState({});
@@ -45,6 +46,7 @@ const StudentList = (props) => {
             );
             setData(res.data);
             setTotalPage(res.totalPage);
+            setTotalUser(res.totalUser);
         } catch (err) {
             renderNoti({
                 type: "danger",
@@ -192,6 +194,11 @@ const StudentList = (props) => {
                         }
                         isDisabled={filterClassStudent.length === 0}
                     />
+                </Col>
+            </Row>
+            <Row className="mb-2">
+                <Col md={12} className="text-right">
+                    <b>Total students: {totalUser}</b>
                 </Col>
             </Row>
             <Row>
