@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Link } from "react-router-dom"
 import { Table, Row, Col, Alert } from "reactstrap"
 
 import history from "../../config/history"
@@ -43,7 +42,7 @@ const TeacherList = (props) => {
                 optionClass,
                 "",
                 optionSubject,
-                currentPage,
+                currentPage
             )
             .then((res) => {
                 setData(res.data)
@@ -75,6 +74,25 @@ const TeacherList = (props) => {
         getData()
         //eslint-disable-next-line
     }, [optionClass, optionSubject, currentPage])
+
+    const deleteTeacher = (id) => {
+        deleteUser("teacher", id)
+            .then(() =>
+                renderNoti({
+                    title: "Success",
+                    message: "Delete teacher successfully",
+                    type: "success",
+                })
+            )
+            .then(() => getData())
+            .catch((err) => {
+                renderNoti({
+                    type: "danger",
+                    title: "Failed",
+                    message: "Delete teacher failed",
+                })
+            })
+    }
 
     return (
         <div>
@@ -108,7 +126,7 @@ const TeacherList = (props) => {
                     <FilterSelected
                         isClearable
                         placeholder="Filter subject"
-                        className="flex-grow-1 mr-1"
+                        className="mb-2"
                         options={filterSubject}
                         onChange={(e) => {
                             setCurrentPage(1)
@@ -153,14 +171,21 @@ const TeacherList = (props) => {
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Gender</th>
-                                    <th>Year of birth</th>
-                                    <th>Email</th>
-                                    <th>Phone number</th>
-                                    <th>Subject</th>
-                                    <th>Teacher of class</th>
-                                    <th>Main teacher of class</th>
+                                    {[
+                                        "Name",
+                                        "Gender",
+                                        "Year of birth",
+                                        "Email",
+                                        "Phone number",
+                                        "Subject",
+                                        "Teacher of class",
+                                        "Main teacher of class",
+                                        "",
+                                    ].map((item, index) => (
+                                        <th key={index} className="align-top">
+                                            {item}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>
@@ -184,8 +209,24 @@ const TeacherList = (props) => {
                                         </td>
                                         <td>
                                             {teacher.mainTeacherOfClass.join(
-                                                ", ",
+                                                ", "
                                             )}
+                                        </td>
+                                        <td className="text-center">
+                                            <DeleteBtn
+                                                onClick={() => {
+                                                    props.setModal({
+                                                        isOpen: true,
+                                                        message:
+                                                            "Do you want to delete this teacher ?",
+                                                        type: "warning",
+                                                        onConfirm: () =>
+                                                            deleteTeacher(
+                                                                teacher.id
+                                                            ),
+                                                    })
+                                                }}
+                                            />
                                         </td>
                                     </tr>
                                 ))}

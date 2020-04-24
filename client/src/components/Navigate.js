@@ -1,12 +1,11 @@
-import React from "react"
-import history from "../config/history"
-import styled from "styled-components"
-import { connect } from "react-redux"
+import React from "react";
+import history from "../config/history";
+import styled from "styled-components";
+import { connect } from "react-redux";
 
-import navigates from "../config/navigates"
+import navigates from "../config/navigates";
 
-import setUserInformation from "../redux/action/setUserInformation"
-import changeOptionNavigate from "../redux/action/changeOptionNavigate"
+import changeOptionNavigate from "../redux/action/changeOptionNavigate";
 
 const NavigateContainer = styled.div`
     position: fixed;
@@ -17,7 +16,7 @@ const NavigateContainer = styled.div`
     background-color: #092b4c;
     transition: 0.2s ease;
     over-flow: hidden;
-`
+`;
 
 const NavContainer = styled.div`
     display: ${(props) => (props.option === "0px" ? "none" : "block")};
@@ -25,7 +24,7 @@ const NavContainer = styled.div`
     display: flex;
     flex-direction: column;
     height: 100vh;
-`
+`;
 
 const Nav = styled.div`
     display: ${(props) => (props.option === "0px" ? "none" : "block")};
@@ -41,7 +40,7 @@ const Nav = styled.div`
     align-items: center;
     justify-content: ${(props) =>
         props.option === "200px" ? "flex-start" : "center"};
-`
+`;
 
 const NavIcon = styled.i`
     display: ${(props) => (props.option === "0px" ? "none" : "block")};
@@ -50,26 +49,17 @@ const NavIcon = styled.i`
     display: flex;
     justify-content: center;
     align-items: center;
-`
+`;
 
 const NavName = styled.span`
     font-weight: bold;
     display: ${(props) => (props.option === "200px" ? "block" : "none")};
     margin-left: 1rem;
     transition: 0.2s ease;
-`
-
-const signOut = (props) => {
-    props.setUserInformation({ data: {} })
-    localStorage.removeItem("access_token")
-    localStorage.removeItem("refresh_token")
-    localStorage.removeItem("access_from")
-    history.push("/login")
-    props.changeOptionNavigate("0px")
-}
+`;
 
 function Navigate(props) {
-    const { role } = props
+    const { role } = props;
 
     return (
         <NavigateContainer {...props}>
@@ -88,30 +78,20 @@ function Navigate(props) {
                                 <NavName {...props}>{nav.name}</NavName>
                             </Nav>
                         </div>
-                    ) : null,
+                    ) : null
                 )}
-                <div className="flex-grow-1" />
-                <div title="Sign out">
-                    <Nav {...props} onClick={() => signOut(props)}>
-                        <NavIcon {...props}>
-                            <i className="fas fa-sign-out-alt" />
-                        </NavIcon>
-                        <NavName {...props}>Sign out</NavName>
-                    </Nav>
-                </div>
             </NavContainer>
         </NavigateContainer>
-    )
+    );
 }
 
 const mapStateToProps = (state) => ({
     option: state.navigate.option,
     role: state.user.userInformation.role,
-})
+});
 
 const mapDispatchToProps = {
-    setUserInformation,
     changeOptionNavigate,
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Navigate)
+export default connect(mapStateToProps, mapDispatchToProps)(Navigate);

@@ -42,7 +42,7 @@ const StudentList = (props) => {
                 optionClass,
                 optionGrade,
                 "",
-                currentPage,
+                currentPage
             )
             setData(res.data)
             setTotalPage(res.totalPage)
@@ -63,7 +63,7 @@ const StudentList = (props) => {
                     title: "Success",
                     message: "Delete student successfully",
                     type: "success",
-                }),
+                })
             )
             .then(() => getData())
             .catch((err) => {
@@ -169,6 +169,7 @@ const StudentList = (props) => {
                 <Col md={3}>
                     <GradeSelected
                         isClearable
+                        className="mb-2"
                         placeholder="Filter grade"
                         onChange={(e) => onGradeSelected(e)}
                     />
@@ -207,16 +208,22 @@ const StudentList = (props) => {
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Gender</th>
-                                    <th>Grade</th>
-                                    <th>Class</th>
-                                    <th>Date of birth</th>
-                                    <th>Father</th>
-                                    <th>Mother</th>
-                                    <th>Address</th>
-                                    <th>Note</th>
-                                    <th></th>
+                                    {[
+                                        "Name",
+                                        "Gender",
+                                        "Grade",
+                                        "Class",
+                                        "Date of birth",
+                                        "Father",
+                                        "Mother",
+                                        "Address",
+                                        "Note",
+                                        "",
+                                    ].map((item, index) => (
+                                        <th key={index} className="align-top">
+                                            {item}
+                                        </th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>
@@ -235,19 +242,19 @@ const StudentList = (props) => {
                                         <td>{student.classRoom}</td>
                                         <td>
                                             {moment(student.dateOfBirth).format(
-                                                "DD/MM/YYYY",
+                                                "DD/MM/YYYY"
                                             )}
                                         </td>
                                         <td>
                                             {renderParent(
                                                 student.father,
-                                                "father",
+                                                "father"
                                             )}
                                         </td>
                                         <td>
                                             {renderParent(
                                                 student.mother,
-                                                "mother",
+                                                "mother"
                                             )}
                                         </td>
                                         <td>{student.address}</td>
@@ -262,7 +269,7 @@ const StudentList = (props) => {
                                                         type: "warning",
                                                         onConfirm: () =>
                                                             deleteStudent(
-                                                                student.id,
+                                                                student.id
                                                             ),
                                                     })
                                                 }}
