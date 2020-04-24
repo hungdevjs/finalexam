@@ -78,7 +78,7 @@ const Highlight = (props) => {
                 {data &&
                     data.length > 0 &&
                     data.map((highlight, index) => (
-                        <Col md={12} key={index}>
+                        <Col md={6} key={index} className="px-3">
                             <HighlightDetail
                                 highlight={highlight}
                                 afterDelete={() => {

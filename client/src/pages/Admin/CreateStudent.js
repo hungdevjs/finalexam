@@ -7,6 +7,7 @@ import Selected from "react-select"
 
 import "react-datepicker/dist/react-datepicker.css"
 
+import Schedule from "../../components/Schedule"
 import FilterSelected from "../../components/selecteds/FilterSelected"
 import YearSelected from "../../components/selecteds/YearSelected"
 import GradeSelected from "../../components/selecteds/GradeSelected"
@@ -353,7 +354,7 @@ export default function (props) {
                     title: "Success",
                     message: `${id ? "Update" : "Create"} student successfully`,
                     type: "success",
-                }),
+                })
             )
             .then(() => history.push("/"))
     }
@@ -431,7 +432,7 @@ export default function (props) {
                                     gender.value !== ""
                                         ? genderOptions.find(
                                               (option) =>
-                                                  option.value === gender.value,
+                                                  option.value === gender.value
                                           )
                                         : null
                                 }
@@ -476,7 +477,7 @@ export default function (props) {
                                         (item) => ({
                                             value: item,
                                             label: item,
-                                        }),
+                                        })
                                     )
                                     setClassOptions(classArray)
                                 }}
@@ -565,7 +566,7 @@ export default function (props) {
                         </Col>
                     </Row>
 
-                    <Row className="mb-2">
+                    <Row className="mb-3">
                         <Col md={12}>
                             <Label>Note</Label>
                             <Input
@@ -742,6 +743,13 @@ export default function (props) {
                     />
                 </Col>
             </Row>
+
+            {id && (
+                <>
+                    <Label>Schedule</Label>
+                    <Schedule classRoom={classRoom.value} />
+                </>
+            )}
 
             <Row className="mb-2">
                 <Col md={12}>

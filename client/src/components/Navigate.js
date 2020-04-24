@@ -63,10 +63,14 @@ const NavName = styled.span`
 function Navigate(props) {
     const { role } = props
 
-    const [pathName, setPathName] = useState(window.location.pathName)
+    const [pathName, setPathName] = useState(null)
 
     useEffect(() => {
-        setPathName(window.location.pathname)
+        if (window.location.pathname !== "/login") {
+            setPathName(window.location.pathname)
+        } else {
+            setPathName("/")
+        }
     }, [])
 
     return (

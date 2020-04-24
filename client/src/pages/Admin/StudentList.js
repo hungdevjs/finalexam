@@ -21,8 +21,11 @@ import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
 
 const StudentList = (props) => {
+    console.log(props)
     const [searchString, setSearchString] = useState("")
-    const [optionClass, setOptionClass] = useState("")
+    const [optionClass, setOptionClass] = useState(
+        props.location?.state?.optionClass || ""
+    )
     const [optionGrade, setOptionGrade] = useState("")
     const [filterClassStudent, setFilterClassStudent] = useState([])
     const [data, setData] = useState([])

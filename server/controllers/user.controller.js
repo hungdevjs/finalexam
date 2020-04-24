@@ -699,7 +699,7 @@ module.exports.createTeacher = async (req, res) => {
             throw new Error(
                 `Class ${invalidSubjectClass.join(
                     ", "
-                )} had teacher for ${subject}`
+                )} had teacher for subject ${subject}`
             )
         }
 
@@ -762,7 +762,7 @@ module.exports.updateTeacher = async (req, res) => {
         } = data
 
         // check if mainClass exist
-        const teachers = await Teacher.find()
+        const teachers = await Teacher.find({ isDeleted: false })
         const teacherSameMainClass = teachers.filter((teacher) => {
             return (
                 teacher.id !== id &&
@@ -786,18 +786,19 @@ module.exports.updateTeacher = async (req, res) => {
         }
 
         // check subject-class exist
-        const teacherSameSubjectClass = teachers.filter((teacher) => {
-            return (
-                teacher.id !== id &&
-                teacher.teacherOfClass.filter((room) => {
+
+        const teacherSameSubjectClass = teachers.filter(
+            (tc) =>
+                tc.id !== id &&
+                tc.subject === subject &&
+                tc.teacherOfClass.filter((room) =>
                     teacherOfClass.includes(room)
-                }).length > 0
-            )
-        })
+                ).length > 0
+        )
 
         if (teacherSameSubjectClass.length > 0) {
             throw new Error(
-                `This user conflicts class with ${teacherSameMainClass
+                `This user conflicts class with ${teacherSameSubjectClass
                     .map((tc) => tc.name)
                     .join(", ")}`
             )

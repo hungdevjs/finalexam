@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken")
 const { subjects } = require("../utils/constant")
 
-let Parent = require("../models/parent.model")
-let Teacher = require("../models/teacher.model")
-let Grade = require("../models/grade.model")
+const Parent = require("../models/parent.model")
+const Teacher = require("../models/teacher.model")
+const Grade = require("../models/grade.model")
+const Schedule = require("../models/schedule.model")
 
 module.exports.getAllClass = (req, res) => {
     try {
@@ -33,6 +34,22 @@ module.exports.getAllClass = (req, res) => {
 module.exports.getAllSubject = (req, res) => {
     try {
         res.status(200).send(subjects.sort())
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getClassSchedule = async (req, res) => {
+    try {
+        const { classRoom } = req.params
+
+        const schedule = await Schedule.findOne({ isDeleted: false, classRoom })
+
+        if (!schedule) {
+            throw new Error("No schedule to show")
+        }
+
+        res.status(200).json(schedule)
     } catch (err) {
         res.status(500).send(err.message)
     }
