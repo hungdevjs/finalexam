@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
-import history from "../../config/history";
-import { connect } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react"
+import history from "../../config/history"
+import { connect } from "react-redux"
+import { Link } from "react-router-dom"
 
-import styled from "styled-components";
-import { Alert, Table } from "reactstrap";
+import styled from "styled-components"
+import { Alert, Table } from "reactstrap"
 
-import SearchBox from "../common/SearchBox";
-import FilterSelected from "../selecteds/FilterSelected";
-import GradeSelected from "../selecteds/GradeSelected";
+import SearchBox from "../common/SearchBox"
+import FilterSelected from "../selecteds/FilterSelected"
+import GradeSelected from "../selecteds/GradeSelected"
 
-import DeleteBtn from "../buttons/DeleteBtn";
-import CreateBtn from "../buttons/CreateBtn";
-import Pagination from "../common/Pagination";
+import DeleteBtn from "../buttons/DeleteBtn"
+import CreateBtn from "../buttons/CreateBtn"
+import Pagination from "../common/Pagination"
 
-import getAllUser from "../../redux/action/getAllUser";
-import setModal from "../../redux/action/setModal";
+import getAllUser from "../../redux/action/getAllUser"
+import setModal from "../../redux/action/setModal"
 import {
     getAllClass,
     getAllSubject,
     deleteUser,
-} from "../../utils/api/fetchData";
-import renderNoti from "../../utils/renderNoti";
+} from "../../utils/api/fetchData"
+import renderNoti from "../../utils/renderNoti"
 
 const StudentTeacherContainer = styled.div`
     padding: 16px;
@@ -29,33 +29,32 @@ const StudentTeacherContainer = styled.div`
     border: 1px solid #ccc;
     white-space: nowrap;
     min-height: 400px;
-    max-height: 800px;
     overflow: auto;
-`;
+`
 
 function StudentTeacher(props) {
-    const [role, setRole] = useState(props.role);
+    const [role, setRole] = useState(props.role)
 
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([])
 
-    const [filterClassStudent, setFilterClassStudent] = useState([]);
-    const [filterClassTeacher, setFilterClassTeacher] = useState([]);
-    const [filterSubject, setFilterSubject] = useState([]);
+    const [filterClassStudent, setFilterClassStudent] = useState([])
+    const [filterClassTeacher, setFilterClassTeacher] = useState([])
+    const [filterSubject, setFilterSubject] = useState([])
 
-    const [searchString, setSearchString] = useState("");
-    const [optionClass, setOptionClass] = useState("");
-    const [optionGrade, setOptionGrade] = useState("");
-    const [optionSubject, setOptionSubject] = useState("");
+    const [searchString, setSearchString] = useState("")
+    const [optionClass, setOptionClass] = useState("")
+    const [optionGrade, setOptionGrade] = useState("")
+    const [optionSubject, setOptionSubject] = useState("")
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const [totalPage, setTotalPage] = useState(1);
-    const [totalUser, setTotalUser] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1)
+    const [totalPage, setTotalPage] = useState(1)
+    const [totalUser, setTotalUser] = useState(0)
 
     //eslint-disable-next-line
     useEffect(() => {
-        getData();
+        getData()
         //eslint-disable-next-line
-    }, [optionClass, optionGrade, optionSubject, currentPage]);
+    }, [optionClass, optionGrade, optionSubject, currentPage])
 
     //eslint-disable-next-line
     const getData = () => {
@@ -69,28 +68,28 @@ function StudentTeacher(props) {
                 currentPage
             )
             .then((res) => {
-                setData(res.data);
-                setTotalPage(res.totalPage);
-                setTotalUser(res.totalUser);
+                setData(res.data)
+                setTotalPage(res.totalPage)
+                setTotalUser(res.totalUser)
             })
-            .catch((err) => {});
-    };
+            .catch((err) => {})
+    }
 
     const getFilters = () => {
         getAllClass().then((res) => {
-            const options = res.data.map((c) => ({ label: c, value: c }));
-            setFilterClassTeacher(options);
-        });
+            const options = res.data.map((c) => ({ label: c, value: c }))
+            setFilterClassTeacher(options)
+        })
 
         if (role === "teacher") {
             getAllSubject().then((res) => {
                 const options = res.data
                     .sort()
-                    .map((c) => ({ label: c, value: c }));
-                setFilterSubject(options);
-            });
+                    .map((c) => ({ label: c, value: c }))
+                setFilterSubject(options)
+            })
         }
-    };
+    }
 
     const removeUser = (role, id) => {
         deleteUser(role, id)
@@ -107,33 +106,33 @@ function StudentTeacher(props) {
                     type: "danger",
                     title: "Failed",
                     message: "Delete user failed",
-                });
-            });
-    };
+                })
+            })
+    }
 
     useEffect(() => {
-        getFilters();
+        getFilters()
         //eslint-disable-next-line
-    }, []);
+    }, [])
 
     const onGradeSelected = (e) => {
-        setCurrentPage(1);
+        setCurrentPage(1)
         if (e) {
-            setOptionGrade(e.value);
+            setOptionGrade(e.value)
             const classArray = e.classRoom.map((item) => ({
                 value: item,
                 label: item,
-            }));
-            setFilterClassStudent(classArray);
+            }))
+            setFilterClassStudent(classArray)
         } else {
-            setOptionGrade("");
-            setFilterClassStudent([]);
+            setOptionGrade("")
+            setFilterClassStudent([])
         }
-        setOptionClass("");
-    };
+        setOptionClass("")
+    }
 
-    const header = role === "student" ? "Students" : "Teachers";
-    const url = role === "student" ? "/students" : "teachers";
+    const header = role === "student" ? "Students" : "Teachers"
+    const url = role === "student" ? "/students" : "teachers"
 
     return (
         <StudentTeacherContainer>
@@ -152,9 +151,9 @@ function StudentTeacher(props) {
                 onChange={(e) => setSearchString(e.target.value)}
                 onSearch={() => {
                     if (currentPage !== 1) {
-                        setCurrentPage(1);
+                        setCurrentPage(1)
                     } else {
-                        getData();
+                        getData()
                     }
                 }}
             />
@@ -175,11 +174,11 @@ function StudentTeacher(props) {
                         className="flex-grow-1 mr-1"
                         options={filterSubject}
                         onChange={(e) => {
-                            setCurrentPage(1);
+                            setCurrentPage(1)
                             if (e) {
-                                setOptionSubject(e.value);
+                                setOptionSubject(e.value)
                             } else {
-                                setOptionSubject("");
+                                setOptionSubject("")
                             }
                         }}
                     />
@@ -195,11 +194,11 @@ function StudentTeacher(props) {
                             : filterClassTeacher
                     }
                     onChange={(e) => {
-                        setCurrentPage(1);
+                        setCurrentPage(1)
                         if (e) {
-                            setOptionClass(e.value);
+                            setOptionClass(e.value)
                         } else {
-                            setOptionClass("");
+                            setOptionClass("")
                         }
                     }}
                     value={
@@ -274,12 +273,12 @@ function StudentTeacher(props) {
                 />
             )}
         </StudentTeacherContainer>
-    );
+    )
 }
 
 const mapDispatchToProps = {
     getAllUser,
     setModal,
-};
+}
 
-export default connect(null, mapDispatchToProps)(StudentTeacher);
+export default connect(null, mapDispatchToProps)(StudentTeacher)

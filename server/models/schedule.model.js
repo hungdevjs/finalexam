@@ -1,6 +1,5 @@
-const mongoose = require("mongoose");
-const { subjects } = require("../utils/constant");
-const Schema = mongoose.Schema;
+const mongoose = require("mongoose")
+const Schema = mongoose.Schema
 
 const scheduleSchema = new Schema({
     classRoom: {
@@ -8,18 +7,18 @@ const scheduleSchema = new Schema({
         required: true,
     },
     schedule: {
-        mon: [{ type: String, _id: false, enum: subjects }],
-        tue: [{ type: String, _id: false, enum: subjects }],
-        wed: [{ type: String, _id: false, enum: subjects }],
-        thu: [{ type: String, _id: false, enum: subjects }],
-        fri: [{ type: String, _id: false, enum: subjects }],
+        mon: [{ type: String, _id: false }],
+        tue: [{ type: String, _id: false }],
+        wed: [{ type: String, _id: false }],
+        thu: [{ type: String, _id: false }],
+        fri: [{ type: String, _id: false }],
     },
     isDeleted: {
         type: Boolean,
         required: true,
     },
-});
+})
 
-const Schedule = mongoose.model("Schedule", scheduleSchema);
+const Schedule = mongoose.model("Schedule", scheduleSchema)
 
-module.exports = Schedule;
+module.exports = Schedule

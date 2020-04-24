@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import styled from "styled-components";
-import history from "../config/history";
+import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
+import styled from "styled-components"
+import history from "../config/history"
 
-import changeOptionNavigate from "../redux/action/changeOptionNavigate";
-import setUserInformation from "../redux/action/setUserInformation";
+import changeOptionNavigate from "../redux/action/changeOptionNavigate"
+import setUserInformation from "../redux/action/setUserInformation"
 
 const HeaderContainer = styled.div`
     width: ${(props) => `calc(100vw - ${props.option})`};
@@ -18,7 +18,7 @@ const HeaderContainer = styled.div`
     display: flex;
     align-items: center;
     color: #fff;
-`;
+`
 
 const NavigateButton = styled.span`
     transition: 0.2s ease;
@@ -30,19 +30,19 @@ const NavigateButton = styled.span`
     align-items: center;
     font-size: 1.25rem;
     cursor: pointer;
-`;
+`
 const UserInfoContainer = styled.div`
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
     font-weight: bold;
     padding-right: 16px;
-`;
+`
 
 const UserInfo = styled.span`
     cursor: pointer;
     white-space: nowrap;
-`;
+`
 
 const UserOption = styled.div`
     position: fixed;
@@ -52,7 +52,7 @@ const UserOption = styled.div`
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
     color: #555;
     background-color: #fff;
-    opacity: ${(props) => (props.show ? 1 : 0)};
+    display: ${(props) => (props.show ? "block" : "none")};
     p {
         padding: 8px 16px;
         margin-bottom: 0;
@@ -62,27 +62,27 @@ const UserOption = styled.div`
     p:hover {
         background-color: #ddd;
     }
-`;
+`
 
 const changeWidthNavigate = (props) => {
     switch (props.option) {
         case "0px":
-            props.changeOptionNavigate("70px");
-            break;
+            props.changeOptionNavigate("70px")
+            break
         case "70px":
-            props.changeOptionNavigate("200px");
-            break;
+            props.changeOptionNavigate("200px")
+            break
         case "200px":
-            props.changeOptionNavigate("0px");
-            break;
+            props.changeOptionNavigate("0px")
+            break
         default:
-            break;
+            break
     }
-};
+}
 
 function Header(props) {
-    const [userInfo, setUserInfo] = useState("");
-    const [show, setShow] = useState(false);
+    const [userInfo, setUserInfo] = useState("")
+    const [show, setShow] = useState(false)
 
     useEffect(() => {
         if (
@@ -90,21 +90,21 @@ function Header(props) {
             Object.keys(props.userInformation).length > 0
         ) {
             if (props.userInformation.role === "parent") {
-                setUserInfo(props.userInformation.studentName);
+                setUserInfo(props.userInformation.studentName)
             } else {
-                setUserInfo(props.userInformation.email);
+                setUserInfo(props.userInformation.email)
             }
         }
-    }, [props.userInformation]);
+    }, [props.userInformation])
 
     const signOut = () => {
-        props.setUserInformation({ data: {} });
-        localStorage.removeItem("access_token");
-        localStorage.removeItem("refresh_token");
-        localStorage.removeItem("access_from");
-        history.push("/login");
-        props.changeOptionNavigate("0px");
-    };
+        props.setUserInformation({ data: {} })
+        localStorage.removeItem("access_token")
+        localStorage.removeItem("refresh_token")
+        localStorage.removeItem("access_from")
+        history.push("/login")
+        props.changeOptionNavigate("0px")
+    }
 
     return (
         <HeaderContainer {...props}>
@@ -129,8 +129,8 @@ function Header(props) {
                         ) && (
                             <p
                                 onClick={() => {
-                                    setShow(false);
-                                    history.push("/profile");
+                                    setShow(false)
+                                    history.push("/profile")
                                 }}
                             >
                                 Profile
@@ -140,17 +140,17 @@ function Header(props) {
                 </UserOption>
             </UserInfoContainer>
         </HeaderContainer>
-    );
+    )
 }
 
 const mapStateToProps = (state) => ({
     userInformation: state.user.userInformation,
     option: state.navigate.option,
-});
+})
 
 const mapDispatchToProps = {
     changeOptionNavigate,
     setUserInformation,
-};
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

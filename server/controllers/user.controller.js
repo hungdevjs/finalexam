@@ -1,29 +1,30 @@
-const jwt = require("jsonwebtoken");
-const shortid = require("shortid");
-const _ = require("lodash");
-const passwordHash = require("password-hash");
+const jwt = require("jsonwebtoken")
+const shortid = require("shortid")
+const _ = require("lodash")
+const passwordHash = require("password-hash")
 
-const validateDate = require("../utils/validateDate");
-const sendSms = require("../utils/sendSms");
+const validateDate = require("../utils/validateDate")
+const sendSms = require("../utils/sendSms")
 const {
     pageSize,
     createStudentText,
     createTeacherText,
-} = require("../utils/constant");
+    subjects,
+} = require("../utils/constant")
 
-const Parent = require("../models/parent.model");
-const Teacher = require("../models/teacher.model");
-const Admin = require("../models/admin.model");
-const Grade = require("../models/grade.model");
+const Parent = require("../models/parent.model")
+const Teacher = require("../models/teacher.model")
+const Admin = require("../models/admin.model")
+const Grade = require("../models/grade.model")
 
 module.exports.getUserInformation = (req, res) => {
     const token = req.headers.authorization
         ? req.headers.authorization.split(" ")[1]
-        : "";
+        : ""
 
     try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY);
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
 
         switch (userInfo.role) {
             case "admin":
@@ -32,7 +33,7 @@ module.exports.getUserInformation = (req, res) => {
                         email: userInfo.email,
                         role: "admin",
                     },
-                });
+                })
 
             case "teacher":
                 return res.status(200).json({
@@ -47,7 +48,7 @@ module.exports.getUserInformation = (req, res) => {
                         subject: userInfo.subject,
                         role: "teacher",
                     },
-                });
+                })
 
             case "parent":
                 return res.status(200).json({
@@ -57,27 +58,24 @@ module.exports.getUserInformation = (req, res) => {
                         class: userInfo.class,
                         role: "parent",
                     },
-                });
+                })
 
             default:
-                return res.status(401).json("Unthorizated");
+                return res.status(401).json("Unthorizated")
         }
     } catch (err) {
-        res.status(401).send(err.message);
+        res.status(401).send(err.message)
     }
-};
+}
 
 module.exports.getUserInformationAndNewAccessToken = (req, res) => {
     const token = req.headers.authorization
         ? req.headers.authorization.split(" ")[1]
-        : "";
+        : ""
 
     try {
-        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY);
-        const userInfo = jwt.decode(
-            token,
-            process.env.REFRESH_TOKEN_SECRET_KEY
-        );
+        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)
+        const userInfo = jwt.decode(token, process.env.REFRESH_TOKEN_SECRET_KEY)
 
         switch (userInfo.role) {
             case "admin":
@@ -93,7 +91,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             const data = {
                                 email: admin.email,
                                 role: "admin",
-                            };
+                            }
 
                             const access_token = jwt.sign(
                                 data,
@@ -102,21 +100,21 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
                                 }
-                            );
+                            )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            });
+                            })
                         } else {
-                            res.status(401).json("Unthorizated");
+                            res.status(401).json("Unthorizated")
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message);
-                    });
+                        res.status(500).send(err.message)
+                    })
 
             case "teacher":
                 return Teacher.findOne({
@@ -141,7 +139,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 teacherOfClass: teacher.teacherOfClass,
                                 subject: teacher.subject,
                                 role: "teacher",
-                            };
+                            }
 
                             const access_token = jwt.sign(
                                 data,
@@ -150,21 +148,21 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
                                 }
-                            );
+                            )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            });
+                            })
                         } else {
-                            res.status(401).json("Unthorizated");
+                            res.status(401).json("Unthorizated")
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message);
-                    });
+                        res.status(500).send(err.message)
+                    })
 
             case "parent":
                 return Parent.findOne({ refreshToken: token, isDeleted: false })
@@ -181,7 +179,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 studentName: student.studentName,
                                 class: student.class,
                                 role: "parent",
-                            };
+                            }
 
                             const access_token = jwt.sign(
                                 data,
@@ -190,29 +188,29 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                     expiresIn:
                                         process.env.JWT_ACCESS_TOKEN_LIFE,
                                 }
-                            );
+                            )
 
                             res.status(200).json({
                                 data,
                                 access_token,
                                 refresh_token: token,
                                 access_from: new Date().getTime(),
-                            });
+                            })
                         } else {
-                            res.status(401).json("Unthorizated");
+                            res.status(401).json("Unthorizated")
                         }
                     })
                     .catch((err) => {
-                        res.status(500).send(err.message);
-                    });
+                        res.status(500).send(err.message)
+                    })
 
             default:
-                return res.status(401).json("Unthorizated");
+                return res.status(401).json("Unthorizated")
         }
     } catch (err) {
-        res.status(401).send(err.message);
+        res.status(401).send(err.message)
     }
-};
+}
 
 module.exports.getAllUser = (req, res) => {
     try {
@@ -223,49 +221,49 @@ module.exports.getAllUser = (req, res) => {
             filterGrade,
             filterSubject,
             currentPage,
-        } = req.query;
+        } = req.query
 
         if (role === "student") {
             Parent.find({ isDeleted: false })
                 .then((students) => {
                     if (students) {
-                        let totalPage = 1;
+                        let totalPage = 1
                         let data = [...students].sort((student1, student2) => {
                             return student1.studentName.toLowerCase() <
                                 student2.studentName.toLowerCase()
                                 ? -1
-                                : 1;
-                        });
+                                : 1
+                        })
 
-                        const totalUser = data.length;
+                        const totalUser = data.length
 
                         if (searchString) {
                             data = data.filter((student) =>
                                 student.studentName
                                     .toUpperCase()
                                     .includes(searchString.toUpperCase())
-                            );
+                            )
                         }
 
                         if (filterClass) {
                             data = data.filter(
                                 (student) => student.classRoom === filterClass
-                            );
+                            )
                         }
 
                         if (filterGrade) {
                             data = data.filter(
                                 (student) =>
                                     student.grade === parseInt(filterGrade)
-                            );
+                            )
                         }
 
                         if (currentPage > 0) {
-                            totalPage = Math.ceil(data.length / pageSize) || 1;
+                            totalPage = Math.ceil(data.length / pageSize) || 1
                             data = data.slice(
                                 (currentPage - 1) * pageSize,
                                 currentPage * pageSize
-                            );
+                            )
                         }
 
                         res.status(200).json({
@@ -283,34 +281,34 @@ module.exports.getAllUser = (req, res) => {
                             })),
                             totalPage,
                             totalUser,
-                        });
+                        })
                     } else {
-                        res.status(200).json([]);
+                        res.status(200).json([])
                     }
                 })
                 .catch((err) => {
-                    res.status(500).send(err.message);
-                });
+                    res.status(500).send(err.message)
+                })
         } else if (role === "teacher") {
             Teacher.find({ isDeleted: false })
                 .then((teachers) => {
                     if (teachers) {
-                        let totalPage = 1;
+                        let totalPage = 1
                         let data = [...teachers].sort((teacher1, teacher2) => {
                             return teacher1.name.toLowerCase() <
                                 teacher2.name.toLowerCase()
                                 ? -1
-                                : 1;
-                        });
+                                : 1
+                        })
 
-                        const totalUser = data.length;
+                        const totalUser = data.length
 
                         if (searchString) {
                             data = data.filter((teacher) =>
                                 teacher.name
                                     .toUpperCase()
                                     .includes(searchString.toUpperCase())
-                            );
+                            )
                         }
 
                         if (filterClass) {
@@ -322,21 +320,21 @@ module.exports.getAllUser = (req, res) => {
                                     teacher.mainTeacherOfClass.includes(
                                         filterClass
                                     )
-                            );
+                            )
                         }
 
                         if (filterSubject) {
                             data = data.filter(
                                 (teacher) => teacher.subject === filterSubject
-                            );
+                            )
                         }
 
                         if (currentPage > 0) {
-                            totalPage = Math.ceil(data.length / pageSize);
+                            totalPage = Math.ceil(data.length / pageSize)
                             data = data.slice(
                                 (currentPage - 1) * pageSize,
                                 currentPage * pageSize
-                            );
+                            )
                         }
 
                         res.status(200).json({
@@ -353,94 +351,94 @@ module.exports.getAllUser = (req, res) => {
                             })),
                             totalPage,
                             totalUser,
-                        });
+                        })
                     } else {
-                        res.status(200).json([]);
+                        res.status(200).json([])
                     }
                 })
                 .catch((err) => {
-                    res.status(500).send(err.message);
-                });
+                    res.status(500).send(err.message)
+                })
         } else {
-            res.status(400).send("Bad request");
+            res.status(400).send("Bad request")
         }
     } catch (err) {
-        res.status(401).send(err.message);
+        res.status(401).send(err.message)
     }
-};
+}
 
 module.exports.deleteUser = (req, res) => {
     try {
-        const { role, id } = req.params;
+        const { role, id } = req.params
 
         switch (role) {
             case "student":
                 return Parent.findOne({ _id: id, isDeleted: false })
                     .then(async (student) => {
                         if (student) {
-                            student.isDeleted = true;
-                            await student.save();
-                            res.status(200).json("Student is deleted");
+                            student.isDeleted = true
+                            await student.save()
+                            res.status(200).json("Student is deleted")
                         } else {
-                            res.status(400).json("Bad request");
+                            res.status(400).json("Bad request")
                         }
                     })
                     .catch((err) => {
-                        res.status(500).json(err.message);
-                    });
+                        res.status(500).json(err.message)
+                    })
 
             case "teacher":
                 return Teacher.findOne({ _id: id, isDeleted: false })
                     .then(async (teacher) => {
                         if (teacher) {
-                            teacher.isDeleted = true;
-                            await teacher.save();
-                            res.status(200).json("Student is deleted");
+                            teacher.isDeleted = true
+                            await teacher.save()
+                            res.status(200).json("Student is deleted")
                         } else {
-                            res.status(400).json("Bad request");
+                            res.status(400).json("Bad request")
                         }
                     })
                     .catch((err) => {
-                        res.status(500).json(err.message);
-                    });
+                        res.status(500).json(err.message)
+                    })
             default:
-                return res.status(400).json("Bad request");
+                return res.status(400).json("Bad request")
         }
     } catch (err) {
-        res.status(401).send(err.message);
+        res.status(401).send(err.message)
     }
-};
+}
 
 module.exports.createStudent = (req, res) => {
     try {
-        const data = req.body;
-        const { grade, classRoom, dateOfBirth } = data;
+        const data = req.body
+        const { grade, classRoom, dateOfBirth } = data
 
         Grade.findOne({ isDeleted: false, grade })
             .then((gr) => {
                 if (!validateDate(dateOfBirth))
-                    throw new Error("Date of birth is not valid");
+                    throw new Error("Date of birth is not valid")
 
-                if (!gr) throw new Error("Student grade doesn't exist");
+                if (!gr) throw new Error("Student grade doesn't exist")
 
                 if (gr && !gr.classRoom.includes(classRoom))
-                    throw new Error("Student class doesn't exist");
+                    throw new Error("Student class doesn't exist")
 
-                data.studentId = shortid.generate();
+                data.studentId = shortid.generate()
 
-                let password = "";
+                let password = ""
                 if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-                    password = "12345678";
+                    password = "12345678"
                 } else {
-                    password = shortid.generate();
+                    password = shortid.generate()
                 }
 
-                data.password = passwordHash.generate(password);
+                data.password = passwordHash.generate(password)
 
-                data.score = {};
-                data.isDeleted = false;
+                data.score = {}
+                data.isDeleted = false
 
-                const newStudent = new Parent(data);
+                const newStudent = new Parent(data)
 
                 newStudent
                     .save()
@@ -449,7 +447,7 @@ module.exports.createStudent = (req, res) => {
                         const body = createStudentText
                             .replace("$studentName$", data.studentName)
                             .replace("$studentId$", data.studentId)
-                            .replace("$password$", password);
+                            .replace("$password$", password)
 
                         const to =
                             process.env.ENVIRONMENT === "DEVELOPMENT"
@@ -457,25 +455,25 @@ module.exports.createStudent = (req, res) => {
                                 : (
                                       data.father.phoneNumber ||
                                       data.mother.phoneNumber
-                                  ).replace("0", "+84");
+                                  ).replace("0", "+84")
 
-                        sendSms(to, body);
+                        sendSms(to, body)
 
-                        res.status(201).json(data);
+                        res.status(201).json(data)
                     })
-                    .catch((err) => res.status(400).send(err.message));
+                    .catch((err) => res.status(400).send(err.message))
             })
             .catch((err) => {
-                res.status(400).send(err.message);
-            });
+                res.status(400).send(err.message)
+            })
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err.message)
     }
-};
+}
 
 module.exports.getStudent = (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id
 
         Parent.findOne({ _id: id, isDeleted: false })
             .then((student) => {
@@ -492,7 +490,7 @@ module.exports.getStudent = (req, res) => {
                         studentId,
                         father,
                         mother,
-                    } = student;
+                    } = student
                     const data = {
                         _id,
                         studentName,
@@ -505,29 +503,29 @@ module.exports.getStudent = (req, res) => {
                         studentId,
                         father,
                         mother,
-                    };
+                    }
 
-                    res.status(200).json(data);
+                    res.status(200).json(data)
                 } else {
-                    res.status(200).json("Student doesn't exist");
+                    res.status(200).json("Student doesn't exist")
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message);
-            });
+                res.status(500).send(err.message)
+            })
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err.message)
     }
-};
+}
 
 module.exports.updateStudent = (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id
 
         Parent.findOne({ _id: id, isDeleted: false })
             .then((student) => {
                 if (student) {
-                    const data = req.body;
+                    const data = req.body
                     const {
                         studentName,
                         gender,
@@ -538,7 +536,7 @@ module.exports.updateStudent = (req, res) => {
                         note,
                         father,
                         mother,
-                    } = data;
+                    } = data
 
                     const updateArr = [
                         { field: "studentName", value: studentName },
@@ -550,44 +548,44 @@ module.exports.updateStudent = (req, res) => {
                         { field: "note", value: note },
                         { field: "father", value: father },
                         { field: "mother", value: mother },
-                    ];
+                    ]
 
                     Grade.findOne({ isDeleted: false, grade })
                         .then(async (gr) => {
                             if (!validateDate(dateOfBirth))
-                                throw new Error("Date of birth is not valid");
+                                throw new Error("Date of birth is not valid")
 
                             if (!gr)
-                                throw new Error("Student grade doesn't exist");
+                                throw new Error("Student grade doesn't exist")
 
                             if (gr && !gr.classRoom.includes(classRoom))
-                                throw new Error("Student class doesn't exist");
+                                throw new Error("Student class doesn't exist")
 
                             updateArr.forEach((item) => {
-                                student[item.field] = item.value;
-                            });
+                                student[item.field] = item.value
+                            })
 
-                            await student.save();
-                            res.status(200).send("Update successfully");
+                            await student.save()
+                            res.status(200).send("Update successfully")
                         })
                         .catch((err) => {
-                            res.status(400).send(err.message);
-                        });
+                            res.status(400).send(err.message)
+                        })
                 } else {
-                    res.status(400).send("Student doesn't exist");
+                    res.status(400).send("Student doesn't exist")
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message);
-            });
+                res.status(500).send(err.message)
+            })
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err.message)
     }
-};
+}
 
 module.exports.getTeacher = (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id
 
         Teacher.findOne({ _id: id, isDeleted: false })
             .then((teacher) => {
@@ -602,7 +600,7 @@ module.exports.getTeacher = (req, res) => {
                         mainTeacherOfClass,
                         teacherOfClass,
                         subject,
-                    } = teacher;
+                    } = teacher
                     const data = {
                         _id,
                         name,
@@ -613,24 +611,24 @@ module.exports.getTeacher = (req, res) => {
                         mainTeacherOfClass,
                         teacherOfClass,
                         subject,
-                    };
+                    }
 
-                    res.status(200).json(data);
+                    res.status(200).json(data)
                 } else {
-                    res.status(200).json("Teacher doesn't exist");
+                    res.status(200).json("Teacher doesn't exist")
                 }
             })
             .catch((err) => {
-                res.status(500).send(err.message);
-            });
+                res.status(500).send(err.message)
+            })
     } catch (err) {
-        res.status(500).send(err.message);
+        res.status(500).send(err.message)
     }
-};
+}
 
 module.exports.createTeacher = async (req, res) => {
     try {
-        const data = req.body;
+        const data = req.body
         const {
             name,
             yearOfBirth,
@@ -640,12 +638,12 @@ module.exports.createTeacher = async (req, res) => {
             mainTeacherOfClass,
             subject,
             teacherOfClass,
-        } = data;
+        } = data
 
         // check if teacher email exist
-        const teacher = await Teacher.findOne({ email, isDeleted: false });
+        const teacher = await Teacher.findOne({ email, isDeleted: false })
         if (teacher) {
-            throw new Error("Teacher email exist");
+            throw new Error("Teacher email exist")
         }
 
         // check if mainClass exist
@@ -653,100 +651,105 @@ module.exports.createTeacher = async (req, res) => {
             Array.isArray(mainTeacherOfClass) ||
             mainTeacherOfClass.length > 0
         ) {
-            let classes = [];
-            const grades = await Grade.find();
+            let classes = []
+            const grades = await Grade.find()
             if (grades) {
                 for (const item of grades) {
-                    classes = [...classes, ...item.classRoom];
+                    classes = [...classes, ...item.classRoom]
                 }
             }
 
             for (room of mainTeacherOfClass) {
                 if (!classes.includes(room)) {
-                    throw new Error("Class doesn't exist");
+                    throw new Error("Class doesn't exist")
                 }
 
                 const mainClass = await Teacher.find({
                     isDeleted: false,
-                }).distinct("mainTeacherOfClass");
+                }).distinct("mainTeacherOfClass")
 
                 const invalidMainclass = mainTeacherOfClass.filter((item) =>
                     mainClass.includes(item)
-                );
+                )
 
                 if (invalidMainclass.length > 0) {
                     throw new Error(
                         `Class ${invalidMainclass.join(", ")} had main teacher`
-                    );
+                    )
                 }
             }
+        }
+
+        // check if subject is valid
+        if (!subjects.includes(subject)) {
+            throw new Error(`Subject is invalid`)
         }
 
         // check if subject-teacherClass exist
         const classSameSubject = await Teacher.find({
             subject,
             isDeleted: false,
-        }).distinct("teacherOfClass");
+        }).distinct("teacherOfClass")
 
         const invalidSubjectClass = teacherOfClass.filter((item) =>
             classSameSubject.includes(item)
-        );
+        )
 
         if (invalidSubjectClass.length > 0) {
             throw new Error(
                 `Class ${invalidSubjectClass.join(
                     ", "
                 )} had teacher for ${subject}`
-            );
+            )
         }
 
-        data.isDeleted = false;
+        data.isDeleted = false
 
-        let password = "";
+        let password = ""
         if (process.env.ENVIRONMENT === "DEVELOPMENT") {
-            password = "12345678";
+            password = "12345678"
         } else {
-            password = shortid.generate();
+            password = shortid.generate()
         }
 
-        data.password = passwordHash.generate(password);
+        data.password = passwordHash.generate(password)
 
-        const newTeacher = new Teacher(data);
-        await newTeacher.save();
+        const newTeacher = new Teacher(data)
+        await newTeacher.save()
 
         // send sms with email and password for teacher
         const body = createTeacherText
             .replace("$teacherName$", data.name)
             .replace("$teacherEmail$", data.email)
-            .replace("$password$", password);
+            .replace("$password$", password)
 
         const to =
             process.env.ENVIRONMENT === "DEVELOPMENT"
                 ? "+84335210659"
-                : data.phoneNumber.replace("0", "+84");
+                : data.phoneNumber.replace("0", "+84")
 
-        sendSms(to, body);
+        sendSms(to, body)
 
-        res.status(201).json(data);
+        res.status(201).json(data)
     } catch (err) {
-        res.json({ error: err.message });
+        res.json({ error: err.message })
     }
-};
+}
 
 module.exports.updateTeacher = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.params.id
 
         const currentTeacher = await Teacher.findOne({
             _id: id,
             isDeleted: false,
-        });
+        })
 
         if (!currentTeacher) {
-            throw new Error("Teacher doesn't exist");
+            throw new Error("Teacher doesn't exist")
         }
 
-        const data = req.body;
+        const data = req.body
         const {
             name,
             yearOfBirth,
@@ -756,25 +759,30 @@ module.exports.updateTeacher = async (req, res) => {
             mainTeacherOfClass,
             subject,
             teacherOfClass,
-        } = data;
+        } = data
 
         // check if mainClass exist
-        const teachers = await Teacher.find();
+        const teachers = await Teacher.find()
         const teacherSameMainClass = teachers.filter((teacher) => {
             return (
                 teacher.id !== id &&
                 teacher.mainTeacherOfClass.filter((room) =>
                     mainTeacherOfClass.includes(room)
                 ).length > 0
-            );
-        });
+            )
+        })
 
         if (teacherSameMainClass.length > 0) {
             throw new Error(
                 `This user conflicts main class with ${teacherSameMainClass
                     .map((tc) => tc.name)
                     .join(", ")}`
-            );
+            )
+        }
+
+        // check if subject is valid
+        if (!subjects.includes(subject)) {
+            throw new Error(`Subject is invalid`)
         }
 
         // check subject-class exist
@@ -782,17 +790,17 @@ module.exports.updateTeacher = async (req, res) => {
             return (
                 teacher.id !== id &&
                 teacher.teacherOfClass.filter((room) => {
-                    teacherOfClass.includes(room);
+                    teacherOfClass.includes(room)
                 }).length > 0
-            );
-        });
+            )
+        })
 
         if (teacherSameSubjectClass.length > 0) {
             throw new Error(
                 `This user conflicts class with ${teacherSameMainClass
                     .map((tc) => tc.name)
                     .join(", ")}`
-            );
+            )
         }
 
         // update teacher
@@ -805,15 +813,15 @@ module.exports.updateTeacher = async (req, res) => {
             { field: "mainTeacherOfClass", value: mainTeacherOfClass },
             { field: "subject", value: subject },
             { field: "teacherOfClass", value: teacherOfClass },
-        ];
+        ]
 
         updateArr.forEach((item) => {
-            currentTeacher[item.field] = item.value;
-        });
+            currentTeacher[item.field] = item.value
+        })
 
-        await currentTeacher.save();
-        res.status(200).send("Update successfully");
+        await currentTeacher.save()
+        res.status(200).send("Update successfully")
     } catch (err) {
-        res.json({ error: err.message });
+        res.json({ error: err.message })
     }
-};
+}

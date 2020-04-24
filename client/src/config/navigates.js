@@ -13,9 +13,21 @@ export default [
         roles: ["teacher"],
     },
     {
+        path: "/students",
+        name: "List students",
+        icon: "fas fa-users",
+        roles: ["admin"],
+    },
+    {
+        path: "/teachers",
+        name: "List teachers",
+        icon: "fas fa-chalkboard-teacher",
+        roles: ["admin"],
+    },
+    {
         path: "/gradeAndClass",
         name: "Grade and class",
         icon: "fas fa-school",
         roles: ["admin"],
     },
-];
+]

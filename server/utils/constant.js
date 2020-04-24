@@ -1,5 +1,5 @@
 module.exports = {
-    pageSize: 2,
+    pageSize: 10,
     createStudentText:
         "[Dev School] Account for student $studentName$: StudentID: $studentId$ - Password: $password$",
     createTeacherText:
@@ -17,7 +17,5 @@ module.exports = {
         "Âm nhạc",
         "Mỹ thuật",
         "Thể dục",
-        "Chào cờ",
-        "Sinh hoạt",
     ],
-};
+}

@@ -16,7 +16,6 @@ const HighlightContainer = styled.div`
     margin-bottom: 8px;
     border: 1px solid #ccc;
     white-space: nowrap;
-    max-height: 800px;
     overflow: auto;
 `
 
