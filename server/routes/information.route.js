@@ -23,4 +23,6 @@ router.get(
     controller.getTeacherSchedule
 )
 
+router.get("/semester", controller.getSemester)
+
 module.exports = router

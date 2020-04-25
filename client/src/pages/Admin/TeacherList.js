@@ -98,7 +98,10 @@ const TeacherList = (props) => {
         <div>
             <Row className="mb-2">
                 <Col md={8}>
-                    <h5>TEACHER LIST</h5>
+                    <h5>
+                        TEACHER LIST{" "}
+                        {props.year && `${props.year}-${props.year + 1}`}
+                    </h5>
                 </Col>
                 <Col md={4} className="text-lg-right text-md-left">
                     <CreateBtnBig
@@ -251,4 +254,8 @@ const mapDispatchToProps = {
     setModal,
 }
 
-export default connect(null, mapDispatchToProps)(TeacherList)
+const mapStateToProps = (state) => ({
+    year: state.time.year,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(TeacherList)

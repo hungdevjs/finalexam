@@ -50,7 +50,10 @@ function GradeAndClass(props) {
             {renderScheduleModal()}
             <Row className="mb-2">
                 <Col md={8} className="d-flex">
-                    <h5 className="flex-grow-1">Grades and classes</h5>
+                    <h5 className="flex-grow-1">
+                        GRADES AND CLASSES{" "}
+                        {props.year && `${props.year}-${props.year + 1}`}
+                    </h5>
                     <BackBtn title="home" onClick={() => history.push("/")} />
                 </Col>
             </Row>
@@ -183,4 +186,8 @@ const mapDispatchToProps = {
     getAllGradeWithMainTeacher,
 }
 
-export default connect(null, mapDispatchToProps)(GradeAndClass)
+const mapStateToProps = (state) => ({
+    year: state.time.year,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(GradeAndClass)

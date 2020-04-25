@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
 import { Link } from "react-router-dom"
 import { Table, Row, Col, Label } from "reactstrap"
 
@@ -7,7 +8,7 @@ import { subjects } from "../utils/constant"
 
 import ViewModal from "../components/modal/ViewModal"
 
-export default ({ classRoom }) => {
+const TeacherOfClass = ({ classRoom, year }) => {
     const [data, setData] = useState({})
     const [isOpen, toggle] = useState(false)
     const [currentTeacher, setCurrentTeacher] = useState({})
@@ -51,7 +52,10 @@ export default ({ classRoom }) => {
             {renderModal()}
             <Row>
                 <Col md={12}>
-                    <Label>Teacher list of class {classRoom}</Label>
+                    <Label>
+                        Teacher list of class {classRoom}{" "}
+                        {year && `${year}-${year + 1}`}
+                    </Label>
                     {data && Object.keys(data).length > 0 && (
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
@@ -102,3 +106,9 @@ export default ({ classRoom }) => {
         </div>
     )
 }
+
+const mapStateToProps = (state) => ({
+    year: state.time.year,
+})
+
+export default connect(mapStateToProps, null)(TeacherOfClass)

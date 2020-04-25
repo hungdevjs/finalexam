@@ -5,6 +5,7 @@ const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
 const Schedule = require("../models/schedule.model")
+const Semester = require("../models/semester.model")
 
 module.exports.getAllClass = (req, res) => {
     try {
@@ -145,6 +146,20 @@ module.exports.getTeacherSchedule = async (req, res) => {
         }
 
         res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getSemester = async (req, res) => {
+    try {
+        const now = await Semester.find()
+
+        if (!now) {
+            throw new Error("Get semester failed")
+        }
+
+        res.status(200).json({ year: now[0].year, semester: now[0].semester })
     } catch (err) {
         res.status(500).send(err.message)
     }

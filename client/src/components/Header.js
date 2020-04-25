@@ -5,6 +5,7 @@ import history from "../config/history"
 
 import changeOptionNavigate from "../redux/action/changeOptionNavigate"
 import setUserInformation from "../redux/action/setUserInformation"
+import setTime from "../redux/action/setTime"
 
 const HeaderContainer = styled.div`
     width: ${(props) => `calc(100vw - ${props.option})`};
@@ -95,6 +96,8 @@ function Header(props) {
                 setUserInfo(props.userInformation.email)
             }
         }
+
+        props.setTime()
     }, [props.userInformation])
 
     const signOut = () => {
@@ -151,6 +154,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     changeOptionNavigate,
     setUserInformation,
+    setTime,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

@@ -9,6 +9,7 @@ const Teacher = require("./models/teacher.model")
 const Highlight = require("./models/highlight.model")
 const Schedule = require("./models/schedule.model")
 const Grade = require("./models/grade.model")
+const Semester = require("./models/semester.model")
 
 const uri =
     "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam9?retryWrites=true&w=majority"
@@ -35,7 +36,25 @@ async function createAdmin() {
 createAdmin()
 console.log("Created admin")
 
-// create class
+create semester && year
+console.log("Creating semester...")
+
+async function createSemester(data) {
+    const newSemester = new Semester(data)
+    await newSemester.save()
+}
+
+const now = new Date()
+
+const month = now.getMonth() + 1
+const year = month < 9 ? now.getFullYear() - 1 : now.getFullYear()
+const semester = month < 9 ? 2 : 1
+
+createSemester({ year, semester })
+
+console.log("Created semester")
+
+create class
 console.log("Creating grades and classes...")
 const grades = [
     { grade: 6, classRoom: ["6A", "6B", "6C", "6D"] },

@@ -140,7 +140,10 @@ const StudentList = (props) => {
             {renderModal()}
             <Row className="mb-2">
                 <Col md={8}>
-                    <h5>STUDENT LIST</h5>
+                    <h5>
+                        STUDENT LIST{" "}
+                        {props.year && `${props.year}-${props.year + 1}`}
+                    </h5>
                 </Col>
                 <Col md={4} className="text-lg-right text-md-left">
                     <CreateBtnBig
@@ -293,9 +296,13 @@ const StudentList = (props) => {
     )
 }
 
+const mapStateToProps = (state) => ({
+    year: state.time.year,
+})
+
 const mapDispatchToProps = {
     getAllUser,
     setModal,
 }
 
-export default connect(null, mapDispatchToProps)(StudentList)
+export default connect(mapStateToProps, mapDispatchToProps)(StudentList)
