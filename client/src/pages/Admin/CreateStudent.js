@@ -8,6 +8,7 @@ import Selected from "react-select"
 import "react-datepicker/dist/react-datepicker.css"
 
 import Schedule from "../../components/Schedule"
+import TeacherOfClass from "../../components/TeacherOfClass"
 import FilterSelected from "../../components/selecteds/FilterSelected"
 import YearSelected from "../../components/selecteds/YearSelected"
 import GradeSelected from "../../components/selecteds/GradeSelected"
@@ -372,13 +373,13 @@ export default function (props) {
     } = state
 
     return (
-        <div>
+        <div className="mb-2">
             <Row>
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
-                        <h3 className="mb-2">
+                        <h5 className="mb-2">
                             {id ? "EDIT" : "CREATE"} STUDENT
-                        </h3>
+                        </h5>
 
                         {id && (
                             <Button
@@ -746,8 +747,8 @@ export default function (props) {
 
             {id && (
                 <>
-                    <Label>Schedule</Label>
                     <Schedule classRoom={classRoom.value} />
+                    <TeacherOfClass classRoom={classRoom.value} />
                 </>
             )}
 

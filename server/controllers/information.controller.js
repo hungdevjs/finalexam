@@ -54,3 +54,44 @@ module.exports.getClassSchedule = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.getStudentTranscript = async (req, res) => {
+    try {
+        const { studentId } = req.params
+        const student = await Parent.findOne({
+            isDeleted: false,
+            _id: studentId,
+        })
+
+        if (!student) {
+            throw new Error("Student doesn't exist")
+        }
+
+        const data = {
+            name: student.studentName,
+            score: student.score,
+        }
+
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getTeacherOfClass = async (req, res) => {
+    try {
+        const { classRoom } = req.params
+        const teachers = await Teacher.find({ isDeleted: false })
+
+        const subjectTeacher = teachers.filter((teacher) =>
+            teacher.teacherOfClass.includes(classRoom)
+        )
+        const mainTeacher = teachers.find((teacher) =>
+            teacher.mainTeacherOfClass.includes(classRoom)
+        )
+
+        res.status(200).json({ subjectTeacher, mainTeacher })
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

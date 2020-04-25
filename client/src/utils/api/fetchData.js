@@ -78,3 +78,9 @@ export const createOrUpdateHighlight = (data) =>
 
 export const getClassSchedule = (classRoom) =>
     request.get(`information/schedule/${classRoom}`)
+
+export const getStudentTranscript = (studentId) =>
+    request.get(`information/transcript/${studentId}`)
+
+export const getTeacherOfClass = (classRoom) =>
+    request.get(`information/teacher/${classRoom}`)

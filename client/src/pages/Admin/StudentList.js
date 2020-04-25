@@ -21,7 +21,6 @@ import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
 
 const StudentList = (props) => {
-    console.log(props)
     const [searchString, setSearchString] = useState("")
     const [optionClass, setOptionClass] = useState(
         props.location?.state?.optionClass || ""
@@ -109,7 +108,7 @@ const StudentList = (props) => {
     }
 
     const renderModal = () => {
-        if (Object.keys(parent).length === 0) return null
+        if (!parent || Object.keys(parent).length === 0) return null
 
         return (
             <ViewModal
@@ -120,14 +119,10 @@ const StudentList = (props) => {
                 } information`}
                 viewOnly
             >
-                {parent.name && <p>Name: {parent.name}</p>}
-                {parent.yearOfBirth && (
-                    <p>Year of birth: {parent.yearOfBirth}</p>
-                )}
-                {parent.phoneNumber && (
-                    <p>Phone number: {parent.phoneNumber}</p>
-                )}
-                {parent.note && <p>Note: {parent.note}</p>}
+                <p>Name: {parent.name || ""}</p>
+                <p>Year of birth: {parent.yearOfBirth || ""}</p>
+                <p>Phone number: {parent.phoneNumber || ""}</p>
+                <p>Note: {parent.note || ""}</p>
             </ViewModal>
         )
     }

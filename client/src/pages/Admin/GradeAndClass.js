@@ -69,8 +69,8 @@ function GradeAndClass(props) {
                             </thead>
                             <tbody>
                                 {grades.map((grade, index) => (
-                                    <>
-                                        <tr key={index}>
+                                    <React.Fragment key={index}>
+                                        <tr>
                                             <th
                                                 rowSpan={grade.classRoom.length}
                                             >
@@ -121,9 +121,9 @@ function GradeAndClass(props) {
                                                 </div>
                                             </td>
                                         </tr>
-                                        {grade.classRoom.map((room, index) =>
-                                            index > 0 ? (
-                                                <tr key={index}>
+                                        {grade.classRoom.map((room, i) =>
+                                            i > 0 ? (
+                                                <tr key={i}>
                                                     <td>{room.room}</td>
                                                     <td>
                                                         <NewTabLink
@@ -168,7 +168,7 @@ function GradeAndClass(props) {
                                                 </tr>
                                             ) : null
                                         )}
-                                    </>
+                                    </React.Fragment>
                                 ))}
                             </tbody>
                         </Table>

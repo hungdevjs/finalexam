@@ -11,7 +11,7 @@ const Schedule = require("./models/schedule.model")
 const Grade = require("./models/grade.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam8?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam9?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -180,6 +180,68 @@ for (const room of classRoom) {
                 note: "Ghi chú mặc định của mẹ",
             },
             isDeleted: false,
+            score: {
+                math: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                literature: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                english: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                physics: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                chemistry: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                biology: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                geography: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                history: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                law: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                music: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                art: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+                sport: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                },
+            },
         }
         createStudent(data)
         id++

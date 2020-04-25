@@ -59,11 +59,11 @@ const CreateTeacher = (props) => {
                 props.setFieldValue("phoneNumber", data.phoneNumber)
                 props.setFieldValue(
                     "mainTeacher",
-                    data.mainTeacherOfClass.length > 0,
+                    data.mainTeacherOfClass.length > 0
                 )
                 props.setFieldValue(
                     "mainTeacherOfClass",
-                    data.mainTeacherOfClass,
+                    data.mainTeacherOfClass
                 )
                 props.setFieldValue("subject", data.subject)
                 props.setFieldValue("teacherOfClass", data.teacherOfClass)
@@ -84,24 +84,13 @@ const CreateTeacher = (props) => {
     } = props.values
 
     return (
-        <Form>
+        <Form className="mb-2">
             <Row>
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
-                        <h3 className="mb-2">
+                        <h5 className="mb-2">
                             {id ? "EDIT" : "CREATE"} TEACHER
-                        </h3>
-                        {id && (
-                            <Button
-                                color="link"
-                                className="pl-0"
-                                onClick={() =>
-                                    history.push(`/teacher/transcript/${id}`)
-                                }
-                            >
-                                View transcript
-                            </Button>
-                        )}
+                        </h5>
                     </div>
 
                     <BackBtn title="home" onClick={() => history.push("/")} />
@@ -201,12 +190,12 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacher",
-                                        e.target.checked,
+                                        e.target.checked
                                     )
                                     if (!e.target.checked) {
                                         props.setFieldValue(
                                             "mainTeacherOfClass",
-                                            [],
+                                            []
                                         )
                                     }
                                 }}
@@ -220,7 +209,7 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacherOfClass",
-                                        e ? e.map((item) => item.value) : [],
+                                        e ? e.map((item) => item.value) : []
                                     )
                                 }}
                                 value={
@@ -263,7 +252,7 @@ const CreateTeacher = (props) => {
                             onChange={(e) => {
                                 props.setFieldValue(
                                     "teacherOfClass",
-                                    e ? e.map((item) => item.value) : [],
+                                    e ? e.map((item) => item.value) : []
                                 )
                             }}
                             value={
