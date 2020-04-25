@@ -16,8 +16,9 @@ import FilterSelected from "../../components/selecteds/FilterSelected"
 import Feedback from "../../components/common/Feedback"
 import LabelRequired from "../../components/common/LabelRequired"
 import AllClassSelected from "../../components/selecteds/AllClassSelected"
-
 import BackBtn from "../../components/buttons/BackBtn"
+
+import Schedule from "../../components/Schedule"
 
 import history from "../../config/history"
 import renderNoti from "../../utils/renderNoti"
@@ -165,7 +166,9 @@ const CreateTeacher = (props) => {
                             <Feedback>{props.errors.email}</Feedback>
                         )}
                     </FormGroup>
+                </Col>
 
+                <Col md={6}>
                     <FormGroup>
                         <LabelRequired>Phone number</LabelRequired>
                         <Field
@@ -178,9 +181,7 @@ const CreateTeacher = (props) => {
                             <Feedback>{props.errors.phoneNumber}</Feedback>
                         )}
                     </FormGroup>
-                </Col>
 
-                <Col md={6}>
                     <FormGroup className="d-flex flex-column">
                         <div className="d-flex">
                             <Label className="mr-2">Main teacher</Label>
@@ -270,6 +271,8 @@ const CreateTeacher = (props) => {
                     </FormGroup>
                 </Col>
             </Row>
+
+            {id && <Schedule teacherId={id} />}
 
             <Button color="success" onClick={props.handleSubmit}>
                 {id ? "Update" : "Create"}

@@ -95,3 +95,57 @@ module.exports.getTeacherOfClass = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.getTeacherSchedule = async (req, res) => {
+    try {
+        const { teacherId } = req.params
+
+        const teacher = await Teacher.findOne({
+            isDeleted: false,
+            _id: teacherId,
+        })
+
+        if (!teacher) {
+            throw new Error("Teacher doesn't exist")
+        }
+
+        const { teacherOfClass, subject, _id, name } = teacher
+        const week = ["mon", "tue", "wed", "thu", "fri"]
+
+        let teacherSchedule = {
+            mon: new Array(5).fill(""),
+            tue: new Array(5).fill(""),
+            wed: new Array(5).fill(""),
+            thu: new Array(5).fill(""),
+            fri: new Array(5).fill(""),
+        }
+
+        for (const classRoom of teacherOfClass) {
+            const room = await Schedule.findOne({
+                isDeleted: false,
+                classRoom,
+            })
+
+            week.map((item) => {
+                if (room.schedule[item].includes(subject)) {
+                    teacherSchedule[item] = room.schedule[item].map((sj) => {
+                        if (sj === subject) {
+                            return room.classRoom
+                        }
+                        return ""
+                    })
+                }
+            })
+        }
+
+        const data = {
+            _id,
+            name,
+            schedule: teacherSchedule,
+        }
+
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

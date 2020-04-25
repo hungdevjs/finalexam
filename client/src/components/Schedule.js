@@ -2,14 +2,17 @@ import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { Table, Row, Col, Label, Alert, Button } from "reactstrap"
 
-import { getClassSchedule } from "../utils/api/fetchData"
+import { getClassSchedule, getTeacherSchedule } from "../utils/api/fetchData"
 
-const Schedule = ({ classRoom, role }) => {
+const Schedule = ({ classRoom, role, teacherId }) => {
     const [data, setData] = useState({})
 
     useEffect(() => {
-        if (classRoom) {
+        if (classRoom && !teacherId) {
             getClassSchedule(classRoom).then((res) => setData(res.data))
+        }
+        if (teacherId) {
+            getTeacherSchedule(teacherId).then((res) => setData(res.data))
         }
     }, [classRoom])
 
@@ -17,7 +20,12 @@ const Schedule = ({ classRoom, role }) => {
         <div className="mb-2">
             <Row>
                 <Col md={12}>
-                    <Label>Schedule of class {classRoom}</Label>
+                    {!teacherId ? (
+                        <Label>Schedule of class {classRoom}</Label>
+                    ) : (
+                        <Label>Schedule of teacher {data.name}</Label>
+                    )}
+
                     {data &&
                     data.schedule &&
                     Object.keys(data.schedule).length > 0 ? (
@@ -41,7 +49,10 @@ const Schedule = ({ classRoom, role }) => {
                                             "thu",
                                             "fri",
                                         ].map((item, index) => (
-                                            <td key={index}>
+                                            <td
+                                                key={index}
+                                                style={{ height: "33.33px" }}
+                                            >
                                                 {data.schedule[item][number]}
                                             </td>
                                         ))}
@@ -52,9 +63,11 @@ const Schedule = ({ classRoom, role }) => {
                     ) : (
                         <>
                             <Alert color="primary">
-                                This class doesn't have a schedule
+                                {`This ${
+                                    !teacherId ? "class" : "teacher"
+                                } doesn't have a schedule`}
                             </Alert>
-                            {role === "admin" && (
+                            {role === "admin" && !teacherId && (
                                 <Button color="success">Create schedule</Button>
                             )}
                         </>

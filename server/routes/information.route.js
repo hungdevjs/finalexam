@@ -17,4 +17,10 @@ router.get("/transcript/:studentId", controller.getStudentTranscript)
 
 router.get("/teacher/:classRoom", controller.getTeacherOfClass)
 
+router.get(
+    "/teacher/schedule/:teacherId",
+    authAdminTeacher,
+    controller.getTeacherSchedule
+)
+
 module.exports = router

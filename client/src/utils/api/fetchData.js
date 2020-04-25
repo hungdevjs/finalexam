@@ -84,3 +84,6 @@ export const getStudentTranscript = (studentId) =>
 
 export const getTeacherOfClass = (classRoom) =>
     request.get(`information/teacher/${classRoom}`)
+
+export const getTeacherSchedule = (teacherId) =>
+    request.get(`information/teacher/schedule/${teacherId}`)
