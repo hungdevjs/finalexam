@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Router, Route } from "react-router-dom"
+import { Router, Route, Switch } from "react-router-dom"
 import history from "../config/history"
 import { connect } from "react-redux"
 import styled from "styled-components"
@@ -40,10 +40,13 @@ function Layout(props) {
             <div style={{ zIndex: 9999 }}>{props.role && <Header />}</div>
             <ContentContainer {...props}>
                 <Router history={history}>
-                    {routes.map((route) => (
-                        <PrivateRoute key={route.path} {...route} />
-                    ))}
-                    <Route path="/login" exact component={Login} />
+                    <Switch>
+                        {routes.map((route) => (
+                            <PrivateRoute exact key={route.path} {...route} />
+                        ))}
+                        <Route path="/login" exact component={Login} />
+                        <Route component={() => <h1>404</h1>} />
+                    </Switch>
                 </Router>
             </ContentContainer>
         </div>

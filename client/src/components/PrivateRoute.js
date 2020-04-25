@@ -1,8 +1,24 @@
-import React, { useEffect } from "react"
-import { Route, Redirect } from "react-router-dom"
+import React, { useEffect, useState } from "react"
+import { Route } from "react-router-dom"
 import { connect } from "react-redux"
 
-const RedirectRoute = () => <Redirect to="/" />
+const CheckPermission = () => {
+    const [canAccess, setPermission] = useState(true)
+    useEffect(() => {
+        setTimeout(() => {
+            setPermission(false)
+        }, 5000)
+    }, [])
+
+    return (
+        <div>
+            {canAccess && <i className="fas fa-spinner fa-pulse"></i>}
+            {canAccess
+                ? " Checking permission..."
+                : " You don't have permission to view this page"}
+        </div>
+    )
+}
 
 // check if user has role to view this page
 const render = (props) => {
@@ -10,7 +26,7 @@ const render = (props) => {
         (Object.keys(props.userInformation).length > 0 &&
             props.roles.includes(props.userInformation.role))
         ? props.component
-        : RedirectRoute
+        : CheckPermission
 }
 
 function PrivateRoute(props) {
