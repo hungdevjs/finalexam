@@ -6,6 +6,7 @@ import StudentList from "../pages/Admin/StudentList"
 import TeacherList from "../pages/Admin/TeacherList"
 import CreateHighlight from "../pages/CreateHighlight"
 import Transcript from "../pages/Transcript"
+import TimeInfo from "../pages/Admin/TimeInfo"
 
 export default [
     { path: "/", component: Home },
@@ -21,5 +22,10 @@ export default [
         path: "/student/transcript/:studentId",
         component: Transcript,
         roles: ["admin", "teacher"],
+    },
+    {
+        path: "/timeInfo",
+        component: TimeInfo,
+        roles: ["admin"],
     },
 ]

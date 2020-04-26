@@ -30,4 +30,10 @@ export default [
         icon: "fas fa-school",
         roles: ["admin"],
     },
+    {
+        path: "/timeInfo",
+        name: "Time info",
+        icon: "fas fa-info",
+        roles: ["admin"],
+    },
 ]
