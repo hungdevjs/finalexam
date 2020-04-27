@@ -4,7 +4,7 @@ import { Table, Row, Col, Label, Alert, Button } from "reactstrap"
 
 import { getClassSchedule, getTeacherSchedule } from "../utils/api/fetchData"
 
-const Schedule = ({ classRoom, role, teacherId, year }) => {
+const Schedule = ({ classRoom, role, teacherId, time }) => {
     const [data, setData] = useState({})
 
     useEffect(() => {
@@ -23,12 +23,21 @@ const Schedule = ({ classRoom, role, teacherId, year }) => {
                     {!teacherId ? (
                         <Label>
                             Schedule of class {classRoom}{" "}
-                            {year && `${year}-${year + 1}`}
+                            {time.year &&
+                                time.semester &&
+                                `${time.year}-${time.year + 1} ${
+                                    time.semester
+                                }`}{" "}
+                            {}
                         </Label>
                     ) : (
                         <Label>
                             Schedule of teacher {data.name}{" "}
-                            {year && `${year}-${year + 1}`}
+                            {time.year &&
+                                time.semester &&
+                                `${time.year}-${time.year + 1} ${
+                                    time.semester
+                                }`}
                         </Label>
                     )}
 
@@ -86,7 +95,7 @@ const Schedule = ({ classRoom, role, teacherId, year }) => {
 
 const mapStateToProps = (state) => ({
     role: state.user.userInformation.role,
-    year: state.time.year,
+    time: state.time,
 })
 
 export default connect(mapStateToProps, null)(Schedule)

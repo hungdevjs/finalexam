@@ -8,7 +8,7 @@ import { subjects } from "../utils/constant"
 
 import ViewModal from "../components/modal/ViewModal"
 
-const TeacherOfClass = ({ classRoom, year }) => {
+const TeacherOfClass = ({ classRoom, time }) => {
     const [data, setData] = useState({})
     const [isOpen, toggle] = useState(false)
     const [currentTeacher, setCurrentTeacher] = useState({})
@@ -54,7 +54,9 @@ const TeacherOfClass = ({ classRoom, year }) => {
                 <Col md={12}>
                     <Label>
                         Teacher list of class {classRoom}{" "}
-                        {year && `${year}-${year + 1}`}
+                        {time.year &&
+                            time.semester &&
+                            `${time.year}-${time.year + 1} ${time.semester}`}
                     </Label>
                     {data && Object.keys(data).length > 0 && (
                         <Table bordered striped hover size="sm" responsive>
@@ -108,7 +110,7 @@ const TeacherOfClass = ({ classRoom, year }) => {
 }
 
 const mapStateToProps = (state) => ({
-    year: state.time.year,
+    time: state.time,
 })
 
 export default connect(mapStateToProps, null)(TeacherOfClass)

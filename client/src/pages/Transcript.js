@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { connect } from "react-redux"
 import { Table, Row, Col, Label } from "reactstrap"
 
 import history from "../config/history"
@@ -6,12 +7,8 @@ import { getStudentTranscript } from "../utils/api/fetchData"
 import BackBtn from "../components/buttons/BackBtn"
 import { subjects } from "../utils/constant"
 
-export default (props) => {
-    const {
-        match: {
-            params: { studentId },
-        },
-    } = props
+const Transcript = (props) => {
+    const studentId = props.match?.params?.studentId
     const [data, setData] = useState([])
     const subjectName = [
         "math",
@@ -29,7 +26,8 @@ export default (props) => {
     ]
 
     useEffect(() => {
-        getStudentTranscript(studentId).then((res) => {
+        const id = studentId || props.studentId
+        getStudentTranscript(id).then((res) => {
             if (
                 res.data &&
                 res.data.score &&
@@ -46,26 +44,51 @@ export default (props) => {
 
     return (
         <div className="mb-2">
-            <Row>
-                <Col md={8} className="d-flex align-items-start">
-                    <h5 className="flex-grow-1">TRANSCRIPT</h5>
-                    <BackBtn
-                        title="detail"
-                        onClick={() =>
-                            history.push(`/user/student/edit/${studentId}`)
-                        }
-                    />
-                </Col>
-            </Row>
-            <Row className="mb-2">
-                <Col md={12}>
-                    <Label>Student name: {data?.name}</Label>
-                </Col>
-            </Row>
+            {!props.isComponent && (
+                <>
+                    <Row>
+                        <Col md={8} className="d-flex align-items-start">
+                            <h5 className="flex-grow-1">
+                                TRANSCRIPT{" "}
+                                {props.time.year &&
+                                    props.time.semester &&
+                                    `${props.time?.year}-${
+                                        props.time?.year + 1
+                                    } ${props.time?.semester}`}
+                            </h5>
+                            <BackBtn
+                                title="detail"
+                                onClick={() =>
+                                    history.push(
+                                        `/user/student/edit/${studentId}`
+                                    )
+                                }
+                            />
+                        </Col>
+                    </Row>
+
+                    <Row className="mb-2">
+                        <Col md={12}>
+                            <Label>Student name: {data?.name}</Label>
+                        </Col>
+                    </Row>
+                </>
+            )}
+
+            {props.isComponent && (
+                <Label>
+                    Transcript of {data?.name}{" "}
+                    {props.time.year &&
+                        props.time.semester &&
+                        `${props.time.year}-${props.time.year + 1} ${
+                            props.time.semester
+                        }`}
+                </Label>
+            )}
 
             {data && data.score && Object.keys(data.score).length > 0 && (
                 <Row className="mb-2">
-                    <Col md={8}>
+                    <Col md={props.isComponent ? 12 : 8}>
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
@@ -95,3 +118,9 @@ export default (props) => {
         </div>
     )
 }
+
+const mapStateToProps = (state) => ({
+    time: state.time,
+})
+
+export default connect(mapStateToProps, null)(Transcript)

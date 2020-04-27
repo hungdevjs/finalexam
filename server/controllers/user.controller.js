@@ -30,6 +30,7 @@ module.exports.getUserInformation = (req, res) => {
             case "admin":
                 return res.status(200).json({
                     data: {
+                        _id: userInfo._id,
                         email: userInfo.email,
                         role: "admin",
                     },
@@ -38,6 +39,7 @@ module.exports.getUserInformation = (req, res) => {
             case "teacher":
                 return res.status(200).json({
                     data: {
+                        _id: userInfo._id,
                         name: userInfo.name,
                         email: userInfo.email,
                         phoneNumber: userInfo.phoneNumber,
@@ -53,9 +55,17 @@ module.exports.getUserInformation = (req, res) => {
             case "parent":
                 return res.status(200).json({
                     data: {
+                        _id: userInfo._id,
                         studentId: userInfo.studentId,
                         studentName: userInfo.studentName,
-                        class: userInfo.class,
+                        classRoom: userInfo.classRoom,
+                        gender: userInfo.gender,
+                        grade: userInfo.grade,
+                        dateOfBirth: userInfo.dateOfBirth,
+                        address: userInfo.address,
+                        note: userInfo.note,
+                        father: userInfo.father,
+                        mother: userInfo.mother,
                         role: "parent",
                     },
                 })
@@ -89,6 +99,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             )
                         ) {
                             const data = {
+                                _id: admin._id,
                                 email: admin.email,
                                 role: "admin",
                             }
@@ -130,6 +141,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             )
                         ) {
                             const data = {
+                                _id: teacher._id,
                                 name: teacher.name,
                                 email: teacher.email,
                                 phoneNumber: teacher.phoneNumber,
@@ -175,9 +187,17 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                             )
                         ) {
                             const data = {
+                                _id: student._id,
                                 studentId: student.studentId,
                                 studentName: student.studentName,
-                                class: student.class,
+                                classRoom: student.classRoom,
+                                gender: student.gender,
+                                grade: student.grade,
+                                dateOfBirth: student.dateOfBirth,
+                                address: student.address,
+                                note: student.note,
+                                father: student.father,
+                                mother: student.mother,
                                 role: "parent",
                             }
 
