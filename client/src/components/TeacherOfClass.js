@@ -64,7 +64,12 @@ const TeacherOfClass = ({ classRoom, time }) => {
                                 <tr>
                                     {["Main teacher", ...subjects].map(
                                         (item, index) => (
-                                            <th key={index}>{item}</th>
+                                            <th
+                                                key={index}
+                                                className="align-top"
+                                            >
+                                                {item}
+                                            </th>
                                         )
                                     )}
                                 </tr>

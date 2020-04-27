@@ -9,7 +9,7 @@ import { deleteHighlight } from "../utils/api/fetchData"
 import renderNoti from "../utils/renderNoti"
 import setModal from "../redux/action/setModal"
 
-const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
+const HighlightDetail = ({ highlight, afterDelete, setModal, role }) => {
     const { _id, title, content, time } = highlight
 
     const removeHighlight = (id) => {
@@ -61,7 +61,9 @@ const HighlightDetail = ({ highlight, afterDelete, setModal }) => {
                     <Link to={`highlight/edit/${_id}`} className="flex-grow-1">
                         <b>{title}</b>
                     </Link>
-                    <DeleteBtn onClick={() => removeHighlight(_id)} />
+                    {role === "admin" && (
+                        <DeleteBtn onClick={() => removeHighlight(_id)} />
+                    )}
                 </div>
                 <p className="mb-2" style={{ fontSize: "0.7rem" }}>
                     Last updated at{" "}

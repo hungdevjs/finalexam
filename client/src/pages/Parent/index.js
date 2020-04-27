@@ -6,8 +6,8 @@ import Transcript from "../Transcript"
 import Schedule from "../../components/Schedule"
 import TeacherOfClass from "../../components/TeacherOfClass"
 import NewTabLink from "../../components/common/NewTabLink"
-
-function Parent({ user }) {
+import Highlight from "../../components/Hightlight"
+const Parent = ({ user }) => {
     return (
         <div className="mb-2">
             <Row>
@@ -16,6 +16,8 @@ function Parent({ user }) {
                     <h6>StudentID: {user?.studentId}</h6>
                     <h6>Class: {user?.classRoom}</h6>
                     <NewTabLink to="/profile" title="View profile" />
+                    <br />
+                    <a href="#highlight">Highlights</a>
                 </Col>
 
                 <Col md={12}>
@@ -28,6 +30,10 @@ function Parent({ user }) {
 
                 <Col md={12}>
                     <TeacherOfClass classRoom={user.classRoom} />
+                </Col>
+
+                <Col md={12} id="highlight">
+                    <Highlight />
                 </Col>
             </Row>
         </div>

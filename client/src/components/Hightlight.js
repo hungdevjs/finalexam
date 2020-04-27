@@ -19,7 +19,7 @@ const HighlightContainer = styled.div`
     overflow: auto;
 `
 
-const Highlight = (props) => {
+const Highlight = ({ role, getAllHighlight }) => {
     const [data, setData] = useState([])
     const [searchString, setSearchString] = useState("")
     const [currentPage, setCurrentPage] = useState(1)
@@ -32,7 +32,7 @@ const Highlight = (props) => {
     }, [currentPage])
 
     const getData = () => {
-        props.getAllHighlight(searchString, currentPage).then((res) => {
+        getAllHighlight(searchString, currentPage).then((res) => {
             setData((res && res.data) || [])
             setTotalPage((res && res.totalPage) || 1)
         })
@@ -45,7 +45,7 @@ const Highlight = (props) => {
             <Row className="mb-2 d-flex align-items-start">
                 <Col md={2} className="mb-2 d-flex align-items-center">
                     <h5 className="mb-2 flex-grow-1">Highlights</h5>
-                    {isPhone && (
+                    {isPhone && role === "admin" && (
                         <CreateBtn
                             onClick={() => history.push("/highlight/create")}
                         />
@@ -63,7 +63,7 @@ const Highlight = (props) => {
                         }}
                     />
                 </Col>
-                {!isPhone && (
+                {!isPhone && role === "admin" && (
                     <Col
                         md={2}
                         className="d-flex align-items-start justify-content-end"
@@ -88,6 +88,7 @@ const Highlight = (props) => {
                                     }
                                     setCurrentPage(1)
                                 }}
+                                role={role}
                             />
                         </Col>
                     ))}
@@ -112,8 +113,12 @@ const Highlight = (props) => {
     )
 }
 
+const mapStateToProps = (state) => ({
+    role: state.user.userInformation.role,
+})
+
 const mapDispatchToProps = {
     getAllHighlight,
 }
 
-export default connect(null, mapDispatchToProps)(Highlight)
+export default connect(mapStateToProps, mapDispatchToProps)(Highlight)

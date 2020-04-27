@@ -7,12 +7,6 @@ export default [
         roles: ["teacher", "parent"],
     },
     {
-        path: "/schedule",
-        name: "Schedule",
-        icon: "far fa-calendar-alt",
-        roles: ["teacher"],
-    },
-    {
         path: "/students",
         name: "List students",
         icon: "fas fa-users",

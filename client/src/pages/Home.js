@@ -25,8 +25,10 @@ function Home(props) {
             <div className="mt-1 mb-2">
                 <b>
                     {`${moment(new Date()).format("DD/MM/YYYY")} - Year: ${
-                        time?.year
-                    }-${time?.year + 1} - Semester: ${time?.semester}`}
+                        time.year ? time.year : ""
+                    }-${time.year ? time.year + 1 : ""} - Semester: ${
+                        time.semester ? time.semester : ""
+                    }`}
                 </b>
             </div>
             {role === "admin" ? (
