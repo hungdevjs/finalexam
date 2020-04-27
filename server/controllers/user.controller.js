@@ -706,3 +706,73 @@ module.exports.updateProfile = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.teacherGetAllStudent = async (req, res) => {
+    try {
+        const { searchString, filterClass, currentPage } = req.query
+        const { id } = req
+
+        let totalPage = 1
+        const teacher = await Teacher.findOne({ _id: id, isDeleted: false })
+        if (!teacher) {
+            throw new Error("Teacher doesn't exist")
+        }
+
+        const classRooms = [
+            ...new Set([
+                ...teacher.mainTeacherOfClass,
+                ...teacher.teacherOfClass,
+            ]),
+        ]
+
+        const students = (await Parent.find({ isDeleted: false })) || []
+        let data = students
+            .filter((student) => classRooms.includes(student.classRoom))
+            .sort((student1, student2) => {
+                return student1.studentName.toLowerCase() <
+                    student2.studentName.toLowerCase()
+                    ? -1
+                    : 1
+            })
+        const totalUser = data.length
+
+        if (searchString) {
+            data = data.filter((student) =>
+                student.studentName
+                    .toUpperCase()
+                    .includes(searchString.toUpperCase())
+            )
+        }
+
+        if (filterClass) {
+            data = data.filter((student) => student.classRoom === filterClass)
+        }
+
+        if (currentPage > 0) {
+            totalPage = Math.ceil(data.length / pageSize) || 1
+            data = data.slice(
+                (currentPage - 1) * pageSize,
+                currentPage * pageSize
+            )
+        }
+
+        res.status(200).json({
+            data: data.map((student) => ({
+                id: student._id,
+                classRoom: student.classRoom,
+                grade: student.grade,
+                gender: student.gender,
+                studentName: student.studentName,
+                father: student.father,
+                mother: student.mother,
+                note: student.note,
+                address: student.address,
+                dateOfBirth: student.dateOfBirth,
+            })),
+            totalPage,
+            totalUser,
+        })
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

@@ -10,7 +10,7 @@ export default [
         path: "/students",
         name: "List students",
         icon: "fas fa-users",
-        roles: ["admin"],
+        roles: ["admin", "teacher"],
     },
     {
         path: "/teachers",

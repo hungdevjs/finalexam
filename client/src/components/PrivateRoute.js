@@ -5,9 +5,11 @@ import { connect } from "react-redux"
 const CheckPermission = () => {
     const [canAccess, setPermission] = useState(true)
     useEffect(() => {
-        setTimeout(() => {
+        const checkPermission = setTimeout(() => {
             setPermission(false)
         }, 5000)
+
+        return clearTimeout(checkPermission)
     }, [])
 
     return (

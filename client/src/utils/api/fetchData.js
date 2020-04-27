@@ -33,6 +33,19 @@ export const getAllUser = (
         })
     )
 
+export const teacherGetAllStudent = (
+    searchString = "",
+    filterClass = "",
+    currentPage = 0
+) =>
+    request.get(
+        renderParams("user/students", {
+            searchString,
+            filterClass,
+            currentPage,
+        })
+    )
+
 export const getAllClass = () => request.get("information/getAllClass")
 
 export const getAllSubject = () => request.get("information/getAllSubject")

@@ -16,11 +16,15 @@ import Pagination from "../../components/common/Pagination"
 import ViewModal from "../../components/modal/ViewModal"
 
 import getAllUser from "../../redux/action/getAllUser"
+import teacherGetAllStudent from "../../redux/action/teacherGetAllStudent"
 import setModal from "../../redux/action/setModal"
 import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
 
 const StudentList = (props) => {
+    const { user } = props
+    const { role } = user
+
     const [searchString, setSearchString] = useState("")
     const [optionClass, setOptionClass] = useState(
         props.location?.state?.optionClass || ""
@@ -38,14 +42,21 @@ const StudentList = (props) => {
 
     const getData = async () => {
         try {
-            const res = await props.getAllUser(
-                "student",
-                searchString,
-                optionClass,
-                optionGrade,
-                "",
-                currentPage
-            )
+            const res = await (role === "admin"
+                ? props.getAllUser(
+                      "student",
+                      searchString,
+                      optionClass,
+                      optionGrade,
+                      "",
+                      currentPage
+                  )
+                : props.teacherGetAllStudent(
+                      searchString,
+                      optionClass,
+                      currentPage
+                  ))
+
             setData(res.data)
             setTotalPage(res.totalPage)
             setTotalUser(res.totalUser)
@@ -87,6 +98,14 @@ const StudentList = (props) => {
     }
 
     useEffect(() => {
+        if (role === "teacher") {
+            setFilterClassStudent(
+                user?.teacherOfClass?.map((item) => ({
+                    value: item,
+                    label: item,
+                }))
+            )
+        }
         getData()
         //eslint-disable-next-line
     }, [optionClass, optionGrade, currentPage])
@@ -146,11 +165,13 @@ const StudentList = (props) => {
                     </h5>
                 </Col>
                 <Col md={4} className="text-lg-right text-md-left">
-                    <CreateBtnBig
-                        title="student"
-                        className="mr-2"
-                        onClick={() => history.push("/user/student/create")}
-                    />
+                    {role === "admin" && (
+                        <CreateBtnBig
+                            title="student"
+                            className="mr-2"
+                            onClick={() => history.push("/user/student/create")}
+                        />
+                    )}
                     <BackBtn title="home" onClick={() => history.push("/")} />
                 </Col>
             </Row>
@@ -167,14 +188,16 @@ const StudentList = (props) => {
                         }}
                     />
                 </Col>
-                <Col md={3}>
-                    <GradeSelected
-                        isClearable
-                        className="mb-2"
-                        placeholder="Filter grade"
-                        onChange={(e) => onGradeSelected(e)}
-                    />
-                </Col>
+                {role === "admin" && (
+                    <Col md={3}>
+                        <GradeSelected
+                            isClearable
+                            className="mb-2"
+                            placeholder="Filter grade"
+                            onChange={(e) => onGradeSelected(e)}
+                        />
+                    </Col>
+                )}
                 <Col md={3}>
                     <FilterSelected
                         isClearable
@@ -194,7 +217,9 @@ const StudentList = (props) => {
                                 label: optionClass,
                             }
                         }
-                        isDisabled={filterClassStudent.length === 0}
+                        isDisabled={
+                            role === "admin" && filterClassStudent.length === 0
+                        }
                     />
                 </Col>
             </Row>
@@ -261,20 +286,31 @@ const StudentList = (props) => {
                                         <td>{student.address}</td>
                                         <td>{student.note}</td>
                                         <td className="text-center">
-                                            <DeleteBtn
-                                                onClick={() => {
-                                                    props.setModal({
-                                                        isOpen: true,
-                                                        message:
-                                                            "Do you want to delete this student ?",
-                                                        type: "warning",
-                                                        onConfirm: () =>
-                                                            deleteStudent(
-                                                                student.id
-                                                            ),
-                                                    })
-                                                }}
-                                            />
+                                            {role === "admin" ? (
+                                                <DeleteBtn
+                                                    onClick={() => {
+                                                        props.setModal({
+                                                            isOpen: true,
+                                                            message:
+                                                                "Do you want to delete this student ?",
+                                                            type: "warning",
+                                                            onConfirm: () =>
+                                                                deleteStudent(
+                                                                    student.id
+                                                                ),
+                                                        })
+                                                    }}
+                                                />
+                                            ) : (
+                                                <NewTabLink
+                                                    title={
+                                                        <div title="View transcript">
+                                                            <i className="fas fa-table"></i>
+                                                        </div>
+                                                    }
+                                                    to={`/student/transcript/${student.id}`}
+                                                />
+                                            )}
                                         </td>
                                     </tr>
                                 ))}
@@ -298,10 +334,12 @@ const StudentList = (props) => {
 
 const mapStateToProps = (state) => ({
     year: state.time.year,
+    user: state.user.userInformation,
 })
 
 const mapDispatchToProps = {
     getAllUser,
+    teacherGetAllStudent,
     setModal,
 }
 

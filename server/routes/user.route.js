@@ -1,7 +1,7 @@
 const express = require("express")
 const auth = require("../middlewares/auth")
 
-const { authAdmin, authTeacherStudent } = auth
+const { authAdmin, authTeacherStudent, authTeacher } = auth
 
 const router = express.Router()
 
@@ -24,5 +24,7 @@ router.post("/teacher/create", authAdmin, controller.createTeacher)
 router.put("/teacher/:id", authAdmin, controller.updateTeacher)
 
 router.put("/profile/:role/:id", authTeacherStudent, controller.updateProfile)
+
+router.get("/students", authTeacher, controller.teacherGetAllStudent)
 
 module.exports = router
