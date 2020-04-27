@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Table, Row, Col } from "reactstrap"
+import { Table, Row, Col, Button } from "reactstrap"
 
 import getAllGradeWithMainTeacher from "../../redux/action/getAllGradeWithMainTeacher"
 import renderNoti from "../../utils/renderNoti"
@@ -42,6 +42,11 @@ function GradeAndClass(props) {
             viewOnly
         >
             <Schedule classRoom={currentClass} />
+
+            <NewTabLink
+                title="Change schedule"
+                to={`/changeSchedule/${currentClass}`}
+            />
         </ViewModal>
     )
 

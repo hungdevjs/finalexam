@@ -7,6 +7,7 @@ import TeacherList from "../pages/Admin/TeacherList"
 import CreateHighlight from "../pages/CreateHighlight"
 import Transcript from "../pages/Transcript"
 import TimeInfo from "../pages/Admin/TimeInfo"
+import EditSchedule from "../pages/Admin/EditSchedule"
 
 export default [
     { path: "/", component: Home },
@@ -26,6 +27,11 @@ export default [
     {
         path: "/timeInfo",
         component: TimeInfo,
+        roles: ["admin"],
+    },
+    {
+        path: "/changeSchedule/:classRoom",
+        component: EditSchedule,
         roles: ["admin"],
     },
 ]
