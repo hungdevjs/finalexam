@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
 export default (props) => (
-    <a href={props.to} target="blank">
+    <a href={props.to} target="_blank">
         {props.title}
     </a>
-);
+)
