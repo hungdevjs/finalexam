@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoute"
 import Login from "../pages/Login"
 import Navigate from "./Navigate"
 import Header from "./Header"
+import Page404 from "../pages/Page404"
 
 import getUserInformation from "../redux/action/getUserInformation"
 
@@ -45,7 +46,7 @@ function Layout(props) {
                             <PrivateRoute exact key={route.path} {...route} />
                         ))}
                         <Route path="/login" exact component={Login} />
-                        <Route component={() => <h1>404</h1>} />
+                        <Route component={Page404} />
                     </Switch>
                 </Router>
             </ContentContainer>
