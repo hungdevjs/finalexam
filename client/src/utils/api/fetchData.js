@@ -53,6 +53,9 @@ export const updateTeacher = (id, data) =>
 export const updateStudent = (data, id) =>
     request.put(`user/student/${id}`, data)
 
+export const updateProfile = (data, id, role) =>
+    request.put(`user/profile/${role}/${id}`, data)
+
 export const getAllClassOfGrade = (grade) =>
     request.get(`grade/getAllClassOfGrade/${grade}`)
 

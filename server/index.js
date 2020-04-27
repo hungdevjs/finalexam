@@ -1,12 +1,12 @@
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
-const { authUser } = require("./middlewares/auth")
 
 require("dotenv").config()
 
 const app = express()
 const PORT = process.env.PORT || 8000
+const { authUser } = require("./middlewares/auth")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -29,10 +29,10 @@ connection.once("open", () =>
     console.log("MongoDB database connected successfully!")
 )
 
-app.use(authUser)
-
 const logInRoute = require("./routes/logIn.route")
 app.use("/login", logInRoute)
+
+app.use(authUser)
 
 const userRoute = require("./routes/user.route")
 app.use("/user", userRoute)

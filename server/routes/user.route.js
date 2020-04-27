@@ -1,33 +1,28 @@
-const express = require("express");
-const auth = require("../middlewares/auth");
+const express = require("express")
+const auth = require("../middlewares/auth")
 
-const { authAdmin, authAdminTeacher } = auth;
+const { authAdmin, authTeacherStudent } = auth
 
-const router = express.Router();
+const router = express.Router()
 
-const controller = require("../controllers/user.controller");
+const controller = require("../controllers/user.controller")
 
-router.get("/getUserInformation", controller.getUserInformation);
+router.get("/getAllUser", authAdmin, controller.getAllUser)
 
-router.get(
-    "/getUserInformationAndNewAccessToken",
-    controller.getUserInformationAndNewAccessToken
-);
+router.delete("/:role/:id", authAdmin, controller.deleteUser)
 
-router.get("/getAllUser", authAdmin, controller.getAllUser);
+router.post("/student/create", authAdmin, controller.createStudent)
 
-router.delete("/:role/:id", authAdmin, controller.deleteUser);
+router.get("/student/:id", controller.getStudent)
 
-router.post("/student/create", authAdmin, controller.createStudent);
+router.put("/student/:id", authAdmin, controller.updateStudent)
 
-router.get("/student/:id", authAdminTeacher, controller.getStudent);
+router.get("/teacher/:id", authAdmin, controller.getTeacher)
 
-router.put("/student/:id", authAdmin, controller.updateStudent);
+router.post("/teacher/create", authAdmin, controller.createTeacher)
 
-router.get("/teacher/:id", authAdmin, controller.getTeacher);
+router.put("/teacher/:id", authAdmin, controller.updateTeacher)
 
-router.post("/teacher/create", authAdmin, controller.createTeacher);
+router.put("/profile/:role/:id", authTeacherStudent, controller.updateProfile)
 
-router.put("/teacher/:id", authAdmin, controller.updateTeacher);
-
-module.exports = router;
+module.exports = router

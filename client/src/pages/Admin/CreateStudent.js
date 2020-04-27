@@ -18,14 +18,17 @@ import BackBtn from "../../components/buttons/BackBtn"
 import renderNoti from "../../utils/renderNoti"
 
 import validation from "../../utils/validation"
-import { createStudent } from "../../utils/api/fetchData"
-import { updateStudent } from "../../utils/api/fetchData"
-
-import { getStudentData } from "../../utils/api/fetchData"
-import { getAllClassOfGrade } from "../../utils/api/fetchData"
+import {
+    getStudentData,
+    getAllClassOfGrade,
+    createStudent,
+    updateStudent,
+    updateProfile,
+} from "../../utils/api/fetchData"
 
 export default function (props) {
-    const { id } = props.match.params
+    const studentId = props.id
+    const id = props.match?.params?.id || studentId
 
     const genderOptions = [
         { value: true, label: "Male" },
@@ -100,13 +103,15 @@ export default function (props) {
                     studentId,
                 } = res.data
 
-                getAllClassOfGrade(grade).then((res) => {
-                    const options = res.data.map((option) => ({
-                        value: option,
-                        label: option,
-                    }))
-                    setClassOptions(options)
-                })
+                if (!studentId) {
+                    getAllClassOfGrade(grade).then((res) => {
+                        const options = res.data.map((option) => ({
+                            value: option,
+                            label: option,
+                        }))
+                        setClassOptions(options)
+                    })
+                }
 
                 setState({
                     name: {
@@ -314,7 +319,11 @@ export default function (props) {
             return
         }
 
-        let submit = id ? updateStudent : createStudent
+        let submit = id
+            ? studentId
+                ? updateProfile
+                : updateStudent
+            : createStudent
 
         const {
             name,
@@ -349,7 +358,7 @@ export default function (props) {
             },
         }
 
-        submit(data, id)
+        submit(data, id, "parent")
             .then(() =>
                 renderNoti({
                     title: "Success",
@@ -378,10 +387,11 @@ export default function (props) {
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
                         <h5 className="mb-2">
-                            {id ? "EDIT" : "CREATE"} STUDENT
+                            {id ? "EDIT" : "CREATE"}{" "}
+                            {studentId ? "PROFILE" : "STUDENT"}
                         </h5>
 
-                        {id && (
+                        {id && !studentId && (
                             <Button
                                 color="link"
                                 className="pl-0"
@@ -456,6 +466,8 @@ export default function (props) {
                                 Grade <span className="text-danger">*</span>
                             </Label>
                             <GradeSelected
+                                viewOnly={studentId}
+                                isDisabled={studentId}
                                 value={
                                     grade.value && {
                                         label: grade.value,
@@ -512,7 +524,7 @@ export default function (props) {
                                     })
                                 }
                                 onBlur={() => checkSingleInput(classRoom)}
-                                isDisabled={!grade.value}
+                                isDisabled={!grade.value || studentId}
                             />
                             {ErrorMessage(classRoom)}
                         </Col>

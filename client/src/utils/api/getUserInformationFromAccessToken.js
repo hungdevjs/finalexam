@@ -1,3 +1,3 @@
-import request from "../api/request";
+import request from "../api/request"
 
-export default () => request.get("user/getUserInformation");
+export default () => request.get("logIn/getUserInformation")

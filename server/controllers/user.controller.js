@@ -17,221 +17,6 @@ const Teacher = require("../models/teacher.model")
 const Admin = require("../models/admin.model")
 const Grade = require("../models/grade.model")
 
-module.exports.getUserInformation = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
-    try {
-        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
-
-        switch (userInfo.role) {
-            case "admin":
-                return res.status(200).json({
-                    data: {
-                        _id: userInfo._id,
-                        email: userInfo.email,
-                        role: "admin",
-                    },
-                })
-
-            case "teacher":
-                return res.status(200).json({
-                    data: {
-                        _id: userInfo._id,
-                        name: userInfo.name,
-                        email: userInfo.email,
-                        phoneNumber: userInfo.phoneNumber,
-                        yearOfBirth: userInfo.yearOfBirth,
-                        gender: userInfo.gender,
-                        mainTeacherOfClass: userInfo.mainTeacherOfClass,
-                        teacherOfClass: userInfo.teacherOfClass,
-                        subject: userInfo.subject,
-                        role: "teacher",
-                    },
-                })
-
-            case "parent":
-                return res.status(200).json({
-                    data: {
-                        _id: userInfo._id,
-                        studentId: userInfo.studentId,
-                        studentName: userInfo.studentName,
-                        classRoom: userInfo.classRoom,
-                        gender: userInfo.gender,
-                        grade: userInfo.grade,
-                        dateOfBirth: userInfo.dateOfBirth,
-                        address: userInfo.address,
-                        note: userInfo.note,
-                        father: userInfo.father,
-                        mother: userInfo.mother,
-                        role: "parent",
-                    },
-                })
-
-            default:
-                return res.status(401).json("Unthorizated")
-        }
-    } catch (err) {
-        res.status(401).send(err.message)
-    }
-}
-
-module.exports.getUserInformationAndNewAccessToken = (req, res) => {
-    const token = req.headers.authorization
-        ? req.headers.authorization.split(" ")[1]
-        : ""
-
-    try {
-        jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)
-        const userInfo = jwt.decode(token, process.env.REFRESH_TOKEN_SECRET_KEY)
-
-        switch (userInfo.role) {
-            case "admin":
-                return Admin.findOne({ refreshToken: token, isDeleted: false })
-                    .then((admin) => {
-                        if (
-                            admin &&
-                            jwt.verify(
-                                token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY
-                            )
-                        ) {
-                            const data = {
-                                _id: admin._id,
-                                email: admin.email,
-                                role: "admin",
-                            }
-
-                            const access_token = jwt.sign(
-                                data,
-                                process.env.ACCESS_TOKEN_SECRET_KEY,
-                                {
-                                    expiresIn:
-                                        process.env.JWT_ACCESS_TOKEN_LIFE,
-                                }
-                            )
-
-                            res.status(200).json({
-                                data,
-                                access_token,
-                                refresh_token: token,
-                                access_from: new Date().getTime(),
-                            })
-                        } else {
-                            res.status(401).json("Unthorizated")
-                        }
-                    })
-                    .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
-
-            case "teacher":
-                return Teacher.findOne({
-                    refreshToken: token,
-                    isDeleted: false,
-                })
-                    .then((teacher) => {
-                        if (
-                            teacher &&
-                            jwt.verify(
-                                token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY
-                            )
-                        ) {
-                            const data = {
-                                _id: teacher._id,
-                                name: teacher.name,
-                                email: teacher.email,
-                                phoneNumber: teacher.phoneNumber,
-                                yearOfBirth: teacher.yearOfBirth,
-                                gender: teacher.gender,
-                                mainTeacherOfClass: teacher.mainTeacherOfClass,
-                                teacherOfClass: teacher.teacherOfClass,
-                                subject: teacher.subject,
-                                role: "teacher",
-                            }
-
-                            const access_token = jwt.sign(
-                                data,
-                                process.env.ACCESS_TOKEN_SECRET_KEY,
-                                {
-                                    expiresIn:
-                                        process.env.JWT_ACCESS_TOKEN_LIFE,
-                                }
-                            )
-
-                            res.status(200).json({
-                                data,
-                                access_token,
-                                refresh_token: token,
-                                access_from: new Date().getTime(),
-                            })
-                        } else {
-                            res.status(401).json("Unthorizated")
-                        }
-                    })
-                    .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
-
-            case "parent":
-                return Parent.findOne({ refreshToken: token, isDeleted: false })
-                    .then((student) => {
-                        if (
-                            student &&
-                            jwt.verify(
-                                token,
-                                process.env.REFRESH_TOKEN_SECRET_KEY
-                            )
-                        ) {
-                            const data = {
-                                _id: student._id,
-                                studentId: student.studentId,
-                                studentName: student.studentName,
-                                classRoom: student.classRoom,
-                                gender: student.gender,
-                                grade: student.grade,
-                                dateOfBirth: student.dateOfBirth,
-                                address: student.address,
-                                note: student.note,
-                                father: student.father,
-                                mother: student.mother,
-                                role: "parent",
-                            }
-
-                            const access_token = jwt.sign(
-                                data,
-                                process.env.ACCESS_TOKEN_SECRET_KEY,
-                                {
-                                    expiresIn:
-                                        process.env.JWT_ACCESS_TOKEN_LIFE,
-                                }
-                            )
-
-                            res.status(200).json({
-                                data,
-                                access_token,
-                                refresh_token: token,
-                                access_from: new Date().getTime(),
-                            })
-                        } else {
-                            res.status(401).json("Unthorizated")
-                        }
-                    })
-                    .catch((err) => {
-                        res.status(500).send(err.message)
-                    })
-
-            default:
-                return res.status(401).json("Unthorizated")
-        }
-    } catch (err) {
-        res.status(401).send(err.message)
-    }
-}
-
 module.exports.getAllUser = (req, res) => {
     try {
         const {
@@ -844,5 +629,80 @@ module.exports.updateTeacher = async (req, res) => {
         res.status(200).send("Update successfully")
     } catch (err) {
         res.json({ error: err.message })
+    }
+}
+
+module.exports.updateProfile = async (req, res) => {
+    try {
+        const expectedRole = req.params.role
+        const expectedId = req.params.id
+
+        const { role, id } = req
+
+        if (role !== expectedRole || id !== expectedId) {
+            throw new Error("Permission denied")
+        }
+
+        const data = req.body
+
+        switch (role) {
+            case "parent":
+                const student = await Parent.findOne({
+                    _id: id,
+                    isDeleted: false,
+                })
+                if (!student) {
+                    throw new Error("Student doesn't exist")
+                }
+
+                const {
+                    studentName,
+                    gender,
+                    dateOfBirth,
+                    address,
+                    note,
+                    father,
+                    mother,
+                } = data
+
+                if (!validateDate(dateOfBirth)) {
+                    throw new Error("Date of birth is not valid")
+                }
+
+                const updateArr = [
+                    { field: "studentName", value: studentName },
+                    { field: "gender", value: gender },
+                    { field: "dateOfBirth", value: dateOfBirth },
+                    { field: "address", value: address },
+                    { field: "note", value: note },
+                    { field: "father", value: father },
+                    { field: "mother", value: mother },
+                ]
+
+                updateArr.forEach((item) => {
+                    student[item.field] = item.value
+                })
+
+                await student.save()
+                res.status(200).send("Update successfully")
+
+                break
+
+            case "teacher":
+                const teacher = await Teacher.findOne({
+                    _id: id,
+                    isDeleted: false,
+                })
+                if (!teacher) {
+                    throw new Error("Teacher doesn't exist")
+                }
+
+                break
+
+            default:
+                throw new Error("Bad request")
+        }
+    } catch (err) {
+        res.status(500).send(err.message)
     }
 }
