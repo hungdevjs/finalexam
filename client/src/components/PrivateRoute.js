@@ -9,7 +9,7 @@ const CheckPermission = () => {
             setPermission(false)
         }, 5000)
 
-        return clearTimeout(checkPermission)
+        return () => clearTimeout(checkPermission)
     }, [])
 
     return (
