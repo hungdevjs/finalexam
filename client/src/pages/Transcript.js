@@ -145,10 +145,12 @@ const Transcript = (props) => {
                                     } ${props.time?.semester}`}
                             </h5>
                             <BackBtn
-                                title="detail"
+                                title={role === "admin" ? "detail" : "list"}
                                 onClick={() =>
                                     history.push(
-                                        `/user/student/edit/${studentId}`
+                                        role === "admin"
+                                            ? `/user/student/edit/${studentId}`
+                                            : "/students"
                                     )
                                 }
                             />
