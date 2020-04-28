@@ -27,4 +27,6 @@ router.put("/profile/:role/:id", authTeacherStudent, controller.updateProfile)
 
 router.get("/students", authTeacher, controller.teacherGetAllStudent)
 
+router.post("/student/transcript", authTeacher, controller.updateTranscript)
+
 module.exports = router

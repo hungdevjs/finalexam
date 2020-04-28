@@ -256,10 +256,14 @@ const StudentList = (props) => {
                                 {data.map((student, index) => (
                                     <tr key={index}>
                                         <td>
-                                            <NewTabLink
-                                                title={student.studentName}
-                                                to={`/user/student/edit/${student.id}`}
-                                            />
+                                            {role === "admin" ? (
+                                                <NewTabLink
+                                                    title={student.studentName}
+                                                    to={`/user/student/edit/${student.id}`}
+                                                />
+                                            ) : (
+                                                student.studentName
+                                            )}
                                         </td>
                                         <td>
                                             {student.gender ? "Male" : "Female"}

@@ -776,3 +776,42 @@ module.exports.teacherGetAllStudent = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.updateTranscript = async (req, res) => {
+    try {
+        const { id } = req
+        const { studentId, subject } = req.body
+
+        const teacher = await Teacher.findOne({ _id: id, isDeleted: false })
+        if (!teacher) {
+            throw new Error("Teacher doesn't exist")
+        }
+
+        const student = await Parent.findOne({
+            _id: studentId,
+            isDeleted: false,
+        })
+        if (!student) {
+            throw new Error("Student doesn't exist")
+        }
+
+        if (!teacher.teacherOfClass.includes(student.classRoom)) {
+            throw new Error(
+                "Teacher can't change transcript of student of another class"
+            )
+        }
+
+        if (teacher.subject !== subject.subject) {
+            throw new Error(
+                "Teacher can't change transcript of another subject"
+            )
+        }
+
+        student.score[subject.name] = subject.score
+        await student.save()
+
+        res.status(200).send("Update transcript successfully")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

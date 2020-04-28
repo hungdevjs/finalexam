@@ -105,3 +105,6 @@ export const getTeacherSchedule = (teacherId) =>
     request.get(`information/teacher/schedule/${teacherId}`)
 
 export const getSemester = () => request.get("/information/semester")
+
+export const updateTranscript = (data) =>
+    request.post("/user/student/transcript", data)

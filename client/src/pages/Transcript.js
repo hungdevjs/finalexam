@@ -4,11 +4,12 @@ import { Table, Row, Col, Label } from "reactstrap"
 import _ from "lodash"
 
 import history from "../config/history"
-import { getStudentTranscript } from "../utils/api/fetchData"
+import { getStudentTranscript, updateTranscript } from "../utils/api/fetchData"
 import BackBtn from "../components/buttons/BackBtn"
 import { subjects } from "../utils/constant"
 import EditBtn from "../components/buttons/EditBtn"
 import ViewModal from "../components/modal/ViewModal"
+import renderNoti from "../utils/renderNoti"
 
 const Transcript = (props) => {
     const studentId = props.match?.params?.studentId
@@ -33,6 +34,10 @@ const Transcript = (props) => {
     const [isOpen, toggle] = useState(false)
 
     useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
         const id = studentId || props.studentId
         getStudentTranscript(id).then((res) => {
             if (
@@ -47,10 +52,39 @@ const Transcript = (props) => {
                 setData(dataWithSubject)
             }
         })
-    }, [])
+    }
 
-    const updateTranscript = () => {
+    const updateStudentTranscript = async () => {
         // send request to api to update transcript of this student
+        try {
+            const subject = {
+                name: currentSubject?.name,
+                subject: currentSubject?.subject,
+                score: {
+                    x1: currentSubject?.x1,
+                    x2: currentSubject?.x2,
+                    x3: currentSubject?.x3,
+                },
+            }
+            console.log("updating...")
+            const data = { studentId, subject }
+            const res = await updateTranscript(data)
+
+            renderNoti({
+                type: "success",
+                title: "Success",
+                message: "Update transcript successfully",
+            })
+
+            toggle(!isOpen)
+            getData()
+        } catch (err) {
+            renderNoti({
+                type: "danger",
+                title: "Failed",
+                message: "Update transcript failed",
+            })
+        }
     }
 
     const editTranscript = (x, index, e) => {
@@ -71,12 +105,13 @@ const Transcript = (props) => {
             isOpen={isOpen}
             toggle={() => toggle(!isOpen)}
             title={`Edit transcript`}
-            onConfirm={updateTranscript}
+            onConfirm={() => updateStudentTranscript()}
         >
             <Row>
-                <Label className="ml-3">
+                <Col md={12}>Student: {data?.name}</Col>
+                <Col md={12} className="mb-2">
                     Subject: {currentSubject.subject}
-                </Label>
+                </Col>
                 <Col md={12} className="mb-2">
                     x1:
                     {currentSubject?.x1?.map((item, index) => (
@@ -85,7 +120,7 @@ const Transcript = (props) => {
                             style={{ width: "27px" }}
                             key={index}
                             type="number"
-                            defaultValue={item}
+                            defaultValue={item > -1 ? item : null}
                             maxLength={2}
                             onChange={(e) => {
                                 editTranscript("x1", index, e)
@@ -102,7 +137,7 @@ const Transcript = (props) => {
                             style={{ width: "27px" }}
                             key={index}
                             maxLength={2}
-                            defaultValue={item}
+                            defaultValue={item > -1 ? item : null}
                             onChange={(e) => {
                                 editTranscript("x2", index, e)
                             }}
@@ -118,7 +153,7 @@ const Transcript = (props) => {
                             style={{ width: "27px" }}
                             key={index}
                             maxLength={2}
-                            defaultValue={item}
+                            defaultValue={item > -1 ? item : null}
                             onChange={(e) => {
                                 editTranscript("x3", index, e)
                             }}
@@ -215,9 +250,27 @@ const Transcript = (props) => {
                                                         />
                                                     )}
                                             </td>
-                                            <td>{item.x1.join(", ")}</td>
-                                            <td>{item.x2.join(", ")}</td>
-                                            <td>{item.x3.join(", ")}</td>
+                                            <td>
+                                                {item.x1
+                                                    .filter(
+                                                        (score) => score > -1
+                                                    )
+                                                    .join(", ")}
+                                            </td>
+                                            <td>
+                                                {item.x2
+                                                    .filter(
+                                                        (score) => score > -1
+                                                    )
+                                                    .join(", ")}
+                                            </td>
+                                            <td>
+                                                {item.x3
+                                                    .filter(
+                                                        (score) => score > -1
+                                                    )
+                                                    .join(", ")}
+                                            </td>
                                         </tr>
                                     )
                                 )}
