@@ -22,15 +22,17 @@ function Home(props) {
 
     return (
         <div>
-            <div className="mt-1 mb-2">
-                <b>
-                    {`${moment(new Date()).format("DD/MM/YYYY")} - Year: ${
-                        time.year ? time.year : ""
-                    }-${time.year ? time.year + 1 : ""} - Semester: ${
-                        time.semester ? time.semester : ""
-                    }`}
-                </b>
-            </div>
+            {["admin", "parent", "teacher"].includes(role) && (
+                <div className="mt-1 mb-2">
+                    <b>
+                        {`${moment(new Date()).format("DD/MM/YYYY")} - Year: ${
+                            time.year ? time.year : ""
+                        }-${time.year ? time.year + 1 : ""} - Semester: ${
+                            time.semester ? time.semester : ""
+                        }`}
+                    </b>
+                </div>
+            )}
             {role === "admin" ? (
                 <Admin />
             ) : role === "teacher" ? (
