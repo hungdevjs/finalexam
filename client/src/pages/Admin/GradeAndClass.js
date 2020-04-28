@@ -21,6 +21,9 @@ function GradeAndClass(props) {
     const [isOpen, toggle] = useState(false)
     const [currentClass, setCurrentClass] = useState(null)
 
+    const [isPhone, setIsPhone] = useState(window.innerWidth < 768)
+    window.addEventListener("resize", () => setIsPhone(window.innerWidth < 768))
+
     useEffect(() => {
         props
             .getAllGradeWithMainTeacher()
@@ -59,8 +62,21 @@ function GradeAndClass(props) {
                         GRADES AND CLASSES{" "}
                         {props.year && `${props.year}-${props.year + 1}`}
                     </h5>
-                    <BackBtn title="home" onClick={() => history.push("/")} />
+                    {!isPhone && (
+                        <BackBtn
+                            title="home"
+                            onClick={() => history.push("/")}
+                        />
+                    )}
                 </Col>
+                {isPhone && (
+                    <Col md={12}>
+                        <BackBtn
+                            title="home"
+                            onClick={() => history.push("/")}
+                        />
+                    </Col>
+                )}
             </Row>
             {grades && grades.length > 0 && (
                 <Row className="mb-2">
