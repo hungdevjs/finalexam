@@ -60,7 +60,7 @@ export const createStudent = (data) => request.post("user/student/create", data)
 
 export const createTeacher = (data) => request.post("user/teacher/create", data)
 
-export const updateTeacher = (id, data) =>
+export const updateTeacher = (data, id) =>
     request.put(`user/teacher/${id}`, data)
 
 export const updateStudent = (data, id) =>

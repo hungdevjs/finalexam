@@ -17,7 +17,7 @@ router.get("/student/:id", controller.getStudent)
 
 router.put("/student/:id", authAdmin, controller.updateStudent)
 
-router.get("/teacher/:id", authAdmin, controller.getTeacher)
+router.get("/teacher/:id", controller.getTeacher)
 
 router.post("/teacher/create", authAdmin, controller.createTeacher)
 

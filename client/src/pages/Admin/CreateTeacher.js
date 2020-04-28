@@ -28,6 +28,7 @@ import {
     getTeacherData,
     createTeacher,
     updateTeacher,
+    updateProfile,
 } from "../../utils/api/fetchData"
 
 const genderOptions = [
@@ -39,15 +40,20 @@ const yearOfBirthRegex = /^\d{4}$/g
 const phoneNumberRegex = /^0\d{9}$/g
 
 const CreateTeacher = (props) => {
-    const { id } = props.match.params
+    const teacherId = props.id
+    const id = props.match?.params?.id || teacherId
 
     const [filterSubject, setFilterSubject] = useState([])
 
     useEffect(() => {
-        getAllSubject().then((res) => {
-            const options = res.data.sort().map((c) => ({ label: c, value: c }))
-            setFilterSubject(options)
-        })
+        if (!teacherId) {
+            getAllSubject().then((res) => {
+                const options = res.data
+                    .sort()
+                    .map((c) => ({ label: c, value: c }))
+                setFilterSubject(options)
+            })
+        }
 
         if (id) {
             // get teacher data here
@@ -90,11 +96,17 @@ const CreateTeacher = (props) => {
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
                         <h5 className="mb-2">
-                            {id ? "EDIT" : "CREATE"} TEACHER
+                            {id ? "EDIT" : "CREATE"}{" "}
+                            {teacherId ? "PROFILE" : "TEACHER"}
                         </h5>
                     </div>
 
-                    <BackBtn title="home" onClick={() => history.push("/")} />
+                    {!teacherId && (
+                        <BackBtn
+                            title="home"
+                            onClick={() => history.push("/")}
+                        />
+                    )}
                 </Col>
                 <Col md={4} className="text-right"></Col>
             </Row>
@@ -201,12 +213,15 @@ const CreateTeacher = (props) => {
                                     }
                                 }}
                                 checked={mainTeacher}
+                                disabled={teacherId}
                             />
                         </div>
                         <div>
                             <AllClassSelected
                                 isMulti
-                                isDisabled={!props.values.mainTeacher}
+                                isDisabled={
+                                    !props.values.mainTeacher || teacherId
+                                }
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacherOfClass",
@@ -221,6 +236,7 @@ const CreateTeacher = (props) => {
                                         label: item,
                                     }))
                                 }
+                                viewOnly={teacherId}
                             />
                             {props.touched.mainTeacherOfClass && (
                                 <Feedback>
@@ -241,6 +257,7 @@ const CreateTeacher = (props) => {
                             value={
                                 subject && { value: subject, label: subject }
                             }
+                            isDisabled={teacherId}
                         />
                         {props.touched.subject && (
                             <Feedback>{props.errors.subject}</Feedback>
@@ -264,6 +281,8 @@ const CreateTeacher = (props) => {
                                     label: item,
                                 }))
                             }
+                            isDisabled={teacherId}
+                            viewOnly={teacherId}
                         />
                         {props.touched.teacherOfClass && (
                             <Feedback>{props.errors.teacherOfClass}</Feedback>
@@ -321,14 +340,15 @@ export default withFormik({
     }),
     handleSubmit: async (values, { props }) => {
         try {
-            const {
-                match: {
-                    params: { id },
-                },
-            } = props
+            const teacherId = props.id
+            const id = props.match?.params?.id || teacherId
 
             const res = await (id
-                ? updateTeacher(id, values)
+                ? (teacherId ? updateProfile : updateTeacher)(
+                      values,
+                      id,
+                      "teacher"
+                  )
                 : createTeacher(values))
 
             if (res.data && res.data.error) {

@@ -669,7 +669,7 @@ module.exports.updateProfile = async (req, res) => {
                     throw new Error("Date of birth is not valid")
                 }
 
-                const updateArr = [
+                const updateArrStudent = [
                     { field: "studentName", value: studentName },
                     { field: "gender", value: gender },
                     { field: "dateOfBirth", value: dateOfBirth },
@@ -679,7 +679,7 @@ module.exports.updateProfile = async (req, res) => {
                     { field: "mother", value: mother },
                 ]
 
-                updateArr.forEach((item) => {
+                updateArrStudent.forEach((item) => {
                     student[item.field] = item.value
                 })
 
@@ -696,6 +696,25 @@ module.exports.updateProfile = async (req, res) => {
                 if (!teacher) {
                     throw new Error("Teacher doesn't exist")
                 }
+
+                const data = req.body
+                const { name, yearOfBirth, email, phoneNumber } = data
+                const genderTeacher = data.gender
+
+                const updateArrTeacher = [
+                    { field: "name", value: name },
+                    { field: "yearOfBirth", value: yearOfBirth },
+                    { field: "gender", value: genderTeacher },
+                    { field: "email", value: email },
+                    { field: "phoneNumber", value: phoneNumber },
+                ]
+
+                updateArrTeacher.forEach((item) => {
+                    teacher[item.field] = item.value
+                })
+
+                await teacher.save()
+                res.status(200).send("Update successfully")
 
                 break
 

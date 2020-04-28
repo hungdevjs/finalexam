@@ -97,13 +97,13 @@ const TeacherList = (props) => {
     return (
         <div>
             <Row className="mb-2">
-                <Col md={8}>
+                <Col md={7}>
                     <h5>
                         TEACHER LIST{" "}
                         {props.year && `${props.year}-${props.year + 1}`}
                     </h5>
                 </Col>
-                <Col md={4} className="text-lg-right text-md-left">
+                <Col md={5} className="text-md-right text-md-left">
                     <CreateBtnBig
                         title="teacher"
                         className="mr-2"
