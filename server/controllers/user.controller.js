@@ -240,7 +240,68 @@ module.exports.createStudent = (req, res) => {
 
                 data.password = passwordHash.generate(password)
 
-                data.score = {}
+                data.score = {
+                    math: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    literature: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    english: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    physics: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    chemistry: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    biology: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    geography: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    history: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    law: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    music: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    art: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                    sport: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                    },
+                }
                 data.isDeleted = false
 
                 const newStudent = new Parent(data)
