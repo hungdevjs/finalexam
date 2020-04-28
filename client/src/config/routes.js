@@ -30,7 +30,7 @@ export default [
         roles: ["admin"],
     },
     {
-        path: "/changeSchedule/:classRoom",
+        path: "/updateSchedule/:classRoom",
         component: EditSchedule,
         roles: ["admin"],
     },

@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const { subjects } = require("../utils/constant")
+const checkConflictSchedule = require("../utils/checkConflictSchedule")
 
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
@@ -162,5 +163,79 @@ module.exports.getSemester = async (req, res) => {
         res.status(200).json({ year: now[0].year, semester: now[0].semester })
     } catch (err) {
         res.status(500).send(err.message)
+    }
+}
+
+module.exports.createOrUpdateSchedule = async (req, res) => {
+    try {
+        const { classRoom, schedule } = req.body
+
+        const schedules = await Schedule.find({ isDeleted: false })
+
+        const classSchedule = schedules.find(
+            (item) => item.classRoom === classRoom
+        )
+
+        const grades = await Grade.find({ isDeleted: false })
+
+        if (!grades) {
+            throw new Error("Doesn't have any grade")
+        }
+
+        let allClasses = []
+        for (grade of grades) {
+            allClasses = [...allClasses, ...grade.classRoom]
+        }
+
+        if (!allClasses.includes(classRoom)) {
+            throw new Error("Class doesn't exist")
+        }
+
+        // check if class schedules have any conflicts
+        const teachers = await Teacher.find({ isDeleted: false })
+        const classTeachers = teachers.filter((teacher) =>
+            teacher.teacherOfClass.includes(classRoom)
+        )
+
+        for (classTeacher of classTeachers) {
+            const classRooms = classTeacher.teacherOfClass.filter(
+                (room) => room !== classRoom
+            )
+            const { subject } = classTeacher
+
+            for (room of classRooms) {
+                const roomSchedule = schedules.find(
+                    (item) => item.classRoom === room
+                )
+
+                if (
+                    !checkConflictSchedule(
+                        schedule,
+                        roomSchedule.schedule,
+                        subject
+                    )
+                ) {
+                    throw new Error(
+                        `New schedule is conflict in ${subject} with class ${room}`
+                    )
+                }
+            }
+        }
+
+        if (!classSchedule) {
+            newSchedule = new Schedule({
+                classRoom,
+                schedule,
+                isDeleted: false,
+            })
+            await newSchedule.save()
+        } else {
+            classSchedule.schedule = schedule
+            await classSchedule.save()
+        }
+
+        res.status(200).send(true)
+    } catch (err) {
+        res.status(200).send({ error: err.message })
     }
 }

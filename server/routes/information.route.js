@@ -25,4 +25,10 @@ router.get(
 
 router.get("/semester", controller.getSemester)
 
+router.post(
+    "/createOrUpdateSchedule",
+    authAdmin,
+    controller.createOrUpdateSchedule
+)
+
 module.exports = router

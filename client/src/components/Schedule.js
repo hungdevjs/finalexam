@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { Table, Row, Col, Label, Alert, Button } from "reactstrap"
 
+import history from "../config/history"
 import { getClassSchedule, getTeacherSchedule } from "../utils/api/fetchData"
 
 const Schedule = ({ classRoom, role, teacherId, time }) => {
@@ -83,7 +84,16 @@ const Schedule = ({ classRoom, role, teacherId, time }) => {
                                 } doesn't have a schedule`}
                             </Alert>
                             {role === "admin" && !teacherId && (
-                                <Button color="success">Create schedule</Button>
+                                <Button
+                                    color="success"
+                                    onClick={() =>
+                                        history.push(
+                                            `/updateSchedule/${classRoom}`
+                                        )
+                                    }
+                                >
+                                    Create schedule
+                                </Button>
                             )}
                         </>
                     )}

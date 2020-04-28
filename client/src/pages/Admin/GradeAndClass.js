@@ -45,7 +45,7 @@ function GradeAndClass(props) {
 
             <NewTabLink
                 title="Change schedule"
-                to={`/changeSchedule/${currentClass}`}
+                to={`/updateSchedule/${currentClass}`}
             />
         </ViewModal>
     )

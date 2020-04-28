@@ -697,7 +697,6 @@ module.exports.updateProfile = async (req, res) => {
                     throw new Error("Teacher doesn't exist")
                 }
 
-                const data = req.body
                 const { name, yearOfBirth, email, phoneNumber } = data
                 const genderTeacher = data.gender
 

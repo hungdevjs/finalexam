@@ -537,6 +537,7 @@ export default function (props) {
                                 <span className="text-danger">*</span>
                             </Label>
                             <DatePicker
+                                dateFormat="dd/MM/yyyy"
                                 onChange={(e) =>
                                     setState({
                                         ...state,
