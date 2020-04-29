@@ -10,11 +10,11 @@ import setTime from "../redux/action/setTime"
 const HeaderContainer = styled.div`
     width: ${(props) => `calc(100vw - ${props.option})`};
     padding-right: 16px;
-    height: 64px;
+    height: 55px;
     position: fixed;
     top: 0;
     left: ${(props) => props.option};
-    background-color: #1e90ff;
+    background-color: #343a40;
     transition: 0.2s ease;
     display: flex;
     align-items: center;
@@ -62,6 +62,11 @@ const UserOption = styled.div`
     }
     p:hover {
         background-color: #ddd;
+    }
+    div {
+        padding: 8px 16px;
+        margin-bottom: 0;
+        border-radius: 4px;
     }
 `
 
@@ -124,8 +129,12 @@ function Header(props) {
                 )}
             </NavigateButton>
             <UserInfoContainer>
-                <UserInfo onClick={() => setShow(!show)}>{userInfo}</UserInfo>
+                <UserInfo onClick={() => setShow(!show)}>
+                    <i className="fas fa-user"></i>{" "}
+                    <i class="fas fa-sort-down"></i>
+                </UserInfo>
                 <UserOption show={show}>
+                    <div>{userInfo}</div>
                     {props.userInformation &&
                         ["teacher", "parent"].includes(
                             props.userInformation.role

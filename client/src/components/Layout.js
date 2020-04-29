@@ -18,7 +18,7 @@ const ContentContainer = styled.div`
     transition: 0.2s ease;
     padding-left: ${(props) => props.option};
     width: 100%;
-    padding-top: 72px;
+    padding-top: 65px;
 `
 
 function Layout(props) {

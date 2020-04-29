@@ -13,14 +13,14 @@ const NavigateContainer = styled.div`
     left: 0;
     width: ${(props) => props.option};
     height: 100vh;
-    background-color: #092b4c;
+    background-color: #212529;
     transition: 0.2s ease;
     over-flow: hidden;
 `
 
 const NavContainer = styled.div`
     display: ${(props) => (props.option === "0px" ? "none" : "block")};
-    transition: 0.2s ease;
+    transition: 0.1s ease;
     display: flex;
     flex-direction: column;
     height: 100vh;
@@ -29,15 +29,14 @@ const NavContainer = styled.div`
 const Nav = styled.div`
     display: ${(props) => (props.option === "0px" ? "none" : "block")};
     &:hover {
-        background-color: #0f487f;
+        color: #fff;
     }
-    background-color: ${(props) =>
-        props.pathName === props.path ? "#0f487f" : "transparent"};
-    color: #fff;
+    color: ${(props) =>
+        props.pathName === props.path ? "#fff" : "rgba(255, 255, 255, 0.5)"};
     width: ${(props) => props.option};
     cursor: pointer;
     padding: ${(props) => (props.option === "0px" ? "0" : "16px")};
-    transition: 0.3s ease;
+    transition: 0.1s ease;
     display: flex;
     align-items: center;
     justify-content: ${(props) =>
@@ -51,13 +50,13 @@ const NavIcon = styled.i`
     display: flex;
     justify-content: center;
     align-items: center;
+    transition: 0.1s ease;
 `
 
 const NavName = styled.span`
-    font-weight: bold;
     display: ${(props) => (props.option === "200px" ? "block" : "none")};
     margin-left: 1rem;
-    transition: 0.2s ease;
+    transition: 0.1s ease;
 `
 
 function Navigate(props) {
