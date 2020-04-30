@@ -21,7 +21,7 @@ const AdminChart = (props) => {
         { name: "Lớp 9", color: "#dc3545" },
     ]
     return (
-        <Row className="mb-2">
+        <Row className="mb-4">
             <Col md={6}>
                 <AdminBlockChart title="Tỷ lệ học sinh các khối trong trường">
                     <div className="d-flex flex-column justify-content-center align-items-center">

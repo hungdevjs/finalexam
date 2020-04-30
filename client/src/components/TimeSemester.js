@@ -9,7 +9,7 @@ const TimeSemester = ({ time, role }) => {
     }
 
     return (
-        <Alert color="secondary" className="mb-2">
+        <Alert color="secondary" className="mb-4">
             <span>
                 Ngày: {moment(new Date()).format("DD/MM/YYYY")}
                 {"  |  "}

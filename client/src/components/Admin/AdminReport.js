@@ -14,8 +14,8 @@ const AdminReport = (props) => {
     }, [])
 
     return (
-        <Row className="mb-2">
-            <Col md={6} lg={3} className="mb-2">
+        <Row>
+            <Col md={6} lg={3} className="mb-4">
                 <AdminCard
                     color="primary"
                     detail="Xem danh sách"
@@ -25,7 +25,7 @@ const AdminReport = (props) => {
                     {reports?.numberOfStudents}
                 </AdminCard>
             </Col>
-            <Col md={6} lg={3} className="mb-2">
+            <Col md={6} lg={3} className="mb-4">
                 <AdminCard
                     color="success"
                     detail="Xem danh sách"
@@ -35,7 +35,7 @@ const AdminReport = (props) => {
                     viên: {reports?.numberOfTeachers}
                 </AdminCard>
             </Col>
-            <Col md={6} lg={3} className="mb-2">
+            <Col md={6} lg={3} className="mb-4">
                 <AdminCard
                     color="warning"
                     detail="Xem danh sách"
@@ -44,7 +44,7 @@ const AdminReport = (props) => {
                     <i className="fas fa-newspaper" /> Tin tức & thông báo
                 </AdminCard>
             </Col>
-            <Col md={6} lg={3} className="mb-2">
+            <Col md={6} lg={3} className="mb-4">
                 <AdminCard color="danger">
                     <i className="fas fa-user-times" /> Học sinh nghỉ học:{" "}
                     {reports?.numberOfMissingStudents}
