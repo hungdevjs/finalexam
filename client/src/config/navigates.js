@@ -19,6 +19,11 @@ export default [
         roles: ["admin"],
     },
     {
+        path: "/highlights",
+        name: "Thông báo",
+        icon: "fas fa-newspaper",
+    },
+    {
         path: "/gradeAndClass",
         name: "Quản lý lớp học",
         icon: "fas fa-school",

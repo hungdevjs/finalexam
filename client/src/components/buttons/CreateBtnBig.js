@@ -1,8 +1,8 @@
-import React from "react";
-import { Button } from "reactstrap";
+import React from "react"
+import { Button } from "reactstrap"
 
 export default ({ title, onClick, ...rest }) => (
     <Button color="success" onClick={onClick} {...rest}>
-        Create {title}
+        Tạo {title}
     </Button>
-);
+)

@@ -5,7 +5,7 @@ export default ({ onClick }) => (
         className="text-center"
         style={{ cursor: "pointer" }}
         onClick={onClick}
-        title="Delete"
+        title="Xóa"
     >
         <i className="far fa-trash-alt"></i>
     </div>

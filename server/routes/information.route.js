@@ -33,4 +33,6 @@ router.post(
 
 router.get("/adminReport", authAdmin, controller.getAdminReport)
 
+router.get("/adminChart", authAdmin, controller.getAdminChart)
+
 module.exports = router

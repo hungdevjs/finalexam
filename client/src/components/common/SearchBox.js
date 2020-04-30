@@ -12,7 +12,7 @@ export default function (props) {
             <FormGroup className="mb-2">
                 <Input
                     type="text"
-                    placeholder={props.placeholder || "Search"}
+                    placeholder={props.placeholder || "Tìm kiếm"}
                     onChange={props.onChange}
                 />
             </FormGroup>

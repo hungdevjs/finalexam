@@ -6,7 +6,7 @@ import Transcript from "../Transcript"
 import Schedule from "../../components/Schedule"
 import TeacherOfClass from "../../components/TeacherOfClass"
 import NewTabLink from "../../components/common/NewTabLink"
-import Highlight from "../../components/Hightlight"
+import Highlight from "../Hightlight"
 const Parent = ({ user }) => {
     return (
         <div className="mb-2">

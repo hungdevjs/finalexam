@@ -130,7 +130,7 @@ function Header(props) {
             <UserInfoContainer>
                 <UserInfo onClick={() => setShow(!show)}>
                     <i className="fas fa-user"></i>{" "}
-                    <i class="fas fa-sort-down"></i>
+                    <i className="fas fa-sort-down"></i>
                 </UserInfo>
                 <UserOption show={show}>
                     <div>{userInfo}</div>

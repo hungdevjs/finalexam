@@ -8,6 +8,7 @@ import CreateHighlight from "../pages/CreateHighlight"
 import Transcript from "../pages/Transcript"
 import TimeInfo from "../pages/Admin/TimeInfo"
 import EditSchedule from "../pages/Admin/EditSchedule"
+import Highlight from "../pages/Hightlight"
 
 export default [
     { path: "/", component: Home },
@@ -17,6 +18,7 @@ export default [
     { path: "/gradeAndClass", component: GradeAndClass, roles: ["admin"] },
     { path: "/students", component: StudentList, roles: ["admin", "teacher"] },
     { path: "/teachers", component: TeacherList, roles: ["admin"] },
+    { path: "/highlights", component: Highlight },
     { path: "/highlight/edit/:id", component: CreateHighlight },
     { path: "/highlight/create", component: CreateHighlight, roles: ["admin"] },
     {

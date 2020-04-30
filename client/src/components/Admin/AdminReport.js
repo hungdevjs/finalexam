@@ -14,7 +14,7 @@ const AdminReport = (props) => {
     }, [])
 
     return (
-        <Row>
+        <Row className="mb-2">
             <Col md={6} lg={3} className="mb-2">
                 <AdminCard
                     color="primary"

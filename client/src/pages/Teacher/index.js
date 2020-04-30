@@ -4,7 +4,7 @@ import { Row, Col } from "reactstrap"
 
 import NewTabLink from "../../components/common/NewTabLink"
 import Schedule from "../../components/Schedule"
-import Highlight from "../../components/Hightlight"
+import Highlight from "../Hightlight"
 
 const Teacher = ({ user }) => {
     return (

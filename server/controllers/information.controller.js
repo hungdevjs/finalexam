@@ -243,22 +243,49 @@ module.exports.createOrUpdateSchedule = async (req, res) => {
 
 module.exports.getAdminReport = async (req, res) => {
     try {
-        const students = await Parent.find({ isDeleted: false })
-        const teachers = await Teacher.find({ isDeleted: false })
+        const students = await Parent.countDocuments({ isDeleted: false })
+        const teachers = await Teacher.countDocuments({ isDeleted: false })
 
         const { date } = req.query
-        const missingStudents = await Missing.findOne({ date })
-        const numberOfMissingStudents = missingStudents
-            ? missingStudents.students.length
-            : 0
+        const missingStudents = await Missing.countDocuments({ date })
+        const numberOfMissingStudents = missingStudents || 0
 
         const data = {
-            numberOfStudents: students.length,
-            numberOfTeachers: teachers.length,
+            numberOfStudents: students,
+            numberOfTeachers: teachers,
             numberOfMissingStudents,
         }
 
-        res.status(200).send(data)
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getAdminChart = async (req, res) => {
+    try {
+        const grade6 = await Parent.countDocuments({
+            isDeleted: false,
+            grade: 6,
+        })
+        const grade7 = await Parent.countDocuments({
+            isDeleted: false,
+            grade: 7,
+        })
+        const grade8 = await Parent.countDocuments({
+            isDeleted: false,
+            grade: 8,
+        })
+        const grade9 = await Parent.countDocuments({
+            isDeleted: false,
+            grade: 9,
+        })
+
+        const data = {
+            piechart: { grade6, grade7, grade8, grade9 },
+        }
+
+        res.status(200).json(data)
     } catch (err) {
         res.status(500).send(err.message)
     }

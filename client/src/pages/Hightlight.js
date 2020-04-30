@@ -4,17 +4,17 @@ import { Row, Col, Alert } from "reactstrap"
 import styled from "styled-components"
 
 import history from "../config/history"
-import SearchBox from "./common/SearchBox"
-import CreateBtn from "./buttons/CreateBtn"
-import Pagination from "./common/Pagination"
-import HighlightDetail from "./HighlightDetail"
+import SearchBox from "../components/common/SearchBox"
+import CreateBtnBig from "../components/buttons/CreateBtnBig"
+import BackBtn from "../components/buttons/BackBtn"
+import Pagination from "../components/common/Pagination"
+import HighlightDetail from "../components/HighlightDetail"
 
 import getAllHighlight from "../redux/action/getAllHighlight"
 
 const HighlightContainer = styled.div`
     padding: 16px;
     margin-bottom: 8px;
-    border: 1px solid #ccc;
     white-space: nowrap;
     overflow: auto;
 `
@@ -44,14 +44,24 @@ const Highlight = ({ role, getAllHighlight }) => {
         <HighlightContainer>
             <Row className="mb-2 d-flex align-items-start">
                 <Col md={2} className="mb-2 d-flex align-items-center">
-                    <h5 className="mb-2 flex-grow-1">Highlights</h5>
+                    <h5 className="mb-2 flex-grow-1">THÔNG BÁO</h5>
                     {isPhone && role === "admin" && (
-                        <CreateBtn
-                            onClick={() => history.push("/highlight/create")}
-                        />
+                        <>
+                            <CreateBtnBig
+                                title="thông báo"
+                                onClick={() =>
+                                    history.push("/highlight/create")
+                                }
+                                className="mr-2"
+                            />
+                            <BackBtn
+                                title="trang chủ"
+                                onClick={() => history.push("/")}
+                            />
+                        </>
                     )}
                 </Col>
-                <Col md={8}>
+                <Col md={6}>
                     <SearchBox
                         onChange={(e) => setSearchString(e.target.value)}
                         onSearch={() => {
@@ -65,11 +75,17 @@ const Highlight = ({ role, getAllHighlight }) => {
                 </Col>
                 {!isPhone && role === "admin" && (
                     <Col
-                        md={2}
+                        md={4}
                         className="d-flex align-items-start justify-content-end"
                     >
-                        <CreateBtn
+                        <CreateBtnBig
+                            title="thông báo"
                             onClick={() => history.push("/highlight/create")}
+                            className="mr-2"
+                        />
+                        <BackBtn
+                            title="trang chủ"
+                            onClick={() => history.push("/")}
                         />
                     </Col>
                 )}
