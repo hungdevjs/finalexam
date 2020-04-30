@@ -1,11 +1,11 @@
-import { getAllHighlight } from "../../utils/api/fetchData"
+import { getAdminReport } from "../../utils/api/fetchData"
 import setLoading from "./setLoading"
 
-export default (searchString = "", currentPage = 0) => async (dispatch) => {
+export default () => async (dispatch) => {
     dispatch(setLoading(true))
 
     try {
-        const res = await getAllHighlight(searchString, currentPage)
+        const res = await getAdminReport()
         dispatch(setLoading(false))
         return res.data
     } catch (err) {

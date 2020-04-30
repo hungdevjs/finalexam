@@ -111,3 +111,5 @@ export const updateTranscript = (data) =>
 
 export const createOrUpdateSchedule = (data) =>
     request.post("/information/createOrUpdateSchedule", data)
+
+export const getAdminReport = () => request.get("/information/adminReport")

@@ -5,6 +5,7 @@ import moment from "moment"
 import Admin from "./Admin"
 import Teacher from "./Teacher"
 import Parent from "./Parent"
+import TimeSemester from "../components/TimeSemester"
 
 function Home(props) {
     const [role, setRole] = useState("")
@@ -22,17 +23,8 @@ function Home(props) {
 
     return (
         <div>
-            {["admin", "parent", "teacher"].includes(role) && (
-                <div className="mt-1 mb-2">
-                    <b>
-                        {`${moment(new Date()).format("DD/MM/YYYY")} - Year: ${
-                            time.year ? time.year : ""
-                        }-${time.year ? time.year + 1 : ""} - Semester: ${
-                            time.semester ? time.semester : ""
-                        }`}
-                    </b>
-                </div>
-            )}
+            {role && <h5>TỔNG QUAN</h5>}
+            <TimeSemester />
             {role === "admin" ? (
                 <Admin />
             ) : role === "teacher" ? (

@@ -36,7 +36,6 @@ const UserInfoContainer = styled.div`
     flex-grow: 1;
     display: flex;
     justify-content: flex-end;
-    font-weight: bold;
     padding-right: 16px;
 `
 

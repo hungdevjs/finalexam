@@ -7,6 +7,7 @@ const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
 const Schedule = require("../models/schedule.model")
 const Semester = require("../models/semester.model")
+const Missing = require("../models/missing.model")
 
 module.exports.getAllClass = (req, res) => {
     try {
@@ -237,5 +238,28 @@ module.exports.createOrUpdateSchedule = async (req, res) => {
         res.status(200).send(true)
     } catch (err) {
         res.status(200).send({ error: err.message })
+    }
+}
+
+module.exports.getAdminReport = async (req, res) => {
+    try {
+        const students = await Parent.find({ isDeleted: false })
+        const teachers = await Teacher.find({ isDeleted: false })
+
+        const { date } = req.query
+        const missingStudents = await Missing.findOne({ date })
+        const numberOfMissingStudents = missingStudents
+            ? missingStudents.students.length
+            : 0
+
+        const data = {
+            numberOfStudents: students.length,
+            numberOfTeachers: teachers.length,
+            numberOfMissingStudents,
+        }
+
+        res.status(200).send(data)
+    } catch (err) {
+        res.status(500).send(err.message)
     }
 }

@@ -31,4 +31,6 @@ router.post(
     controller.createOrUpdateSchedule
 )
 
+router.get("/adminReport", authAdmin, controller.getAdminReport)
+
 module.exports = router
