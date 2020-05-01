@@ -10,6 +10,7 @@ import PrivateRoute from "./PrivateRoute"
 import Login from "../pages/Login"
 import Navigate from "./Navigate"
 import Header from "./Header"
+import Footer from "./Footer"
 import Page404 from "../pages/Page404"
 
 import getUserInformation from "../redux/action/getUserInformation"
@@ -49,6 +50,7 @@ function Layout(props) {
                         <Route component={Page404} />
                     </Switch>
                 </Router>
+                {props.role && <Footer />}
             </ContentContainer>
         </div>
     )

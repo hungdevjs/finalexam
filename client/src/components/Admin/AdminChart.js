@@ -15,10 +15,10 @@ const AdminChart = (props) => {
 
     const { piechart } = data
     const pieColor = [
-        { name: "Lớp 6", color: "#007bff" },
-        { name: "Lớp 7", color: "#28a745" },
-        { name: "Lớp 8", color: "#ffc107" },
-        { name: "Lớp 9", color: "#dc3545" },
+        { name: "Khối 6", color: "#007bff" },
+        { name: "Khối 7", color: "#28a745" },
+        { name: "Khối 8", color: "#ffc107" },
+        { name: "Khối 9", color: "#dc3545" },
     ]
     return (
         <Row className="mb-4">
@@ -30,22 +30,22 @@ const AdminChart = (props) => {
                                 <PieChart
                                     data={[
                                         {
-                                            title: "Lớp 6",
+                                            title: "Khối 6",
                                             value: piechart.grade6,
                                             color: "#007bff",
                                         },
                                         {
-                                            title: "Lớp 7",
+                                            title: "Khối 7",
                                             value: piechart.grade7,
                                             color: "#28a745",
                                         },
                                         {
-                                            title: "Lớp 8",
+                                            title: "Khối 8",
                                             value: piechart.grade8,
                                             color: "#ffc107",
                                         },
                                         {
-                                            title: "Lớp 9",
+                                            title: "Khối 9",
                                             value: piechart.grade9,
                                             color: "#dc3545",
                                         },
@@ -68,7 +68,7 @@ const AdminChart = (props) => {
                                     key={index}
                                     className="d-flex align-items-center justify-content-end mb-2"
                                 >
-                                    {item.name}:
+                                    {item.name}
                                     <div
                                         style={{
                                             width: "15px",
