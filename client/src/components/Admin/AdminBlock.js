@@ -5,7 +5,7 @@ export default ({ icon, title, children, height }) => {
     return (
         <Card>
             <CardHeader>
-                <i className={icon} /> {title}
+                <i className={icon || ""} /> {title}
             </CardHeader>
             <CardBody style={{ height: height || "", maxHeight: "400px" }}>
                 {children}

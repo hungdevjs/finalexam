@@ -31,10 +31,10 @@ const LastestHighlightOrEvent = (props) => {
         >
             <PerfectScrollbar>
                 {data?.map((item, index) => (
-                    <>
+                    <React.Fragment key={index}>
                         <SimpleHighlight item={item} />
                         {index < data.length - 1 && <hr />}
-                    </>
+                    </React.Fragment>
                 ))}
             </PerfectScrollbar>
         </AdminBlock>

@@ -12,6 +12,23 @@ const semesterSchema = new Schema({
         required: true,
         enum: [1, 2],
     },
+    lastResult: [
+        {
+            time: {
+                type: String,
+            },
+            good: {
+                type: Number,
+            },
+            medium: {
+                type: Number,
+            },
+            bad: {
+                type: Number,
+            },
+            _id: false,
+        },
+    ],
 })
 
 const Semester = mongoose.model("Semester", semesterSchema)

@@ -13,10 +13,10 @@ const AdminChart = (props) => {
         props.getAdminChart().then((data) => setData(data))
     }, [])
 
-    const { piechart } = data
+    const { pieChart, columnChart } = data
 
     const pieState = {
-        series: piechart ? Object.values(piechart) : [],
+        series: pieChart ? Object.values(pieChart) : [],
         options: {
             chart: {
                 width: 380,
@@ -38,19 +38,19 @@ const AdminChart = (props) => {
             ],
         },
     }
-    const state = {
+    const columnState = {
         series: [
             {
-                name: "PRODUCT A",
-                data: [44, 55, 41, 67, 22, 43, 21, 49],
+                name: "Học sinh giỏi",
+                data: columnChart ? columnChart.map((item) => item.good) : [],
             },
             {
-                name: "PRODUCT B",
-                data: [13, 23, 20, 8, 13, 27, 33, 12],
+                name: "Học sinh tiên tiến",
+                data: columnChart ? columnChart.map((item) => item.medium) : [],
             },
             {
-                name: "PRODUCT C",
-                data: [11, 17, 15, 15, 21, 14, 15, 13],
+                name: "Học sinh trung bình",
+                data: columnChart ? columnChart.map((item) => item.bad) : [],
             },
         ],
         options: {
@@ -76,16 +76,9 @@ const AdminChart = (props) => {
                 },
             ],
             xaxis: {
-                categories: [
-                    "2011 Q1",
-                    "2011 Q2",
-                    "2011 Q3",
-                    "2011 Q4",
-                    "2012 Q1",
-                    "2012 Q2",
-                    "2012 Q3",
-                    "2012 Q4",
-                ],
+                categories: columnChart
+                    ? columnChart.map((item) => item.time)
+                    : [],
             },
             fill: {
                 opacity: 1,
@@ -104,7 +97,7 @@ const AdminChart = (props) => {
                     icon="fas fa-chart-pie"
                     height="400px"
                 >
-                    {piechart && (
+                    {pieChart && (
                         <div className="d-flex justify-content-center align-items-center h-100">
                             <Chart
                                 options={pieState.options}
@@ -119,15 +112,17 @@ const AdminChart = (props) => {
 
             <Col md={6} className="mb-4">
                 <AdminBlock
-                    title="Phân loại học sinh 4 năm học gần nhất"
+                    title="Phân loại học sinh 6 học kỳ gần nhất"
                     icon="fas fa-chart-bar"
                 >
-                    <Chart
-                        options={state.options}
-                        series={state.series}
-                        type="bar"
-                        height={350}
-                    />
+                    {columnChart && (
+                        <Chart
+                            options={columnState.options}
+                            series={columnState.series}
+                            type="bar"
+                            height={350}
+                        />
+                    )}
                 </AdminBlock>
             </Col>
         </Row>
