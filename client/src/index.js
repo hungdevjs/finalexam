@@ -4,6 +4,7 @@ import { Provider } from "react-redux"
 import store from "./redux/store"
 
 import "bootstrap/dist/css/bootstrap.min.css"
+import "react-perfect-scrollbar/dist/css/styles.css"
 import "./index.css"
 
 import ReactNotification from "react-notifications-component"

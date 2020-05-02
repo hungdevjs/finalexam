@@ -39,9 +39,10 @@ const AdminReport = (props) => {
                 <AdminCard
                     color="warning"
                     detail="Xem danh sách"
-                    onDetailClick={() => history.push("/highlights")}
+                    onDetailClick={() => history.push("/gradeAndClass")}
                 >
-                    <i className="fas fa-newspaper" /> Tin tức & thông báo
+                    <i className="fas fa-school" /> Lớp học:{" "}
+                    {reports?.numberOfClasses}
                 </AdminCard>
             </Col>
             <Col md={6} lg={3} className="mb-4">

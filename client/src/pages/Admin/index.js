@@ -6,6 +6,7 @@ import StudentTeacher from "../../components/Admin/StudentTeacher"
 import Highlight from "../Hightlight"
 import AdminReport from "../../components/Admin/AdminReport"
 import AdminChart from "../../components/Admin/AdminChart"
+import LastestHighlight from "../../components/LastestHighlight"
 
 export default function (props) {
     return (
@@ -23,6 +24,9 @@ export default function (props) {
                 <Col md={12} className="mb-2">
                     <Highlight />
                 </Col> */}
+                <Col md={6}>
+                    <LastestHighlight />
+                </Col>
             </Row>
         </>
     )

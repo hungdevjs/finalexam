@@ -1,17 +1,19 @@
-const express = require("express");
+const express = require("express")
 
-const { authAdmin } = require("../middlewares/auth");
+const { authAdmin } = require("../middlewares/auth")
 
-const router = express.Router();
+const router = express.Router()
 
-const controller = require("../controllers/highlight.controller");
+const controller = require("../controllers/highlight.controller")
 
-router.get("/", controller.getAllHighlight);
+router.get("/", controller.getAllHighlight)
 
-router.get("/:id", controller.getHighlight);
+router.get("/lastestHighlight", controller.getLastestHighlight)
 
-router.delete("/:id", authAdmin, controller.deleteHighlight);
+router.get("/:id", controller.getHighlight)
 
-router.post("/create-update", authAdmin, controller.createOrUpdateHighlight);
+router.delete("/:id", authAdmin, controller.deleteHighlight)
 
-module.exports = router;
+router.post("/create-update", authAdmin, controller.createOrUpdateHighlight)
+
+module.exports = router

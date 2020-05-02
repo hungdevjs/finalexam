@@ -43,7 +43,7 @@ const CreateHighlight = (props) => {
         try {
             if (!data || !data.title.trim() || !data.content.trim()) {
                 throw new Error(
-                    `${id ? "Update" : "Create"}  highlights failed`,
+                    `${id ? "Update" : "Create"}  highlights failed`
                 )
             }
 
@@ -54,7 +54,7 @@ const CreateHighlight = (props) => {
             const res = await createOrUpdateHighlight(data)
             if (res.data !== true) {
                 throw new Error(
-                    `${id ? "Update" : "Create"}  highlights failed`,
+                    `${id ? "Update" : "Create"}  highlights failed`
                 )
             }
 
@@ -99,7 +99,7 @@ const CreateHighlight = (props) => {
             )}
             {canEdit && (
                 <Row>
-                    <Col md={8} sm={12} className="text-right">
+                    <Col md={8} sm={12}>
                         <Button
                             color="success"
                             className="mr-2"

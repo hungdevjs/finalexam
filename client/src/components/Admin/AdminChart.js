@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 import { Row, Col, Label } from "reactstrap"
 import PieChart from "react-minimal-pie-chart"
 
-import AdminBlockChart from "./AdminBlockChart"
+import AdminBlock from "./AdminBlock"
 import getAdminChart from "../../redux/action/getAdminChart"
 
 const AdminChart = (props) => {
@@ -23,7 +23,10 @@ const AdminChart = (props) => {
     return (
         <Row className="mb-4">
             <Col md={6}>
-                <AdminBlockChart title="Tỷ lệ học sinh các khối trong trường">
+                <AdminBlock
+                    title="Tỷ lệ học sinh các khối trong trường"
+                    icon="fas fa-chart-pie"
+                >
                     <div className="d-flex flex-column justify-content-center align-items-center">
                         <div className="w-75 d-flex flex-column align-items-center">
                             {piechart && (
@@ -68,7 +71,6 @@ const AdminChart = (props) => {
                                     key={index}
                                     className="d-flex align-items-center justify-content-end mb-2"
                                 >
-                                    {item.name}
                                     <div
                                         style={{
                                             width: "15px",
@@ -76,13 +78,14 @@ const AdminChart = (props) => {
                                             backgroundColor: item.color,
                                             borderRadius: "50%",
                                         }}
-                                        className="ml-2"
+                                        className="mr-2"
                                     />
+                                    {item.name}
                                 </div>
                             ))}
                         </div>
                     </div>
-                </AdminBlockChart>
+                </AdminBlock>
             </Col>
         </Row>
     )

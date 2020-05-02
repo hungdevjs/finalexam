@@ -85,6 +85,9 @@ export const getAllHighlight = (searchString = "", currentPage = 0) =>
         })
     )
 
+export const getLastestHighlight = () =>
+    request.get("highlight/lastestHighlight")
+
 export const deleteHighlight = (id) => request.delete(`highlight/${id}`)
 
 export const getHighlight = (id) => request.get(`highlight/${id}`)

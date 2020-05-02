@@ -245,6 +245,12 @@ module.exports.getAdminReport = async (req, res) => {
     try {
         const students = await Parent.countDocuments({ isDeleted: false })
         const teachers = await Teacher.countDocuments({ isDeleted: false })
+        const grades = await Grade.find({ isDeleted: false })
+
+        const numberOfClasses = grades.reduce(
+            (totalClass, grade) => totalClass + grade.classRoom.length,
+            0
+        )
 
         const { date } = req.query
         const missingStudents = await Missing.countDocuments({ date })
@@ -254,6 +260,7 @@ module.exports.getAdminReport = async (req, res) => {
             numberOfStudents: students,
             numberOfTeachers: teachers,
             numberOfMissingStudents,
+            numberOfClasses,
         }
 
         res.status(200).json(data)

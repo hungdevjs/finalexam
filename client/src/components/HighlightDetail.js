@@ -69,11 +69,8 @@ const HighlightDetail = ({ highlight, afterDelete, setModal, role }) => {
                     Last updated at{" "}
                     {time ? moment(time).format("HH:mm DD/MM/YYYY") : ""}
                 </p>
-                <p
-                    className="mb-2"
-                    style={{ overflow: "hidden" }}
-                >{`${pureContent.slice(0, 100)}${
-                    pureContent.length > 100 ? "..." : ""
+                <p className="mb-2">{`${pureContent.slice(0, 300)}${
+                    pureContent.length > 300 ? "..." : ""
                 }`}</p>
             </Col>
         </Row>

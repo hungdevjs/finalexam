@@ -1,13 +1,15 @@
 import React from "react"
 import { Card, CardHeader, CardBody } from "reactstrap"
 
-export default ({ icon, title, children }) => {
+export default ({ icon, title, children, height }) => {
     return (
         <Card>
             <CardHeader>
                 <i className={icon} /> {title}
             </CardHeader>
-            <CardBody>{children}</CardBody>
+            <CardBody style={{ height: height || "400px" }}>
+                {children}
+            </CardBody>
         </Card>
     )
 }

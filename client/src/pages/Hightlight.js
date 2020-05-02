@@ -15,7 +15,6 @@ import getAllHighlight from "../redux/action/getAllHighlight"
 const HighlightContainer = styled.div`
     padding: 16px;
     margin-bottom: 8px;
-    white-space: nowrap;
     overflow: auto;
 `
 

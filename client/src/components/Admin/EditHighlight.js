@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import CKEditor from "ckeditor4-react";
-import { Row, Col, Label, Input } from "reactstrap";
+import React, { useState } from "react"
+import CKEditor from "ckeditor4-react"
+import { Row, Col, Label, Input } from "reactstrap"
 
-import Feedback from "../common/Feedback";
+import Feedback from "../common/Feedback"
 
 export default ({ data, onEditorChange, onTitleChange }) => {
-    const [titleInvalid, setTitleInvalid] = useState(false);
-    const [contentInvalid, setContentInvalid] = useState(false);
+    const [titleInvalid, setTitleInvalid] = useState(false)
+    const [contentInvalid, setContentInvalid] = useState(false)
 
     return (
         <Row className="mb-2">
@@ -17,23 +17,23 @@ export default ({ data, onEditorChange, onTitleChange }) => {
                     className="mb-2"
                     value={data.title || ""}
                     onChange={(e) => {
-                        onTitleChange(e);
+                        onTitleChange(e)
                         if (
                             e &&
                             e.target &&
                             e.target.value &&
                             e.target.value.trim()
                         ) {
-                            setTitleInvalid(false);
+                            setTitleInvalid(false)
                         }
                     }}
                     style={{ border: titleInvalid ? "1px solid red" : "" }}
                     onBlur={() => {
                         if (data && data.title && data.title.trim()) {
-                            setTitleInvalid(false);
-                            return;
+                            setTitleInvalid(false)
+                            return
                         }
-                        setTitleInvalid(true);
+                        setTitleInvalid(true)
                     }}
                 />
                 {titleInvalid && <Feedback>Title is required</Feedback>}
@@ -46,29 +46,30 @@ export default ({ data, onEditorChange, onTitleChange }) => {
                     <CKEditor
                         data={data.content || ""}
                         onChange={(e) => {
-                            onEditorChange(e);
+                            onEditorChange(e)
                             if (e.editor.getData().trim()) {
-                                setContentInvalid(false);
+                                setContentInvalid(false)
                             }
                         }}
                         config={{
                             allowedContent: true,
                             extraPlugins: "colorbutton",
+                            height: "350px",
                         }}
                         onBeforeLoad={(CKEDITOR) =>
                             (CKEDITOR.disableAutoInline = true)
                         }
                         onBlur={() => {
                             if (data && data.content && data.content.trim()) {
-                                setContentInvalid(false);
-                                return;
+                                setContentInvalid(false)
+                                return
                             }
-                            setContentInvalid(true);
+                            setContentInvalid(true)
                         }}
                     />
                 </div>
                 {contentInvalid && <Feedback>Content is required</Feedback>}
             </Col>
         </Row>
-    );
-};
+    )
+}
