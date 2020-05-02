@@ -47,8 +47,8 @@ const AdminReport = (props) => {
             </Col>
             <Col md={6} lg={3} className="mb-4">
                 <AdminCard color="danger">
-                    <i className="fas fa-user-times" /> Học sinh nghỉ học:{" "}
-                    {reports?.numberOfMissingStudents}
+                    <i className="fas fa-user-times" /> Học sinh nghỉ học hôm
+                    nay: {reports?.numberOfMissingStudents}
                 </AdminCard>
             </Col>
         </Row>

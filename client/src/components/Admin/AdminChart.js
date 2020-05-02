@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Row, Col, Label } from "reactstrap"
-import PieChart from "react-minimal-pie-chart"
+import { Row, Col } from "reactstrap"
+import Chart from "react-apexcharts"
 
 import AdminBlock from "./AdminBlock"
 import getAdminChart from "../../redux/action/getAdminChart"
@@ -14,77 +14,120 @@ const AdminChart = (props) => {
     }, [])
 
     const { piechart } = data
-    const pieColor = [
-        { name: "Khối 6", color: "#007bff" },
-        { name: "Khối 7", color: "#28a745" },
-        { name: "Khối 8", color: "#ffc107" },
-        { name: "Khối 9", color: "#dc3545" },
-    ]
+
+    const pieState = {
+        series: piechart ? Object.values(piechart) : [],
+        options: {
+            chart: {
+                width: 380,
+                type: "pie",
+            },
+            legend: {
+                position: "bottom",
+            },
+            labels: ["Khối 6", "Khối 7", "Khối 8", "Khối 9"],
+            responsive: [
+                {
+                    breakpoint: 768,
+                    options: {
+                        chart: {
+                            width: 440,
+                        },
+                    },
+                },
+            ],
+        },
+    }
+    const state = {
+        series: [
+            {
+                name: "PRODUCT A",
+                data: [44, 55, 41, 67, 22, 43, 21, 49],
+            },
+            {
+                name: "PRODUCT B",
+                data: [13, 23, 20, 8, 13, 27, 33, 12],
+            },
+            {
+                name: "PRODUCT C",
+                data: [11, 17, 15, 15, 21, 14, 15, 13],
+            },
+        ],
+        options: {
+            chart: {
+                type: "bar",
+                height: 350,
+                stacked: true,
+                stackType: "100%",
+                toolbar: {
+                    show: false,
+                },
+            },
+            responsive: [
+                {
+                    breakpoint: 768,
+                    options: {
+                        legend: {
+                            position: "bottom",
+                            offsetX: -10,
+                            offsetY: 0,
+                        },
+                    },
+                },
+            ],
+            xaxis: {
+                categories: [
+                    "2011 Q1",
+                    "2011 Q2",
+                    "2011 Q3",
+                    "2011 Q4",
+                    "2012 Q1",
+                    "2012 Q2",
+                    "2012 Q3",
+                    "2012 Q4",
+                ],
+            },
+            fill: {
+                opacity: 1,
+            },
+            legend: {
+                position: "bottom",
+            },
+        },
+    }
+
     return (
-        <Row className="mb-4">
-            <Col md={6}>
+        <Row>
+            <Col md={6} className="mb-4">
                 <AdminBlock
                     title="Tỷ lệ học sinh các khối trong trường"
                     icon="fas fa-chart-pie"
+                    height="400px"
                 >
-                    <div className="d-flex flex-column justify-content-center align-items-center">
-                        <div className="w-75 d-flex flex-column align-items-center">
-                            {piechart && (
-                                <PieChart
-                                    data={[
-                                        {
-                                            title: "Khối 6",
-                                            value: piechart.grade6,
-                                            color: "#007bff",
-                                        },
-                                        {
-                                            title: "Khối 7",
-                                            value: piechart.grade7,
-                                            color: "#28a745",
-                                        },
-                                        {
-                                            title: "Khối 8",
-                                            value: piechart.grade8,
-                                            color: "#ffc107",
-                                        },
-                                        {
-                                            title: "Khối 9",
-                                            value: piechart.grade9,
-                                            color: "#dc3545",
-                                        },
-                                    ]}
-                                    animate
-                                    label
-                                    labelPosition={50}
-                                    labelStyle={{
-                                        fill: "#eee",
-                                        fontFamily: "sans-serif",
-                                        fontSize: "0.4rem",
-                                    }}
-                                    // lineWidth={90}
-                                />
-                            )}
+                    {piechart && (
+                        <div className="d-flex justify-content-center align-items-center h-100">
+                            <Chart
+                                options={pieState.options}
+                                series={pieState.series}
+                                type="pie"
+                                width={380}
+                            />
                         </div>
-                        <div className="px-2 mt-4 d-flex w-100 justify-content-around">
-                            {pieColor.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="d-flex align-items-center justify-content-end mb-2"
-                                >
-                                    <div
-                                        style={{
-                                            width: "15px",
-                                            height: "15px",
-                                            backgroundColor: item.color,
-                                            borderRadius: "50%",
-                                        }}
-                                        className="mr-2"
-                                    />
-                                    {item.name}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                    )}
+                </AdminBlock>
+            </Col>
+
+            <Col md={6} className="mb-4">
+                <AdminBlock
+                    title="Phân loại học sinh 4 năm học gần nhất"
+                    icon="fas fa-chart-bar"
+                >
+                    <Chart
+                        options={state.options}
+                        series={state.series}
+                        type="bar"
+                        height={350}
+                    />
                 </AdminBlock>
             </Col>
         </Row>

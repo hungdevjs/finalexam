@@ -5,6 +5,7 @@ import store from "./redux/store"
 
 import "bootstrap/dist/css/bootstrap.min.css"
 import "react-perfect-scrollbar/dist/css/styles.css"
+import "react-calendar/dist/Calendar.css"
 import "./index.css"
 
 import ReactNotification from "react-notifications-component"
