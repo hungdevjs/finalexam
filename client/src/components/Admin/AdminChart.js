@@ -13,7 +13,8 @@ const AdminChart = (props) => {
         props.getAdminChart().then((data) => setData(data))
     }, [])
 
-    const { pieChart, columnChart } = data
+    const pieChart = data?.pieChart
+    const columnChart = data?.columnChart
 
     const pieState = {
         series: pieChart ? Object.values(pieChart) : [],

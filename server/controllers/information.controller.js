@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const { subjects } = require("../utils/constant")
 const checkConflictSchedule = require("../utils/checkConflictSchedule")
+const validateDate = require("../utils/validateDate")
 
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
@@ -8,6 +9,7 @@ const Grade = require("../models/grade.model")
 const Schedule = require("../models/schedule.model")
 const Semester = require("../models/semester.model")
 const Missing = require("../models/missing.model")
+const Event = require("../models/event.model")
 
 module.exports.getAllClass = (req, res) => {
     try {
@@ -297,6 +299,75 @@ module.exports.getAdminChart = async (req, res) => {
         }
 
         res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.getEvent = async (req, res) => {
+    try {
+        const events = await Event.find({ isDeleted: false })
+        const data = events
+            .filter((ev) => new Date(ev.time).getTime() > new Date().getTime())
+            .sort(
+                (ev1, ev2) =>
+                    new Date(ev1.time).getTime() - new Date(ev2.time).getTime()
+            )
+
+        res.status(200).json(data)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.createOrUpdateEvent = async (req, res) => {
+    try {
+        const { id, time, content } = req.body
+
+        if (id) {
+            const event = await Event.findOne({ _id: id, isDeleted: false })
+
+            if (!event) throw new Error("Event doesn't exist")
+
+            if (!content || !content.trim()) throw new Error("Content is empty")
+
+            event.content = content
+
+            await event.save()
+
+            return res.status(200).send("Update event successfully")
+        }
+
+        if (!validateDate(time)) throw new Error("Time is not valid")
+        if (!content || !content.trim()) throw new Error("Content is empty")
+
+        const data = {
+            time,
+            content,
+            isDeleted: false,
+        }
+
+        const newEvent = new Event(data)
+
+        await newEvent.save()
+
+        res.status(201).send("Create event successfully")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.deleteEvent = async (req, res) => {
+    try {
+        const { id } = req.params
+        const event = await Event.findOne({ _id: id, isDeleted: false })
+
+        if (!event) throw new Error("Event doesn't exist")
+
+        event.isDeleted = true
+        await event.save()
+
+        res.status(200).send("Delete event successfully")
     } catch (err) {
         res.status(500).send(err.message)
     }

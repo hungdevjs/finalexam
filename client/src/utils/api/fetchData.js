@@ -107,14 +107,21 @@ export const getTeacherOfClass = (classRoom) =>
 export const getTeacherSchedule = (teacherId) =>
     request.get(`information/teacher/schedule/${teacherId}`)
 
-export const getSemester = () => request.get("/information/semester")
+export const getSemester = () => request.get("information/semester")
 
 export const updateTranscript = (data) =>
-    request.post("/user/student/transcript", data)
+    request.post("user/student/transcript", data)
 
 export const createOrUpdateSchedule = (data) =>
-    request.post("/information/createOrUpdateSchedule", data)
+    request.post("information/createOrUpdateSchedule", data)
 
-export const getAdminReport = () => request.get("/information/adminReport")
+export const getAdminReport = () => request.get("information/adminReport")
 
-export const getAdminChart = () => request.get("/information/adminChart")
+export const getAdminChart = () => request.get("information/adminChart")
+
+export const createOrUpdateEvent = (data) =>
+    request.post("information/createOrUpdateEvent", data)
+
+export const getEvent = () => request.get("information/event")
+
+export const deleteEvent = (id) => request.delete(`information/event/${id}`)

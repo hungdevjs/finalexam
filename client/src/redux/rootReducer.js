@@ -5,6 +5,7 @@ import navigate from "./reducer/navigate"
 import user from "./reducer/user"
 import modal from "./reducer/modal"
 import time from "./reducer/time"
+import event from "./reducer/event"
 
 export default combineReducers({
     loading,
@@ -12,4 +13,5 @@ export default combineReducers({
     user,
     modal,
     time,
+    event,
 })

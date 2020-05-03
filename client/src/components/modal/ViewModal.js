@@ -1,5 +1,5 @@
-import React from "react";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
+import React from "react"
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap"
 
 export default ({ isOpen, toggle, title, children, onConfirm, viewOnly }) => (
     <Modal toggle={toggle} isOpen={isOpen} centered>
@@ -8,12 +8,12 @@ export default ({ isOpen, toggle, title, children, onConfirm, viewOnly }) => (
         <ModalFooter>
             {onConfirm && !viewOnly && (
                 <Button color="primary" onClick={onConfirm}>
-                    Confirm
+                    Xác nhận
                 </Button>
             )}
             <Button color="secondary" onClick={toggle}>
-                Cancel
+                Hủy bỏ
             </Button>
         </ModalFooter>
     </Modal>
-);
+)

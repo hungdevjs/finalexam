@@ -35,4 +35,10 @@ router.get("/adminReport", authAdmin, controller.getAdminReport)
 
 router.get("/adminChart", authAdmin, controller.getAdminChart)
 
+router.post("/createOrUpdateEvent", authAdmin, controller.createOrUpdateEvent)
+
+router.get("/event", authAdmin, controller.getEvent)
+
+router.delete("/event/:id", authAdmin, controller.deleteEvent)
+
 module.exports = router
