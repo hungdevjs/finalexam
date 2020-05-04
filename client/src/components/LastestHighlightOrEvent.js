@@ -110,7 +110,8 @@ const LastestHighlightOrEvent = (props) => {
         <AdminBlock
             title={props.isHighlight ? highlightTitle : "Sự kiện sắp tới"}
             icon={!props.isHighlight && "fab fa-elementor"}
-            height="350px"
+            height={props.height || "350px"}
+            {...props}
         >
             {renderModal()}
             <PerfectScrollbar>

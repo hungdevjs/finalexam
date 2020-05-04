@@ -44,15 +44,17 @@ const Highlight = ({ role, getAllHighlight }) => {
             <Row className="mb-2 d-flex align-items-start">
                 <Col md={2} className="mb-2 d-flex align-items-center">
                     <h5 className="mb-2 flex-grow-1">THÔNG BÁO</h5>
-                    {isPhone && role === "admin" && (
+                    {isPhone && (
                         <>
-                            <CreateBtnBig
-                                title="thông báo"
-                                onClick={() =>
-                                    history.push("/highlight/create")
-                                }
-                                className="mr-2"
-                            />
+                            {role === "admin" && (
+                                <CreateBtnBig
+                                    title="thông báo"
+                                    onClick={() =>
+                                        history.push("/highlight/create")
+                                    }
+                                    className="mr-2"
+                                />
+                            )}
                             <BackBtn
                                 title="trang chủ"
                                 onClick={() => history.push("/")}
@@ -72,16 +74,21 @@ const Highlight = ({ role, getAllHighlight }) => {
                         }}
                     />
                 </Col>
-                {!isPhone && role === "admin" && (
+                {!isPhone && (
                     <Col
                         md={4}
                         className="d-flex align-items-start justify-content-end"
                     >
-                        <CreateBtnBig
-                            title="thông báo"
-                            onClick={() => history.push("/highlight/create")}
-                            className="mr-2"
-                        />
+                        {role === "admin" && (
+                            <CreateBtnBig
+                                title="thông báo"
+                                onClick={() =>
+                                    history.push("/highlight/create")
+                                }
+                                className="mr-2"
+                            />
+                        )}
+
                         <BackBtn
                             title="trang chủ"
                             onClick={() => history.push("/")}

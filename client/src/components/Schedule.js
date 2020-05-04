@@ -5,7 +5,7 @@ import { Table, Row, Col, Label, Alert, Button } from "reactstrap"
 import history from "../config/history"
 import { getClassSchedule, getTeacherSchedule } from "../utils/api/fetchData"
 
-const Schedule = ({ classRoom, role, teacherId, time }) => {
+const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
     const [data, setData] = useState({})
 
     useEffect(() => {
@@ -21,25 +21,29 @@ const Schedule = ({ classRoom, role, teacherId, time }) => {
         <div className="mb-2">
             <Row>
                 <Col md={12}>
-                    {!teacherId ? (
-                        <Label>
-                            Schedule of class {classRoom}{" "}
-                            {time.year &&
-                                time.semester &&
-                                `${time.year}-${time.year + 1} ${
-                                    time.semester
-                                }`}{" "}
-                            {}
-                        </Label>
-                    ) : (
-                        <Label>
-                            Schedule of teacher {data.name}{" "}
-                            {time.year &&
-                                time.semester &&
-                                `${time.year}-${time.year + 1} ${
-                                    time.semester
-                                }`}
-                        </Label>
+                    {!isComponent && (
+                        <>
+                            {!teacherId ? (
+                                <Label>
+                                    Schedule of class {classRoom}{" "}
+                                    {time.year &&
+                                        time.semester &&
+                                        `${time.year}-${time.year + 1} ${
+                                            time.semester
+                                        }`}{" "}
+                                    {}
+                                </Label>
+                            ) : (
+                                <Label>
+                                    Schedule of teacher {data.name}{" "}
+                                    {time.year &&
+                                        time.semester &&
+                                        `${time.year}-${time.year + 1} ${
+                                            time.semester
+                                        }`}
+                                </Label>
+                            )}
+                        </>
                     )}
 
                     {data &&
@@ -48,11 +52,15 @@ const Schedule = ({ classRoom, role, teacherId, time }) => {
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    <th>Monday</th>
-                                    <th>Tuesday</th>
-                                    <th>Wednesday</th>
-                                    <th>Thursday</th>
-                                    <th>Friday</th>
+                                    {[
+                                        "Thứ hai",
+                                        "Thứ ba",
+                                        "Thứ tư",
+                                        "Thứ năm",
+                                        "Thứ sáu",
+                                    ].map((day, index) => (
+                                        <th key={index}>{day}</th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>

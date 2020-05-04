@@ -66,14 +66,13 @@ const Transcript = (props) => {
                     x3: currentSubject?.x3,
                 },
             }
-            console.log("updating...")
             const data = { studentId, subject }
-            const res = await updateTranscript(data)
+            await updateTranscript(data)
 
             renderNoti({
                 type: "success",
-                title: "Success",
-                message: "Update transcript successfully",
+                title: "Thành công",
+                message: "Đã cập nhật bảng điểm",
             })
 
             toggle(!isOpen)
@@ -81,8 +80,8 @@ const Transcript = (props) => {
         } catch (err) {
             renderNoti({
                 type: "danger",
-                title: "Failed",
-                message: "Update transcript failed",
+                title: "Lỗi",
+                message: "Lỗi trong khi cập nhật bảng điểm",
             })
         }
     }
@@ -104,16 +103,16 @@ const Transcript = (props) => {
         <ViewModal
             isOpen={isOpen}
             toggle={() => toggle(!isOpen)}
-            title={`Edit transcript`}
+            title={`Cập nhật bảng điểm`}
             onConfirm={() => updateStudentTranscript()}
         >
             <Row>
                 <Col md={12}>Student: {data?.name}</Col>
                 <Col md={12} className="mb-2">
-                    Subject: {currentSubject.subject}
+                    Môn học: {currentSubject.subject}
                 </Col>
                 <Col md={12} className="mb-2">
-                    x1:
+                    HS 1:
                     {currentSubject?.x1?.map((item, index) => (
                         <input
                             className="mx-2 text-center"
@@ -130,7 +129,7 @@ const Transcript = (props) => {
                 </Col>
 
                 <Col md={12} className="mb-2">
-                    x2:
+                    HS 2:
                     {currentSubject?.x2?.map((item, index) => (
                         <input
                             className="mx-2 text-center"
@@ -146,7 +145,7 @@ const Transcript = (props) => {
                 </Col>
 
                 <Col md={12} className="mb-2">
-                    x3:
+                    HS 3:
                     {currentSubject?.x3?.map((item, index) => (
                         <input
                             className="mx-2 text-center"
@@ -172,7 +171,7 @@ const Transcript = (props) => {
                     <Row>
                         <Col md={8} className="d-flex align-items-start">
                             <h5 className="flex-grow-1">
-                                TRANSCRIPT{" "}
+                                BẢNG ĐIỂM{" "}
                                 {props.time.year &&
                                     props.time.semester &&
                                     `${props.time?.year}-${
@@ -194,13 +193,13 @@ const Transcript = (props) => {
 
                     <Row className="mb-2">
                         <Col md={12}>
-                            <Label>Student name: {data?.name}</Label>
+                            <Label>Tên học sinh: {data?.name}</Label>
                         </Col>
                     </Row>
                 </>
             )}
 
-            {props.isComponent && (
+            {/* {props.isComponent && (
                 <Label>
                     Transcript of {data?.name}{" "}
                     {props.time.year &&
@@ -209,7 +208,7 @@ const Transcript = (props) => {
                             props.time.semester
                         }`}
                 </Label>
-            )}
+            )} */}
 
             {data && data.score && Object.keys(data.score).length > 0 && (
                 <Row className="mb-2">
@@ -217,11 +216,14 @@ const Transcript = (props) => {
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    {["Subject", "x1", "x2", "x3"].map(
-                                        (item, index) => (
-                                            <th key={index}>{item}</th>
-                                        )
-                                    )}
+                                    {[
+                                        "Môn học",
+                                        "Hệ số 1",
+                                        "Hệ số 2",
+                                        "Hệ số 3",
+                                    ].map((item, index) => (
+                                        <th key={index}>{item}</th>
+                                    ))}
                                 </tr>
                             </thead>
                             <tbody>

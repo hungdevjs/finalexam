@@ -115,6 +115,7 @@ const AdminChart = (props) => {
                 <AdminBlock
                     title="Phân loại học sinh 6 học kỳ gần nhất"
                     icon="fas fa-chart-bar"
+                    height="400px"
                 >
                     {columnChart && (
                         <Chart
