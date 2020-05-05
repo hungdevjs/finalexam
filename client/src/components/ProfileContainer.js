@@ -26,7 +26,7 @@ const ProfileContainer = (props) => {
     )
 
     return (
-        <div className="mb-4">
+        <div {...props}>
             <AdminBlock title={profileTitle}>
                 {isParent && (
                     <div>
@@ -95,6 +95,41 @@ const ProfileContainer = (props) => {
                                 Ghi chú: <Bold>{userInformation.note}</Bold>
                             </p>
                         )}
+                    </div>
+                )}
+
+                {isTeacher && (
+                    <div>
+                        <p>
+                            Họ và tên: <Bold>{userInformation.name}</Bold>
+                        </p>
+                        <p>
+                            Giới tính:{" "}
+                            <Bold>{userInformation.gender ? "Nam" : "Nữ"}</Bold>
+                        </p>
+                        <p>
+                            Năm sinh: <Bold>{userInformation.yearOfBirth}</Bold>
+                        </p>
+                        <p>
+                            Email: <Bold>{userInformation.email}</Bold>
+                        </p>
+                        <p>
+                            Số điện thoại:{" "}
+                            <Bold>{userInformation.phoneNumber}</Bold>
+                        </p>
+                        <p>
+                            Giáo viên chủ nhiệm lớp:{" "}
+                            <Bold>{userInformation.mainTeacherOfClass}</Bold>
+                        </p>
+                        <p>
+                            Môn học: <Bold>{userInformation.subject}</Bold>
+                        </p>
+                        <p>
+                            Các lớp đang dạy:{" "}
+                            <Bold>
+                                {userInformation.teacherOfClass.join(", ")}
+                            </Bold>
+                        </p>
                     </div>
                 )}
             </AdminBlock>

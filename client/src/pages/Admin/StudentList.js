@@ -27,7 +27,7 @@ const StudentList = (props) => {
 
     const [searchString, setSearchString] = useState("")
     const [optionClass, setOptionClass] = useState(
-        props.location?.state?.optionClass || ""
+        props.location?.state?.optionClass || props.classRoom || ""
     )
     const [optionGrade, setOptionGrade] = useState("")
     const [filterClassStudent, setFilterClassStudent] = useState([])
@@ -63,8 +63,8 @@ const StudentList = (props) => {
         } catch (err) {
             renderNoti({
                 type: "danger",
-                title: "Failed",
-                message: "Load student list failed",
+                title: "Lỗi",
+                message: "Lỗi trong khi tải danh sách học sinh",
             })
         }
     }
@@ -73,8 +73,8 @@ const StudentList = (props) => {
         deleteUser("student", id)
             .then(() =>
                 renderNoti({
-                    title: "Success",
-                    message: "Delete student successfully",
+                    title: "Thành công",
+                    message: "Đã xóa học sinh",
                     type: "success",
                 })
             )
@@ -82,8 +82,8 @@ const StudentList = (props) => {
             .catch((err) => {
                 renderNoti({
                     type: "danger",
-                    title: "Failed",
-                    message: "Delete student failed",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi xóa học sinh",
                 })
             })
     }
@@ -99,8 +99,14 @@ const StudentList = (props) => {
 
     useEffect(() => {
         if (role === "teacher") {
+            let data = null
+            if (user?.teacherOfClass.includes(user?.mainTeacherOfClass)) {
+                data = user?.teacherOfClass
+            } else {
+                data = [...user?.teacherOfClass, user?.mainTeacherOfClass]
+            }
             setFilterClassStudent(
-                user?.teacherOfClass?.map((item) => ({
+                data.map((item) => ({
                     value: item,
                     label: item,
                 }))
@@ -133,15 +139,15 @@ const StudentList = (props) => {
             <ViewModal
                 isOpen={isOpen}
                 toggle={() => toggle(!isOpen)}
-                title={`${
-                    parent.position === "father" ? "Father" : "Mother"
-                } information`}
+                title={`Thông tin ${
+                    parent.position === "father" ? "bố" : "mẹ"
+                }`}
                 viewOnly
             >
-                <p>Name: {parent.name || ""}</p>
-                <p>Year of birth: {parent.yearOfBirth || ""}</p>
-                <p>Phone number: {parent.phoneNumber || ""}</p>
-                <p>Note: {parent.note || ""}</p>
+                <p>Tên: {parent.name || ""}</p>
+                <p>Năm sinh: {parent.yearOfBirth || ""}</p>
+                <p>Số điện thoại: {parent.phoneNumber || ""}</p>
+                <p>Ghi chú: {parent.note || ""}</p>
             </ViewModal>
         )
     }
@@ -157,24 +163,31 @@ const StudentList = (props) => {
     return (
         <div>
             {renderModal()}
-            <Row className="mb-2">
-                <Col md={7}>
-                    <h5>
-                        STUDENT LIST{" "}
-                        {props.year && `${props.year}-${props.year + 1}`}
-                    </h5>
-                </Col>
-                <Col md={5} className="text-md-right text-md-left">
-                    {role === "admin" && (
-                        <CreateBtnBig
-                            title="student"
-                            className="mr-2"
-                            onClick={() => history.push("/user/student/create")}
+            {!props.isComponent && (
+                <Row className="mb-2">
+                    <Col md={7}>
+                        <h5>
+                            DANH SÁCH HỌC SINH{" "}
+                            {props.year && `${props.year}-${props.year + 1}`}
+                        </h5>
+                    </Col>
+                    <Col md={5} className="text-md-right text-md-left">
+                        {role === "admin" && (
+                            <CreateBtnBig
+                                title="học sinh"
+                                className="mr-2"
+                                onClick={() =>
+                                    history.push("/user/student/create")
+                                }
+                            />
+                        )}
+                        <BackBtn
+                            title="trang chủ"
+                            onClick={() => history.push("/")}
                         />
-                    )}
-                    <BackBtn title="home" onClick={() => history.push("/")} />
-                </Col>
-            </Row>
+                    </Col>
+                </Row>
+            )}
             <Row className="mb-2">
                 <Col md={6}>
                     <SearchBox
@@ -188,68 +201,80 @@ const StudentList = (props) => {
                         }}
                     />
                 </Col>
+                {props.isComponent && (
+                    <Col md={6} className="text-right">
+                        <b>Tổng số học sinh: {totalUser}</b>
+                    </Col>
+                )}
                 {role === "admin" && (
                     <Col md={3}>
                         <GradeSelected
                             isClearable
                             className="mb-2"
-                            placeholder="Filter grade"
+                            placeholder="Lọc theo khối"
                             onChange={(e) => onGradeSelected(e)}
                         />
                     </Col>
                 )}
-                <Col md={3}>
-                    <FilterSelected
-                        isClearable
-                        placeholder="Filter class"
-                        options={filterClassStudent}
-                        onChange={(e) => {
-                            setCurrentPage(1)
-                            if (e) {
-                                setOptionClass(e.value)
-                            } else {
-                                setOptionClass("")
+                {!props.isComponent && (
+                    <Col md={3}>
+                        <FilterSelected
+                            isClearable
+                            placeholder="Lọc theo lớp"
+                            options={filterClassStudent}
+                            onChange={(e) => {
+                                setCurrentPage(1)
+                                if (e) {
+                                    setOptionClass(e.value)
+                                } else {
+                                    setOptionClass("")
+                                }
+                            }}
+                            value={
+                                optionClass && {
+                                    value: optionClass,
+                                    label: optionClass,
+                                }
                             }
-                        }}
-                        value={
-                            optionClass && {
-                                value: optionClass,
-                                label: optionClass,
+                            isDisabled={
+                                role === "admin" &&
+                                filterClassStudent.length === 0
                             }
-                        }
-                        isDisabled={
-                            role === "admin" && filterClassStudent.length === 0
-                        }
-                    />
-                </Col>
+                        />
+                    </Col>
+                )}
             </Row>
-            <Row className="mb-2">
-                <Col md={12} className="text-right">
-                    <b>Total students: {totalUser}</b>
-                </Col>
-            </Row>
+            {!props.isComponent && (
+                <Row className="mb-2">
+                    <Col md={12} className="text-right">
+                        <b>Total students: {totalUser}</b>
+                    </Col>
+                </Row>
+            )}
             <Row>
                 <Col md={12}>
                     {data && data.length > 0 ? (
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    {[
-                                        "Name",
-                                        "Gender",
-                                        "Grade",
-                                        "Class",
-                                        "Date of birth",
-                                        "Father",
-                                        "Mother",
-                                        "Address",
-                                        "Note",
-                                        "",
-                                    ].map((item, index) => (
-                                        <th key={index} className="align-top">
-                                            {item}
-                                        </th>
-                                    ))}
+                                    <th>Tên</th>
+                                    <th>Giới tính</th>
+
+                                    {!props.isComponent && (
+                                        <>
+                                            <th>Khối</th>
+                                            <th>Lớp</th>
+                                        </>
+                                    )}
+
+                                    <th>Ngày sinh</th>
+                                    <th>Bố</th>
+                                    <th>Mẹ</th>
+                                    <th>Địa chỉ</th>
+                                    <th>Ghi chú</th>
+                                    <th></th>
+
+                                    {props.isComponent && <th></th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -265,11 +290,15 @@ const StudentList = (props) => {
                                                 student.studentName
                                             )}
                                         </td>
-                                        <td>
-                                            {student.gender ? "Male" : "Female"}
-                                        </td>
-                                        <td>{student.grade}</td>
-                                        <td>{student.classRoom}</td>
+                                        <td>{student.gender ? "Nam" : "Nữ"}</td>
+
+                                        {!props.isComponent && (
+                                            <>
+                                                <td>{student.grade}</td>
+                                                <td>{student.classRoom}</td>
+                                            </>
+                                        )}
+
                                         <td>
                                             {moment(student.dateOfBirth).format(
                                                 "DD/MM/YYYY"
@@ -296,7 +325,7 @@ const StudentList = (props) => {
                                                         props.setModal({
                                                             isOpen: true,
                                                             message:
-                                                                "Do you want to delete this student ?",
+                                                                "Bạn có chắc muốn xóa học sinh này ?",
                                                             type: "warning",
                                                             onConfirm: () =>
                                                                 deleteStudent(
@@ -308,7 +337,7 @@ const StudentList = (props) => {
                                             ) : (
                                                 <NewTabLink
                                                     title={
-                                                        <div title="View transcript">
+                                                        <div title="Xem bảng điểm">
                                                             <i className="fas fa-table"></i>
                                                         </div>
                                                     }
@@ -316,12 +345,28 @@ const StudentList = (props) => {
                                                 />
                                             )}
                                         </td>
+
+                                        {props.isComponent && (
+                                            <td>
+                                                <div
+                                                    className="text-center"
+                                                    title="Đánh dấu nghỉ học"
+                                                >
+                                                    <i
+                                                        className="fas fa-times text-primary"
+                                                        style={{
+                                                            cursor: "pointer",
+                                                        }}
+                                                    />
+                                                </div>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>
                         </Table>
                     ) : (
-                        <Alert color="primary">No student to display</Alert>
+                        <Alert color="primary">Không có học sinh</Alert>
                     )}
                 </Col>
             </Row>

@@ -15,7 +15,7 @@ const Parent = ({ user }) => {
         <div className="mb-2">
             <Row>
                 <Col md={4} className="d-flex flex-column">
-                    <ProfileContainer />
+                    <ProfileContainer className="mb-4" />
                     <AdminBlock
                         title="Số ngày nghỉ"
                         icon="fas fa-times"

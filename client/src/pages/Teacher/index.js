@@ -2,35 +2,57 @@ import React from "react"
 import { connect } from "react-redux"
 import { Row, Col } from "reactstrap"
 
-import NewTabLink from "../../components/common/NewTabLink"
 import Schedule from "../../components/Schedule"
-import Highlight from "../Hightlight"
+import ProfileContainer from "../../components/ProfileContainer"
+import AdminBlock from "../../components/Admin/AdminBlock"
+import AdminCard from "../../components/Admin/AdminCard"
+import LastestHighlightOrEvent from "../../components/LastestHighlightOrEvent"
+import TeacherMainClass from "../../components/TeacherMainClass"
 
 const Teacher = ({ user }) => {
     return (
         <div className="mb-2">
             <Row>
-                <Col md={12} className="mb-2">
-                    <h6>Teacher name: {user?.name}</h6>
-                    <h6>Subject: {user?.subject}</h6>
-                    {user?.mainTeacherOfClass?.trim() && (
-                        <h6>
-                            Main teacher of class: {user?.mainTeacherOfClass}
-                        </h6>
-                    )}
-                    <h6>Teacher of class: {user?.teacherOfClass.join(", ")}</h6>
-                    <NewTabLink to="/profile" title="View profile" />
-                    <br />
-                    <a href="#highlight">Highlights</a>
+                <Col md={4} className="mb-4">
+                    <ProfileContainer />
                 </Col>
 
-                <Col md={12}>
-                    <Schedule teacherId={user?._id} />
+                <Col md={4} className="d-flex flex-column mb-4">
+                    <div className="mb-4">
+                        <AdminCard color="danger" viewOnly>
+                            <div className="d-flex justify-content-between">
+                                <span>Học sinh nghỉ hôm nay</span>
+                                <span>
+                                    2 <i class="fas fa-user-plus" />
+                                </span>
+                                <span>
+                                    1 <i class="fas fa-user-minus" />
+                                </span>
+                            </div>
+                        </AdminCard>
+                    </div>
+                    <AdminBlock
+                        title="Thời khóa biểu"
+                        icon="fas fa-calendar-week"
+                        className="flex-grow-1"
+                    >
+                        <Schedule teacherId={user?._id} isComponent />
+                    </AdminBlock>
                 </Col>
 
-                <Col md={12} id="highlight">
-                    <Highlight />
+                <Col md={4} className="mb-4 d-flex flex-column">
+                    <LastestHighlightOrEvent
+                        isHighlight
+                        noHeight
+                        className="flex-grow-1"
+                    />
                 </Col>
+
+                {user.mainTeacherOfClass && user.mainTeacherOfClass.trim() && (
+                    <Col md={12} className="mb-4">
+                        <TeacherMainClass userInformation={user} />
+                    </Col>
+                )}
             </Row>
         </div>
     )
