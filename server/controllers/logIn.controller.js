@@ -30,6 +30,7 @@ module.exports.logIn = (req, res) => {
                             note: student.note,
                             father: student.father,
                             mother: student.mother,
+                            dayOff: student.dayOff,
                             role: "parent",
                         }
 
@@ -314,6 +315,7 @@ module.exports.getUserInformation = async (req, res) => {
                         note: parent.note,
                         father: parent.father,
                         mother: parent.mother,
+                        dayOff: parent.dayOff,
                         role: "parent",
                     },
                 })
@@ -446,6 +448,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 note: student.note,
                                 father: student.father,
                                 mother: student.mother,
+                                dayOff: student.dayOff,
                                 role: "parent",
                             }
 

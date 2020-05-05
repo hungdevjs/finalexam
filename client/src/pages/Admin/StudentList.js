@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Table, Row, Col, Alert } from "reactstrap"
+import { Table, Row, Col, Alert, Button } from "reactstrap"
 import { connect } from "react-redux"
 import moment from "moment"
 import history from "../../config/history"
@@ -17,9 +17,11 @@ import ViewModal from "../../components/modal/ViewModal"
 
 import getAllUser from "../../redux/action/getAllUser"
 import teacherGetAllStudent from "../../redux/action/teacherGetAllStudent"
+import teacherGetStudentOff from "../../redux/action/teacherGetStudentOff"
 import setModal from "../../redux/action/setModal"
 import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
+import { markOffStudent } from "../../utils/api/fetchData"
 
 const StudentList = (props) => {
     const { user } = props
@@ -39,6 +41,92 @@ const StudentList = (props) => {
 
     const [isOpen, toggle] = useState(false)
     const [parent, setParent] = useState({})
+
+    const [isOpenMarkOff, toggleMarkOff] = useState(false)
+    const [student, setStudent] = useState({})
+    const today = moment().format("DD/MM/YYYY")
+
+    const markOff = async (permission) => {
+        try {
+            toggleMarkOff(!isOpenMarkOff)
+
+            await markOffStudent({
+                studentId: student.id,
+                permission,
+                day: today,
+            })
+
+            getData()
+            props.teacherGetStudentOff()
+
+            renderNoti({
+                type: "success",
+                title: "Thành công",
+                message: "Đã đánh dấu nghỉ học",
+            })
+        } catch {
+            renderNoti({
+                type: "danger",
+                title: "Lỗi",
+                message: "Lỗi trong khi đánh dấu nghỉ học",
+            })
+        }
+    }
+
+    const renderModalMarkOff = () => (
+        <ViewModal
+            isOpen={isOpenMarkOff}
+            toggle={() => {
+                toggleMarkOff(!isOpenMarkOff)
+            }}
+            title="Đánh dấu nghỉ học"
+            onConfirm={() => console.log("confirm")}
+            noFooter
+        >
+            <p>
+                Đánh dấu học sinh {student.studentName} nghỉ học vào ngày{" "}
+                {today}
+            </p>
+            <div className="text-center">
+                <Button
+                    color="success"
+                    className="mr-2"
+                    onClick={() => markOff(true)}
+                >
+                    Có phép
+                </Button>
+                <Button color="danger" onClick={() => markOff(false)}>
+                    Không phép
+                </Button>
+            </div>
+        </ViewModal>
+    )
+
+    const onMarkOff = (student) => {
+        const { dayOff } = student
+
+        if (checkMarkOff(dayOff)) {
+            setStudent(student)
+            toggleMarkOff(!isOpen)
+        }
+    }
+
+    const checkMarkOff = (dayOff) =>
+        dayOff?.every(
+            (item) =>
+                moment(new Date(item.day)).format("DD/MM/YYYY") !==
+                moment().format("DD/MM/YYYY")
+        )
+
+    const checkPermissionOff = (dayOff) => {
+        const today = dayOff.find(
+            (item) =>
+                moment(new Date(item.day)).format("DD/MM/YYYY") ===
+                moment().format("DD/MM/YYYY")
+        )
+
+        return today.permission
+    }
 
     const getData = async () => {
         try {
@@ -163,6 +251,7 @@ const StudentList = (props) => {
     return (
         <div>
             {renderModal()}
+            {renderModalMarkOff()}
             {!props.isComponent && (
                 <Row className="mb-2">
                     <Col md={7}>
@@ -350,14 +439,41 @@ const StudentList = (props) => {
                                             <td>
                                                 <div
                                                     className="text-center"
-                                                    title="Đánh dấu nghỉ học"
+                                                    title={
+                                                        checkMarkOff(
+                                                            student.dayOff
+                                                        )
+                                                            ? "Đánh dấu nghỉ học"
+                                                            : checkPermissionOff(
+                                                                  student.dayOff
+                                                              )
+                                                            ? "Nghỉ học có phép"
+                                                            : "Nghỉ học không phép"
+                                                    }
+                                                    onClick={() =>
+                                                        onMarkOff(student)
+                                                    }
                                                 >
-                                                    <i
-                                                        className="fas fa-times text-primary"
-                                                        style={{
-                                                            cursor: "pointer",
-                                                        }}
-                                                    />
+                                                    {checkMarkOff(
+                                                        student.dayOff
+                                                    ) ? (
+                                                        <i
+                                                            className="far fa-hand-paper"
+                                                            style={{
+                                                                cursor:
+                                                                    "pointer",
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        <i
+                                                            className={`fas fa-times text-primary ${
+                                                                !checkPermissionOff(
+                                                                    student.dayOff
+                                                                ) &&
+                                                                "text-danger"
+                                                            }`}
+                                                        />
+                                                    )}
                                                 </div>
                                             </td>
                                         )}
@@ -389,6 +505,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     getAllUser,
     teacherGetAllStudent,
+    teacherGetStudentOff,
     setModal,
 }
 

@@ -5,9 +5,9 @@ import { Row, Col } from "reactstrap"
 import Schedule from "../../components/Schedule"
 import ProfileContainer from "../../components/ProfileContainer"
 import AdminBlock from "../../components/Admin/AdminBlock"
-import AdminCard from "../../components/Admin/AdminCard"
 import LastestHighlightOrEvent from "../../components/LastestHighlightOrEvent"
 import TeacherMainClass from "../../components/TeacherMainClass"
+import StudentOff from "../../components/StudentOff"
 
 const Teacher = ({ user }) => {
     return (
@@ -18,19 +18,7 @@ const Teacher = ({ user }) => {
                 </Col>
 
                 <Col md={4} className="d-flex flex-column mb-4">
-                    <div className="mb-4">
-                        <AdminCard color="danger" viewOnly>
-                            <div className="d-flex justify-content-between">
-                                <span>Học sinh nghỉ hôm nay</span>
-                                <span>
-                                    2 <i class="fas fa-user-plus" />
-                                </span>
-                                <span>
-                                    1 <i class="fas fa-user-minus" />
-                                </span>
-                            </div>
-                        </AdminCard>
-                    </div>
+                    <StudentOff />
                     <AdminBlock
                         title="Thời khóa biểu"
                         icon="fas fa-calendar-week"

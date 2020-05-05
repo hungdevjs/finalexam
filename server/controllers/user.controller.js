@@ -836,6 +836,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
                 note: student.note,
                 address: student.address,
                 dateOfBirth: student.dateOfBirth,
+                dayOff: student.dayOff,
             })),
             totalPage,
             totalUser,

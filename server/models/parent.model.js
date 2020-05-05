@@ -135,6 +135,13 @@ const parentSchema = new Schema({
             x3: [{ type: Number, _id: false, enum: validScore }],
         },
     },
+    dayOff: [
+        {
+            _id: false,
+            day: { type: String },
+            permission: Boolean,
+        },
+    ],
     refreshToken: {
         type: String,
     },

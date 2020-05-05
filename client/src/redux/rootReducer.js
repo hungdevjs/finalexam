@@ -6,6 +6,7 @@ import user from "./reducer/user"
 import modal from "./reducer/modal"
 import time from "./reducer/time"
 import event from "./reducer/event"
+import studentOff from "./reducer/studentOff"
 
 export default combineReducers({
     loading,
@@ -14,4 +15,5 @@ export default combineReducers({
     modal,
     time,
     event,
+    studentOff,
 })

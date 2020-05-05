@@ -9,6 +9,7 @@ import AdminBlock from "../../components/Admin/AdminBlock"
 import LastestHighlightOrEvent from "../../components/LastestHighlightOrEvent"
 import TeacherOfClassVertical from "../../components/TeacherOfClassVertical"
 import Email from "../../components/Email"
+import StudentDayOff from "../../components/StudentDayOff"
 
 const Parent = ({ user }) => {
     return (
@@ -16,13 +17,7 @@ const Parent = ({ user }) => {
             <Row>
                 <Col md={4} className="d-flex flex-column">
                     <ProfileContainer className="mb-4" />
-                    <AdminBlock
-                        title="Số ngày nghỉ"
-                        icon="fas fa-times"
-                        className="flex-grow-1 mb-4"
-                    >
-                        aaa
-                    </AdminBlock>
+                    <StudentDayOff dayOff={user.dayOff} />
                 </Col>
 
                 <Col md={8}>
@@ -42,10 +37,6 @@ const Parent = ({ user }) => {
                         <Transcript studentId={user._id} isComponent />
                     </AdminBlock>
                 </Col>
-
-                {/* <Col md={12}>
-                    <TeacherOfClass classRoom={user.classRoom} />
-                </Col> */}
             </Row>
             <Row>
                 <Col md={4} className="mb-4">

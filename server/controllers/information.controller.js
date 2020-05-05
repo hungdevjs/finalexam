@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken")
+const moment = require("moment")
 const { subjects } = require("../utils/constant")
 const checkConflictSchedule = require("../utils/checkConflictSchedule")
 const validateDate = require("../utils/validateDate")
@@ -368,6 +368,81 @@ module.exports.deleteEvent = async (req, res) => {
         await event.save()
 
         res.status(200).send("Delete event successfully")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.markOff = async (req, res) => {
+    try {
+        const { id } = req
+        const { studentId, permission, day } = req.body
+
+        if (!validateDate(day)) throw new Error("Day is not valid")
+
+        const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+        if (!teacher) throw new Error("Teacher doesn't exist")
+
+        const student = await Parent.findOne({
+            isDeleted: false,
+            _id: studentId,
+        })
+        if (!student) throw new Error("Student doesn't exist")
+
+        if (teacher.mainTeacherOfClass !== student.classRoom)
+            throw new Error(
+                "Teacher doesn't have permission to mark off this student"
+            )
+
+        student.dayOff = [...student.dayOff, { day, permission }]
+
+        await student.save()
+
+        res.status(200).send("Mark off successfully")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.teacherGetStudentOff = async (req, res) => {
+    try {
+        const { id } = req
+
+        const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+        if (!teacher) throw new Error("Teacher doesn't exist")
+
+        if (
+            !teacher.mainTeacherOfClass ||
+            teacher.mainTeacherOfClass.length === 0
+        )
+            throw new Error("Teacher is not main teacher")
+
+        const students = await Parent.find({
+            isDeleted: false,
+            classRoom: teacher.mainTeacherOfClass,
+        })
+
+        if (!students) throw new Error("Students doesn't exist")
+
+        const studentOffToday = students.filter(
+            (student) =>
+                student.dayOff.filter(
+                    (item) =>
+                        moment(new Date(item.day)).format("DD/MM/YYYY") ===
+                        moment().format("DD/MM/YYYY")
+                ).length > 0
+        )
+
+        const studentOff = studentOffToday.map((student) => ({
+            studentName: student.studentName,
+            permission: student.dayOff.find(
+                (item) =>
+                    moment(new Date(item.day)).format("DD/MM/YYYY") ===
+                    moment().format("DD/MM/YYYY")
+            ).permission,
+        }))
+
+        res.status(200).json(studentOff)
     } catch (err) {
         res.status(500).send(err.message)
     }

@@ -125,3 +125,8 @@ export const createOrUpdateEvent = (data) =>
 export const getEvent = () => request.get("information/event")
 
 export const deleteEvent = (id) => request.delete(`information/event/${id}`)
+
+export const markOffStudent = (data) =>
+    request.post("information/markoff", data)
+
+export const teacherGetStudentOff = () => request.get("information/studentOff")

@@ -12,7 +12,7 @@ const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam2?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam3?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -270,6 +270,7 @@ for (const room of classRoom) {
                     x3: [8],
                 },
             },
+            dayOff: [],
         }
         createStudent(data)
         id++
