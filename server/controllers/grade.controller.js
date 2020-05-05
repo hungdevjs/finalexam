@@ -34,8 +34,8 @@ module.exports.getAllGradeWithMainTeacher = async (req, res) => {
             grade: grade.grade,
             classRoom: grade.classRoom.map((room) => ({
                 room: room,
-                mainTeacher: teachers.find((tc) =>
-                    tc.mainTeacherOfClass.includes(room)
+                mainTeacher: teachers.find(
+                    (tc) => tc.mainTeacherOfClass === room
                 ),
             })),
         }))

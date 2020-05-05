@@ -122,9 +122,7 @@ module.exports.getAllUser = (req, res) => {
                                     teacher.teacherOfClass.includes(
                                         filterClass
                                     ) ||
-                                    teacher.mainTeacherOfClass.includes(
-                                        filterClass
-                                    )
+                                    teacher.mainTeacherOfClass === filterClass
                             )
                         }
 
@@ -513,10 +511,7 @@ module.exports.createTeacher = async (req, res) => {
         }
 
         // check if mainClass exist
-        if (
-            Array.isArray(mainTeacherOfClass) ||
-            mainTeacherOfClass.length > 0
-        ) {
+        if (mainTeacherOfClass && mainTeacherOfClass.trim()) {
             let classes = []
             const grades = await Grade.find()
             if (grades) {
@@ -525,24 +520,22 @@ module.exports.createTeacher = async (req, res) => {
                 }
             }
 
-            for (room of mainTeacherOfClass) {
-                if (!classes.includes(room)) {
-                    throw new Error("Class doesn't exist")
-                }
+            if (!classes.includes(mainTeacherOfClass)) {
+                throw new Error("Class doesn't exist")
+            }
 
-                const mainClass = await Teacher.find({
-                    isDeleted: false,
-                }).distinct("mainTeacherOfClass")
+            const mainClass = await Teacher.find({
+                isDeleted: false,
+            }).distinct("mainTeacherOfClass")
 
-                const invalidMainclass = mainTeacherOfClass.filter((item) =>
-                    mainClass.includes(item)
-                )
+            console.log(mainClass)
 
-                if (invalidMainclass.length > 0) {
-                    throw new Error(
-                        `Class ${invalidMainclass.join(", ")} had main teacher`
-                    )
-                }
+            const invalidMainclass = mainClass
+                .filter((room) => room !== "")
+                .includes(mainTeacherOfClass)
+
+            if (invalidMainclass) {
+                throw new Error(`Class ${mainTeacherOfClass} had main teacher`)
             }
         }
 
@@ -632,9 +625,8 @@ module.exports.updateTeacher = async (req, res) => {
         const teacherSameMainClass = teachers.filter((teacher) => {
             return (
                 teacher.id !== id &&
-                teacher.mainTeacherOfClass.filter((room) =>
-                    mainTeacherOfClass.includes(room)
-                ).length > 0
+                teacher.mainTeacherOfClass !== "" &&
+                teacher.mainTeacherOfClass === mainTeacherOfClass
             )
         })
 
@@ -798,10 +790,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
         }
 
         const classRooms = [
-            ...new Set([
-                ...teacher.mainTeacherOfClass,
-                ...teacher.teacherOfClass,
-            ]),
+            ...new Set([teacher.mainTeacherOfClass, ...teacher.teacherOfClass]),
         ]
 
         const students = (await Parent.find({ isDeleted: false })) || []

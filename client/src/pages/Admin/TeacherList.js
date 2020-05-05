@@ -210,11 +210,7 @@ const TeacherList = (props) => {
                                         <td>
                                             {teacher.teacherOfClass.join(", ")}
                                         </td>
-                                        <td>
-                                            {teacher.mainTeacherOfClass.join(
-                                                ", "
-                                            )}
-                                        </td>
+                                        <td>{teacher.mainTeacherOfClass}</td>
                                         <td className="text-center">
                                             <DeleteBtn
                                                 onClick={() => {

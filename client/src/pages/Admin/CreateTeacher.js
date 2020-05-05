@@ -66,7 +66,7 @@ const CreateTeacher = (props) => {
                 props.setFieldValue("phoneNumber", data.phoneNumber)
                 props.setFieldValue(
                     "mainTeacher",
-                    data.mainTeacherOfClass.length > 0
+                    data.mainTeacherOfClass && data.mainTeacherOfClass.trim()
                 )
                 props.setFieldValue(
                     "mainTeacherOfClass",
@@ -208,7 +208,7 @@ const CreateTeacher = (props) => {
                                     if (!e.target.checked) {
                                         props.setFieldValue(
                                             "mainTeacherOfClass",
-                                            []
+                                            ""
                                         )
                                     }
                                 }}
@@ -218,23 +218,21 @@ const CreateTeacher = (props) => {
                         </div>
                         <div>
                             <AllClassSelected
-                                isMulti
                                 isDisabled={
                                     !props.values.mainTeacher || teacherId
                                 }
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacherOfClass",
-                                        e ? e.map((item) => item.value) : []
+                                        e.value
                                     )
                                 }}
                                 value={
                                     mainTeacherOfClass &&
-                                    mainTeacherOfClass.length > 0 &&
-                                    mainTeacherOfClass.map((item) => ({
-                                        value: item,
-                                        label: item,
-                                    }))
+                                    mainTeacherOfClass.trim() && {
+                                        value: mainTeacherOfClass,
+                                        label: mainTeacherOfClass,
+                                    }
                                 }
                                 viewOnly={teacherId}
                             />
@@ -308,7 +306,7 @@ export default withFormik({
         email: "",
         phoneNumber: "",
         mainTeacher: false,
-        mainTeacherOfClass: [],
+        mainTeacherOfClass: "",
         subject: "",
         teacherOfClass: [],
     }),
@@ -328,9 +326,9 @@ export default withFormik({
             .required("Phone number is required")
             .matches(phoneNumberRegex, "Phone number is invalid"),
         mainTeacher: yup.boolean(),
-        mainTeacherOfClass: yup.array().when("mainTeacher", {
+        mainTeacherOfClass: yup.string().when("mainTeacher", {
             is: true,
-            then: yup.array().min(1, "Class is required"),
+            then: yup.string().required("Class is required"),
         }),
         subject: yup.string().required("Subject is required"),
         teacherOfClass: yup

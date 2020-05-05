@@ -91,8 +91,8 @@ module.exports.getTeacherOfClass = async (req, res) => {
         const subjectTeacher = teachers.filter((teacher) =>
             teacher.teacherOfClass.includes(classRoom)
         )
-        const mainTeacher = teachers.find((teacher) =>
-            teacher.mainTeacherOfClass.includes(classRoom)
+        const mainTeacher = teachers.find(
+            (teacher) => teacher.mainTeacherOfClass === classRoom
         )
 
         res.status(200).json({ subjectTeacher, mainTeacher })

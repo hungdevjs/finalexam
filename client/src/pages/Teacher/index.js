@@ -13,10 +13,9 @@ const Teacher = ({ user }) => {
                 <Col md={12} className="mb-2">
                     <h6>Teacher name: {user?.name}</h6>
                     <h6>Subject: {user?.subject}</h6>
-                    {user?.mainTeacherOfClass.length > 0 && (
+                    {user?.mainTeacherOfClass?.trim() && (
                         <h6>
-                            Main teacher of class:{" "}
-                            {user?.mainTeacherOfClass.join(", ")}
+                            Main teacher of class: {user?.mainTeacherOfClass}
                         </h6>
                     )}
                     <h6>Teacher of class: {user?.teacherOfClass.join(", ")}</h6>

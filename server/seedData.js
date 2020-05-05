@@ -12,7 +12,7 @@ const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam9?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam2?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -36,7 +36,7 @@ async function createAdmin() {
 createAdmin()
 console.log("Created admin")
 
-create semester && year
+// create semester && year
 console.log("Creating semester...")
 
 async function createSemester(data) {
@@ -50,11 +50,20 @@ const month = now.getMonth() + 1
 const year = month < 9 ? now.getFullYear() - 1 : now.getFullYear()
 const semester = month < 9 ? 2 : 1
 
-createSemester({ year, semester })
+const lastResult = [
+    { time: "2016-2017 II", good: 75, medium: 20, bad: 5 },
+    { time: "2017-2018 I", good: 75, medium: 10, bad: 15 },
+    { time: "2017-2018 II", good: 70, medium: 20, bad: 10 },
+    { time: "2018-2019 I", good: 70, medium: 25, bad: 5 },
+    { time: "2018-2019 II", good: 65, medium: 20, bad: 15 },
+    { time: "2019-2020 I", good: 75, medium: 20, bad: 5 },
+]
+
+createSemester({ year, semester, lastResult })
 
 console.log("Created semester")
 
-create class
+// create class
 console.log("Creating grades and classes...")
 const grades = [
     { grade: 6, classRoom: ["6A", "6B", "6C", "6D"] },
@@ -289,7 +298,7 @@ for (const room of classRoom) {
             gender: Math.random() > 0.5,
             email: `giaovien${count}-${room}@gmail.com`,
             phoneNumber: "0123456789",
-            mainTeacherOfClass: index === 0 ? [room] : [],
+            mainTeacherOfClass: index === 0 ? room : "",
             teacherOfClass: room,
             subject: item,
             isDeleted: false,

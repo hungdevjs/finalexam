@@ -32,7 +32,7 @@ const teacherSchema = new Schema({
         type: String,
         required: true,
     },
-    mainTeacherOfClass: [{ type: String }],
+    mainTeacherOfClass: { type: String },
     teacherOfClass: [{ type: String }],
     subject: {
         type: String,
