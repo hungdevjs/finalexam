@@ -7,6 +7,10 @@ export default () => async (dispatch) => {
     try {
         const res = await getAdminReport()
         dispatch(setLoading(false))
+        dispatch({
+            type: "SET_STUDENT_OFF",
+            payload: res.data.studentOff,
+        })
         return res.data
     } catch (err) {
         console.log(err.message)

@@ -22,7 +22,7 @@ const AdminReport = (props) => {
                     onDetailClick={() => history.push("/students")}
                 >
                     <i className="fas fa-users" /> Tổng số học sinh:{" "}
-                    {reports?.numberOfStudents}
+                    {reports.numberOfStudents}
                 </AdminCard>
             </Col>
             <Col md={6} lg={3} className="mb-4">
@@ -32,7 +32,7 @@ const AdminReport = (props) => {
                     onDetailClick={() => history.push("/teachers")}
                 >
                     <i className="fas fa-chalkboard-teacher" /> Tổng số giáo
-                    viên: {reports?.numberOfTeachers}
+                    viên: {reports.numberOfTeachers}
                 </AdminCard>
             </Col>
             <Col md={6} lg={3} className="mb-4">
@@ -42,13 +42,28 @@ const AdminReport = (props) => {
                     onDetailClick={() => history.push("/gradeAndClass")}
                 >
                     <i className="fas fa-school" /> Lớp học:{" "}
-                    {reports?.numberOfClasses}
+                    {reports.numberOfClasses}
                 </AdminCard>
             </Col>
             <Col md={6} lg={3} className="mb-4">
-                <AdminCard color="danger">
-                    <i className="fas fa-user-times" /> Học sinh nghỉ học hôm
-                    nay: {reports?.numberOfMissingStudents}
+                <AdminCard
+                    color="danger"
+                    onDetailClick={() => history.push("/studentOffToday")}
+                >
+                    <i className="fas fa-user-times mr-2" />
+                    <span className="mr-4">Học sinh nghỉ học:</span>
+                    {
+                        reports.studentOff?.filter(
+                            (item) => item.student.permission
+                        ).length
+                    }{" "}
+                    <i className="fas fa-user-plus mr-4" />
+                    {
+                        reports.studentOff?.filter(
+                            (item) => !item.student.permission
+                        ).length
+                    }{" "}
+                    <i className="fas fa-user-minus" />
                 </AdminCard>
             </Col>
         </Row>

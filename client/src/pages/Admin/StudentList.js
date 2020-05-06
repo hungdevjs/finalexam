@@ -44,7 +44,7 @@ const StudentList = (props) => {
 
     const [isOpenMarkOff, toggleMarkOff] = useState(false)
     const [student, setStudent] = useState({})
-    const today = moment().format("DD/MM/YYYY")
+    const now = new Date()
 
     const markOff = async (permission) => {
         try {
@@ -53,7 +53,7 @@ const StudentList = (props) => {
             await markOffStudent({
                 studentId: student.id,
                 permission,
-                day: today,
+                day: now.toString(),
             })
 
             getData()
@@ -85,7 +85,7 @@ const StudentList = (props) => {
         >
             <p>
                 Đánh dấu học sinh {student.studentName} nghỉ học vào ngày{" "}
-                {today}
+                {moment().format("DD/MM/YYYY")}
             </p>
             <div className="text-center">
                 <Button

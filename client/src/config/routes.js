@@ -9,6 +9,7 @@ import Transcript from "../pages/Transcript"
 import TimeInfo from "../pages/Admin/TimeInfo"
 import EditSchedule from "../pages/Admin/EditSchedule"
 import Highlight from "../pages/Hightlight"
+import StudentOffToday from "../pages/Admin/StudentOffToday"
 
 export default [
     { path: "/", component: Home },
@@ -34,6 +35,11 @@ export default [
     {
         path: "/updateSchedule/:classRoom",
         component: EditSchedule,
+        roles: ["admin"],
+    },
+    {
+        path: "/studentOffToday",
+        component: StudentOffToday,
         roles: ["admin"],
     },
 ]

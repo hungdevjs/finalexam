@@ -111,7 +111,7 @@ const LastestHighlightOrEvent = (props) => {
             title={props.isHighlight ? highlightTitle : "Sự kiện sắp tới"}
             icon={!props.isHighlight && "fab fa-elementor"}
             height={props.height || (props.noHeight && "") || "350px"}
-            {...props}
+            className={props.className && props.className}
         >
             {renderModal()}
             <PerfectScrollbar>

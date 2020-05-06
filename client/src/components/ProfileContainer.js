@@ -26,7 +26,7 @@ const ProfileContainer = (props) => {
     )
 
     return (
-        <div {...props}>
+        <div className={props.className && props.className}>
             <AdminBlock title={profileTitle}>
                 {isParent && (
                     <div>

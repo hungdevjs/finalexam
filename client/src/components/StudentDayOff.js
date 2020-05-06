@@ -17,14 +17,14 @@ export default (props) => {
             <Row>
                 <Col md={12} className="mb-4">
                     <AdminCard color="primary" viewOnly>
-                        <i class="fas fa-user-plus mr-2" />
+                        <i className="fas fa-user-plus mr-2" />
                         Có phép: {permission.length}
                     </AdminCard>
                 </Col>
 
                 <Col md={12}>
                     <AdminCard color="danger" viewOnly>
-                        <i class="fas fa-user-minus mr-2" />
+                        <i className="fas fa-user-minus mr-2" />
                         Không phép: {noPermission.length}
                     </AdminCard>
                 </Col>

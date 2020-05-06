@@ -10,6 +10,7 @@ const Schedule = require("../models/schedule.model")
 const Semester = require("../models/semester.model")
 const Missing = require("../models/missing.model")
 const Event = require("../models/event.model")
+const Dayoff = require("../models/dayoff.model")
 
 module.exports.getAllClass = (req, res) => {
     try {
@@ -248,21 +249,21 @@ module.exports.getAdminReport = async (req, res) => {
         const students = await Parent.countDocuments({ isDeleted: false })
         const teachers = await Teacher.countDocuments({ isDeleted: false })
         const grades = await Grade.find({ isDeleted: false })
+        const studentOff = await Dayoff.find({
+            isDeleted: false,
+            day: moment().format("DD/MM/YYYY"),
+        })
 
         const numberOfClasses = grades.reduce(
             (totalClass, grade) => totalClass + grade.classRoom.length,
             0
         )
 
-        const { date } = req.query
-        const missingStudents = await Missing.countDocuments({ date })
-        const numberOfMissingStudents = missingStudents || 0
-
         const data = {
             numberOfStudents: students,
             numberOfTeachers: teachers,
-            numberOfMissingStudents,
             numberOfClasses,
+            studentOff,
         }
 
         res.status(200).json(data)
@@ -397,6 +398,20 @@ module.exports.markOff = async (req, res) => {
         student.dayOff = [...student.dayOff, { day, permission }]
 
         await student.save()
+
+        const data = {
+            day: moment(new Date(day)).format("DD/MM/YYYY"),
+            student: {
+                id: student._id,
+                name: student.studentName,
+                classRoom: student.classRoom,
+                permission,
+            },
+            isDeleted: false,
+        }
+
+        const newDayoff = new Dayoff(data)
+        await newDayoff.save()
 
         res.status(200).send("Mark off successfully")
     } catch (err) {
