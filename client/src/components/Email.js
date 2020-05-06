@@ -61,7 +61,7 @@ const Email = (props) => {
                 >
                     Gửi SMS
                 </Button>
-                <Button color="warning">Gửi email</Button>
+                {/* <Button color="warning">Gửi email</Button> */}
             </div>
         </AdminBlock>
     )
