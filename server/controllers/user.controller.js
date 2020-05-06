@@ -30,7 +30,10 @@ module.exports.getAllUser = (req, res) => {
         } = req.query
 
         if (role === "student") {
-            Parent.find({ isDeleted: false })
+            const filter = filterClass
+                ? { isDeleted: false, classRoom: filterClass }
+                : { isDeleted: false }
+            Parent.find(filter)
                 .then((students) => {
                     if (students) {
                         let totalPage = 1
@@ -48,12 +51,6 @@ module.exports.getAllUser = (req, res) => {
                                 student.studentName
                                     .toUpperCase()
                                     .includes(searchString.toUpperCase())
-                            )
-                        }
-
-                        if (filterClass) {
-                            data = data.filter(
-                                (student) => student.classRoom === filterClass
                             )
                         }
 
