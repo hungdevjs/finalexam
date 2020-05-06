@@ -18,7 +18,8 @@ const Teacher = ({ user }) => {
                 </Col>
 
                 <Col md={4} className="d-flex flex-column mb-4">
-                    <StudentOff />
+                    {user.mainTeacherOfClass &&
+                        user.mainTeacherOfClass.trim() && <StudentOff />}
                     <AdminBlock
                         title="Thời khóa biểu"
                         icon="fas fa-calendar-week"
