@@ -4,6 +4,8 @@ module.exports = {
         "[Dev School] Account for student $studentName$: StudentID: $studentId$ - Password: $password$",
     createTeacherText:
         "[Dev School] Account for teacher $teacherName$: Email: $teacherEmail$ - Password: $password$",
+    smsToMainTeacherText:
+        "[Dev School] Message from parent of student $studentName$: $content$",
     subjects: [
         "Toán",
         "Văn",

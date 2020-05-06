@@ -29,4 +29,9 @@ router.get("/students", authTeacher, controller.teacherGetAllStudent)
 
 router.post("/student/transcript", authTeacher, controller.updateTranscript)
 
+router.post(
+    "/student/sendMessageToMainTeacher",
+    controller.sendMessageToMainTeacher
+)
+
 module.exports = router

@@ -130,3 +130,6 @@ export const markOffStudent = (data) =>
     request.post("information/markoff", data)
 
 export const teacherGetStudentOff = () => request.get("information/studentOff")
+
+export const sendMessageToMainTeacher = (data) =>
+    request.post("user/student/sendMessageToMainTeacher", data)

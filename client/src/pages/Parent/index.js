@@ -49,7 +49,7 @@ const Parent = ({ user }) => {
                     />
                 </Col>
                 <Col md={4} className="mb-4">
-                    <Email />
+                    <Email studentId={user._id} />
                 </Col>
             </Row>
         </div>

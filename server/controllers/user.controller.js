@@ -9,6 +9,7 @@ const {
     pageSize,
     createStudentText,
     createTeacherText,
+    smsToMainTeacherText,
     subjects,
 } = require("../utils/constant")
 
@@ -880,6 +881,44 @@ module.exports.updateTranscript = async (req, res) => {
         await student.save()
 
         res.status(200).send("Update transcript successfully")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.sendMessageToMainTeacher = async (req, res) => {
+    try {
+        const { studentId, content, type } = req.body
+        console.log(req.body)
+        if (!["sms", "email"].includes(type)) throw new Error("Invalid option")
+
+        const student = await Parent.findOne({
+            isDeleted: false,
+            _id: studentId,
+        })
+        if (!student) throw new Error("Student doesn't exist")
+
+        const mainTeacher = await Teacher.findOne({
+            isDeleted: false,
+            mainTeacherOfClass: student.classRoom,
+        })
+        if (!mainTeacher) throw new Error("Teacher doesn't exist")
+
+        if (type === "sms") {
+            // send sms to teacher
+            const body = smsToMainTeacherText
+                .replace("$studentName$", student.studentName)
+                .replace("$content$", content)
+
+            const to =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? "+84335210659"
+                    : mainTeacher.phoneNumber.replace("0", "+84")
+
+            sendSms(to, body)
+        }
+
+        res.status(200).send("Send SMS successfully")
     } catch (err) {
         res.status(500).send(err.message)
     }
