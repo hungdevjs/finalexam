@@ -9,6 +9,7 @@ import {
     createOrUpdateSchedule,
 } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
+import { getClassSchedule } from "../../utils/api/fetchData"
 
 export default (props) => {
     const {
@@ -29,10 +30,12 @@ export default (props) => {
         getAllSubject().then((res) =>
             setOptions(res.data.map((item) => ({ value: item, label: item })))
         )
-        let copySchedule = _.cloneDeep(schedule)
-        copySchedule["mon"][0] = "Chào cờ"
-        copySchedule["fri"][4] = "Sinh hoạt"
-        setSchedule(copySchedule)
+
+        if (classRoom) {
+            getClassSchedule(classRoom).then((res) =>
+                setSchedule(res.data.schedule)
+            )
+        }
     }, [])
 
     const onUpdateSchedule = async () => {
@@ -113,37 +116,38 @@ export default (props) => {
                             {[0, 1, 2, 3, 4].map((number) => (
                                 <tr key={number}>
                                     {["mon", "tue", "wed", "thu", "fri"].map(
-                                        (day, item) => {
-                                            if (number === 0 && item === 0) {
-                                                return (
-                                                    <td key={item}>Chào cờ</td>
-                                                )
-                                            }
-
-                                            if (number === 4 && item === 4) {
-                                                return (
-                                                    <td key={item}>
-                                                        Sinh hoạt
-                                                    </td>
-                                                )
-                                            }
-
-                                            return (
-                                                <td key={item}>
-                                                    <FilterSelected
-                                                        options={options}
-                                                        placeholder=""
-                                                        onChange={(e) => {
-                                                            onChangeSchedule(
-                                                                day,
-                                                                number,
-                                                                e.value
-                                                            )
-                                                        }}
-                                                    />
-                                                </td>
-                                            )
-                                        }
+                                        (day, item) => (
+                                            <td key={item}>
+                                                <FilterSelected
+                                                    options={options}
+                                                    placeholder=""
+                                                    value={
+                                                        schedule &&
+                                                        schedule[day] && {
+                                                            value:
+                                                                schedule[day][
+                                                                    number
+                                                                ],
+                                                            label:
+                                                                schedule[day][
+                                                                    number
+                                                                ],
+                                                        }
+                                                    }
+                                                    onChange={(e) => {
+                                                        onChangeSchedule(
+                                                            day,
+                                                            number,
+                                                            e.value
+                                                        )
+                                                    }}
+                                                    isDisabled={
+                                                        number + item === 0 ||
+                                                        number + item === 8
+                                                    }
+                                                />
+                                            </td>
+                                        )
                                     )}
                                 </tr>
                             ))}
