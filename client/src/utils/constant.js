@@ -14,7 +14,7 @@ export const subjects = [
 ]
 
 // development base url
-export const BASE_URL = "http://localhost:5000/"
+// export const BASE_URL = "http://localhost:5000/"
 
 // production base url
-// export const BASE_URL = "https://finalexam-server.herokuapp.com/"
+export const BASE_URL = "https://finalexam-server.herokuapp.com/"
