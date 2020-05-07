@@ -495,6 +495,8 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
     }
 }
 
+let resetPasswordRequest = []
+
 module.exports.forgetPassword = async (req, res) => {
     try {
         const { role, identity } = req.body
@@ -510,7 +512,7 @@ module.exports.forgetPassword = async (req, res) => {
             const admin = await Admin.findOne({ isDeleted: false, email })
             if (!admin) throw new Error("User doesn't exist")
 
-            const secretKey = "ds" + Base64.encode(admin._id)
+            const secretKey = "ds" + Base64.encode(`admin&&${admin._id}`)
             const domain =
                 process.env.ENVIRONMENT === "DEVELOPMENT"
                     ? developDomain
@@ -520,7 +522,12 @@ module.exports.forgetPassword = async (req, res) => {
                 process.env.ENVIRONMENT === "DEVELOPMENT"
                     ? "hungdev.js@gmail.com"
                     : email
+
             const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+            resetPasswordRequest = [
+                ...resetPasswordRequest,
+                { time: new Date().getTime(), secretKey },
+            ]
 
             // send resetPasswordUrl to admin email
             const data = {
@@ -539,7 +546,7 @@ module.exports.forgetPassword = async (req, res) => {
             const teacher = await Teacher.findOne({ isDeleted: false, email })
             if (!teacher) throw new Error("User doesn't exist")
 
-            const secretKey = "ds" + Base64.encode(teacher._id)
+            const secretKey = "ds" + Base64.encode(`teacher&&${teacher._id}`)
             const domain =
                 process.env.ENVIRONMENT === "DEVELOPMENT"
                     ? developDomain
@@ -548,7 +555,12 @@ module.exports.forgetPassword = async (req, res) => {
                 process.env.ENVIRONMENT === "DEVELOPMENT"
                     ? "hungdev.js@gmail.com"
                     : email
+
             const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+            resetPasswordRequest = [
+                ...resetPasswordRequest,
+                { time: new Date().getTime(), secretKey },
+            ]
 
             // send resetPasswordUrl to teacher email
             const data = {
@@ -570,12 +582,17 @@ module.exports.forgetPassword = async (req, res) => {
             })
             if (!student) throw new Error("User doesn't exist")
 
-            const secretKey = "ds" + Base64.encode(student._id)
+            const secretKey = "ds" + Base64.encode(`parent&&${student._id}`)
             const domain =
                 process.env.ENVIRONMENT === "DEVELOPMENT"
                     ? developDomain
                     : productDomain
+
             const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+            resetPasswordRequest = [
+                ...resetPasswordRequest,
+                { time: new Date().getTime(), secretKey },
+            ]
 
             const phoneNumber = student.father.phoneNumber
                 ? student.father.phoneNumber
@@ -592,7 +609,69 @@ module.exports.forgetPassword = async (req, res) => {
             sendSms(to, body)
         }
 
-        res.status(200).send("Reset password link is sent")
+        res.status(200).send(
+            "Reset password link is sent. It will be expired in 15 mins"
+        )
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.resetPassword = async (req, res) => {
+    try {
+        const { secretKey, newPassword } = req.body
+
+        const isSigned = resetPasswordRequest.find(
+            (item) => item.secretKey === secretKey
+        )
+
+        if (!isSigned) throw new Error("Invalid request")
+
+        if (new Date().getTime() - isSigned.time > 900000) {
+            resetPasswordRequest = resetPasswordRequest.filter(
+                (item) => item.secretKey !== secretKey
+            )
+            throw new Error("Reset link is expired")
+        }
+
+        const encodedId = secretKey.slice(2, secretKey.length)
+        const decodeInfo = Base64.decode(encodedId)
+
+        const [role, id] = decodeInfo.split("&&")
+
+        const isAdmin = role === "admin"
+        const isTeacher = role === "teacher"
+        const isParent = role === "parent"
+
+        if (isAdmin) {
+            const admin = await Admin.findOne({ isDeleted: false, _id: id })
+            if (!admin) throw new Error("User doesn't exist")
+
+            admin.password = passwordHash.generate(newPassword)
+            await admin.save()
+        }
+
+        if (isTeacher) {
+            const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+            if (!teacher) throw new Error("User doesn't exist")
+
+            teacher.password = passwordHash.generate(newPassword)
+            await teacher.save()
+        }
+
+        if (isParent) {
+            const parent = await Parent.findOne({ isDeleted: false, _id: id })
+            if (!parent) throw new Error("User doesn't exist")
+
+            parent.password = passwordHash.generate(newPassword)
+            await parent.save()
+        }
+
+        resetPasswordRequest = resetPasswordRequest.filter(
+            (item) => item.secretKey !== secretKey
+        )
+
+        res.status(200).send("Update password successfully")
     } catch (err) {
         res.status(500).send(err.message)
     }

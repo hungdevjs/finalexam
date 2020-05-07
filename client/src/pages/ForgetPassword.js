@@ -47,7 +47,7 @@ const ForgetPassword = (props) => {
                             title: "Thành công",
                             message: `Vui lòng kiểm tra ${
                                 role === "parent" ? "tin nhắn SMS" : "email"
-                            } để nhận link đặt lại mật khẩu`,
+                            } để nhận liên kết đặt lại mật khẩu. Liên kết sẽ hết hạn sau 15 phút`,
                         })
                         setIdentity("")
                         setCheckInfo(false)
