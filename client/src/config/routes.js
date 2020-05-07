@@ -10,6 +10,8 @@ import TimeInfo from "../pages/Admin/TimeInfo"
 import EditSchedule from "../pages/Admin/EditSchedule"
 import Highlight from "../pages/Hightlight"
 import StudentOffToday from "../pages/Admin/StudentOffToday"
+import ForgetPassword from "../pages/ForgetPassword"
+import ResetPassword from "../pages/ResetPassword"
 
 export default [
     { path: "/", component: Home },
@@ -41,5 +43,13 @@ export default [
         path: "/studentOffToday",
         component: StudentOffToday,
         roles: ["admin"],
+    },
+    {
+        path: "/forgetPassword",
+        component: ForgetPassword,
+    },
+    {
+        path: "/resetPassword/:secretKey",
+        component: ResetPassword,
     },
 ]

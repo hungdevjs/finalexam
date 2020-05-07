@@ -12,5 +12,6 @@ router.get(
     "/getUserInformationAndNewAccessToken",
     controller.getUserInformationAndNewAccessToken
 )
+router.post("/forgetPassword", controller.forgetPassword)
 
 module.exports = router

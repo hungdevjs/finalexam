@@ -15,7 +15,6 @@ const {
 
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
-const Admin = require("../models/admin.model")
 const Grade = require("../models/grade.model")
 
 module.exports.getAllUser = (req, res) => {

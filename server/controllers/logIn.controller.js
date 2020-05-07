@@ -1,9 +1,21 @@
 const jwt = require("jsonwebtoken")
 const passwordHash = require("password-hash")
+const Base64 = require("js-base64").Base64
 
-let Parent = require("../models/parent.model")
-let Teacher = require("../models/teacher.model")
-let Admin = require("../models/admin.model")
+const Parent = require("../models/parent.model")
+const Teacher = require("../models/teacher.model")
+const Admin = require("../models/admin.model")
+const {
+    developDomain,
+    productDomain,
+    forgetPasswordText,
+    forgetPasswordHtml,
+    forgetPasswordSubject,
+    schoolEmail,
+} = require("../utils/constant")
+
+const sendSms = require("../utils/sendSms")
+const sendEmail = require("../utils/sendEmail")
 
 module.exports.logIn = (req, res) => {
     const role = req.body.role
@@ -480,5 +492,108 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
         }
     } catch (err) {
         res.status(401).send(err.message)
+    }
+}
+
+module.exports.forgetPassword = async (req, res) => {
+    try {
+        const { role, identity } = req.body
+        if (!["admin", "teacher", "parent"].includes(role))
+            throw new Error("Bad request")
+
+        const isAdmin = role === "admin"
+        const isTeacher = role === "teacher"
+        const isParent = role === "parent"
+
+        if (isAdmin) {
+            const email = identity
+            const admin = await Admin.findOne({ isDeleted: false, email })
+            if (!admin) throw new Error("User doesn't exist")
+
+            const secretKey = "ds" + Base64.encode(admin._id)
+            const domain =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? developDomain
+                    : productDomain
+
+            const emailToSent =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? "hungdev.js@gmail.com"
+                    : email
+            const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+
+            // send resetPasswordUrl to admin email
+            const data = {
+                to: emailToSent,
+                from: schoolEmail,
+                subject: forgetPasswordSubject,
+                text: forgetPasswordText.replace("$url$", resetPasswordUrl),
+                html: forgetPasswordHtml.replace("$url$", resetPasswordUrl),
+            }
+
+            sendEmail(data)
+        }
+
+        if (isTeacher) {
+            const email = identity
+            const teacher = await Teacher.findOne({ isDeleted: false, email })
+            if (!teacher) throw new Error("User doesn't exist")
+
+            const secretKey = "ds" + Base64.encode(teacher._id)
+            const domain =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? developDomain
+                    : productDomain
+            const emailToSent =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? "hungdev.js@gmail.com"
+                    : email
+            const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+
+            // send resetPasswordUrl to teacher email
+            const data = {
+                to: emailToSent,
+                from: schoolEmail,
+                subject: forgetPasswordSubject,
+                text: forgetPasswordText.replace("$url$", resetPasswordUrl),
+                html: forgetPasswordHtml.replace("$url$", resetPasswordUrl),
+            }
+
+            sendEmail(data)
+        }
+
+        if (isParent) {
+            const studentId = identity
+            const student = await Parent.findOne({
+                isDeleted: false,
+                studentId,
+            })
+            if (!student) throw new Error("User doesn't exist")
+
+            const secretKey = "ds" + Base64.encode(student._id)
+            const domain =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? developDomain
+                    : productDomain
+            const resetPasswordUrl = `${domain}/resetPassword/${secretKey}`
+
+            const phoneNumber = student.father.phoneNumber
+                ? student.father.phoneNumber
+                : student.mother.phoneNumber
+
+            // send resetPasswordUrl to parent phone number
+            const body = forgetPasswordText.replace("$url$", resetPasswordUrl)
+
+            const to =
+                process.env.ENVIRONMENT === "DEVELOPMENT"
+                    ? "+84335210659"
+                    : phoneNumber.replace("0", "+84")
+
+            sendSms(to, body)
+        }
+
+        res.status(200).send("Reset password link is sent")
+    } catch (err) {
+        res.status(500).send(err.message)
     }
 }

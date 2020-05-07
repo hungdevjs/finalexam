@@ -133,3 +133,6 @@ export const teacherGetStudentOff = () => request.get("information/studentOff")
 
 export const sendMessageToMainTeacher = (data) =>
     request.post("user/student/sendMessageToMainTeacher", data)
+
+export const forgetPassword = (data) =>
+    request.post("login/forgetPassword", data)

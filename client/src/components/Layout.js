@@ -25,7 +25,10 @@ const ContentContainer = styled.div`
 function Layout(props) {
     // check if user is login
     useEffect(() => {
-        if (!props.role) {
+        if (
+            !props.role &&
+            !window.location.pathname.includes("/resetPassword")
+        ) {
             props.getUserInformation().then((status) => {
                 if (!status) {
                     localStorage.removeItem("access_token")
