@@ -52,8 +52,8 @@ const TeacherList = (props) => {
             .catch((err) => {
                 renderNoti({
                     type: "danger",
-                    title: "Failed",
-                    message: "Load teacher list failed",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi lấy dữ liệu",
                 })
             })
     }
@@ -79,8 +79,8 @@ const TeacherList = (props) => {
         deleteUser("teacher", id)
             .then(() =>
                 renderNoti({
-                    title: "Success",
-                    message: "Delete teacher successfully",
+                    title: "Thành công",
+                    message: "Đã xóa giáo viên",
                     type: "success",
                 })
             )
@@ -88,8 +88,8 @@ const TeacherList = (props) => {
             .catch((err) => {
                 renderNoti({
                     type: "danger",
-                    title: "Failed",
-                    message: "Delete teacher failed",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi xóa giáo viên",
                 })
             })
     }
@@ -99,17 +99,20 @@ const TeacherList = (props) => {
             <Row className="mb-2">
                 <Col md={7}>
                     <h5>
-                        TEACHER LIST{" "}
+                        DANH SÁCH GIÁO VIÊN{" "}
                         {props.year && `${props.year}-${props.year + 1}`}
                     </h5>
                 </Col>
                 <Col md={5} className="text-md-right text-md-left">
                     <CreateBtnBig
-                        title="teacher"
+                        title="giáo viên"
                         className="mr-2"
                         onClick={() => history.push("/user/teacher/create")}
                     />
-                    <BackBtn title="home" onClick={() => history.push("/")} />
+                    <BackBtn
+                        title="trang chủ"
+                        onClick={() => history.push("/")}
+                    />
                 </Col>
             </Row>
             <Row className="mb-2">
@@ -128,7 +131,7 @@ const TeacherList = (props) => {
                 <Col md={3}>
                     <FilterSelected
                         isClearable
-                        placeholder="Filter subject"
+                        placeholder="Lọc theo môn học"
                         className="mb-2"
                         options={filterSubject}
                         onChange={(e) => {
@@ -144,7 +147,7 @@ const TeacherList = (props) => {
                 <Col md={3}>
                     <FilterSelected
                         isClearable
-                        placeholder="Filter class"
+                        placeholder="Lọc theo lớp"
                         options={filterClassTeacher}
                         onChange={(e) => {
                             setCurrentPage(1)
@@ -165,7 +168,7 @@ const TeacherList = (props) => {
             </Row>
             <Row className="mb-2">
                 <Col md={12} className="text-right">
-                    <b>Total teachers: {totalUser}</b>
+                    <b>Tổng số giáo viên: {totalUser}</b>
                 </Col>
             </Row>
             <Row>
@@ -175,14 +178,14 @@ const TeacherList = (props) => {
                             <thead>
                                 <tr>
                                     {[
-                                        "Name",
-                                        "Gender",
-                                        "Year of birth",
+                                        "Tên",
+                                        "Giới tính",
+                                        "Năm sinh",
                                         "Email",
-                                        "Phone number",
-                                        "Subject",
-                                        "Teacher of class",
-                                        "Main teacher of class",
+                                        "Số điện thoại",
+                                        "Môn học",
+                                        "Các lớp đang dạy",
+                                        "Các lớp chủ nhiệm",
                                         "",
                                     ].map((item, index) => (
                                         <th key={index} className="align-top">
@@ -200,9 +203,7 @@ const TeacherList = (props) => {
                                                 to={`/user/teacher/edit/${teacher.id}`}
                                             />
                                         </td>
-                                        <td>
-                                            {teacher.gender ? "Male" : "Female"}
-                                        </td>
+                                        <td>{teacher.gender ? "Nam" : "Nữ"}</td>
                                         <td>{teacher.yearOfBirth}</td>
                                         <td>{teacher.email}</td>
                                         <td>{teacher.phoneNumber}</td>
@@ -217,7 +218,7 @@ const TeacherList = (props) => {
                                                     props.setModal({
                                                         isOpen: true,
                                                         message:
-                                                            "Do you want to delete this teacher ?",
+                                                            "Bạn có chắc muốn xóa giáo viên này ?",
                                                         type: "warning",
                                                         onConfirm: () =>
                                                             deleteTeacher(
@@ -232,7 +233,7 @@ const TeacherList = (props) => {
                             </tbody>
                         </Table>
                     ) : (
-                        <Alert color="primary">No teacher to display</Alert>
+                        <Alert color="primary">Không có giáo viên</Alert>
                     )}
                 </Col>
             </Row>

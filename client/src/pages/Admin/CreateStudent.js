@@ -31,8 +31,8 @@ export default function (props) {
     const id = props.match?.params?.id || studentId
 
     const genderOptions = [
-        { value: true, label: "Male" },
-        { value: false, label: "Female" },
+        { value: true, label: "Nam" },
+        { value: false, label: "Nữ" },
     ]
 
     const [state, setState] = useState({
@@ -234,9 +234,9 @@ export default function (props) {
 
         if (!flag) {
             renderNoti({
-                title: "Failed",
+                title: "Lỗi",
                 message:
-                    "Please fill out all basic information of student includes name, gender, grade, class, date of birth",
+                    "Vui lòng điền đầy đủ các thông tin cơ bản của học sinh",
                 type: "danger",
             })
         }
@@ -256,9 +256,9 @@ export default function (props) {
             })
 
             renderNoti({
-                title: "Failed",
+                title: "Lỗi",
                 message:
-                    "Please fill out all basic information of at least Father or Mother",
+                    "Vui lòng điền đầy đủ các thông tin cơ bản của bố hoặc mẹ",
                 type: "danger",
             })
         } else {
@@ -288,8 +288,8 @@ export default function (props) {
         ) {
             flag = false
             renderNoti({
-                title: "Failed",
-                message: "Parent phone number is not valid",
+                title: "Lỗi",
+                message: "Số điện thoại không hợp lệ",
                 type: "danger",
             })
         }
@@ -303,8 +303,8 @@ export default function (props) {
         ) {
             flag = false
             renderNoti({
-                title: "Failed",
-                message: "Parent phone number is not valid",
+                title: "Lỗi",
+                message: "Số điện thoại không hợp lệ",
                 type: "danger",
             })
         }
@@ -361,8 +361,8 @@ export default function (props) {
         submit(data, id, "parent")
             .then(() =>
                 renderNoti({
-                    title: "Success",
-                    message: `${id ? "Update" : "Create"} student successfully`,
+                    title: "Thành công",
+                    message: `Đã ${id ? "cập nhật" : "tạo mới"} học sinh`,
                     type: "success",
                 })
             )
@@ -387,8 +387,8 @@ export default function (props) {
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
                         <h5 className="mb-2">
-                            {id ? "EDIT" : "CREATE"}{" "}
-                            {studentId ? "PROFILE" : "STUDENT"}
+                            {id ? "CẬP NHẬT" : "TẠO MỚI"}{" "}
+                            {studentId ? "PROFILE" : "HỌC SINH"}
                         </h5>
 
                         {id && !studentId && (
@@ -404,18 +404,22 @@ export default function (props) {
                         )}
                     </div>
 
-                    <BackBtn title="home" onClick={() => history.push("/")} />
+                    <BackBtn
+                        title="trang chủ"
+                        onClick={() => history.push("/")}
+                    />
                 </Col>
             </Row>
 
             <Row className="mb-2">
                 <Col md={6} sm={12}>
                     <Label>
-                        Student name <span className="text-danger">*</span>
+                        Họ và tên học sinh{" "}
+                        <span className="text-danger">*</span>
                     </Label>
                     <Input
                         type="text"
-                        placeholder="Student name"
+                        placeholder="Họ và tên học sinh"
                         className={!name.invalid ? "mb-2" : ""}
                         value={name.value}
                         onChange={(e) =>
@@ -434,10 +438,10 @@ export default function (props) {
                     <Row className="mb-2">
                         <Col md={4} sm={12}>
                             <Label>
-                                Gender <span className="text-danger">*</span>
+                                Giới tính <span className="text-danger">*</span>
                             </Label>
                             <Selected
-                                placeholder="Select gender"
+                                placeholder="Chọn giới tính"
                                 options={genderOptions}
                                 value={
                                     gender.value !== ""
@@ -463,7 +467,7 @@ export default function (props) {
 
                         <Col md={4} sm={12}>
                             <Label>
-                                Grade <span className="text-danger">*</span>
+                                Khối học <span className="text-danger">*</span>
                             </Label>
                             <GradeSelected
                                 viewOnly={studentId}
@@ -501,10 +505,10 @@ export default function (props) {
 
                         <Col md={4} sm={12}>
                             <Label>
-                                Class <span className="text-danger">*</span>
+                                Lớp học <span className="text-danger">*</span>
                             </Label>
                             <FilterSelected
-                                placeholder="Select class"
+                                placeholder="Chọn lớp học"
                                 value={
                                     classRoom.value
                                         ? {
@@ -533,8 +537,7 @@ export default function (props) {
                     <Row className="mb-2">
                         <Col md={4} sm={12}>
                             <Label className="d-block">
-                                Date of birth{" "}
-                                <span className="text-danger">*</span>
+                                Ngày sinh <span className="text-danger">*</span>
                             </Label>
                             <DatePicker
                                 dateFormat="dd/MM/yyyy"
@@ -548,7 +551,7 @@ export default function (props) {
                                     })
                                 }
                                 onBlur={() => checkSingleInput(dateOfBirth)}
-                                placeholderText="Select date of birth"
+                                placeholderText="Chọn ngày sinh"
                                 customInput={<Input />}
                                 showYearDropdown
                                 maxDate={new Date()}
@@ -562,10 +565,10 @@ export default function (props) {
                         </Col>
 
                         <Col md={8} sm={12}>
-                            <Label>Address</Label>
+                            <Label>Địa chỉ</Label>
                             <Input
                                 type="text"
-                                placeholder="Address"
+                                placeholder="Địa chỉ"
                                 value={address.value ? address.value : ""}
                                 onChange={(e) =>
                                     setState({
@@ -582,10 +585,10 @@ export default function (props) {
 
                     <Row className="mb-3">
                         <Col md={12}>
-                            <Label>Note</Label>
+                            <Label>Ghi chú</Label>
                             <Input
                                 type="textarea"
-                                placeholder="Student note"
+                                placeholder="Ghi chú"
                                 value={note.value}
                                 onChange={(e) =>
                                     setState({
@@ -602,10 +605,10 @@ export default function (props) {
                 </Col>
 
                 <Col md={3} sm={12}>
-                    <Label>Father name</Label>
+                    <Label>Họ và tên bố</Label>
                     <Input
                         type="text"
-                        placeholder="Father name"
+                        placeholder="Họ và tên bố"
                         className="mb-2"
                         value={father && father.name ? father.name : ""}
                         onChange={(e) =>
@@ -619,7 +622,7 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Father year of birth</Label>
+                    <Label>Năm sinh bố</Label>
                     <YearSelected
                         className="mb-2"
                         value={
@@ -641,10 +644,10 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Father phone number</Label>
+                    <Label>Số điện thoại bố</Label>
                     <Input
                         type="text"
-                        placeholder="Father phone number"
+                        placeholder="Số điện thoại bố"
                         className="mb-2"
                         value={
                             father && father.phoneNumber
@@ -662,10 +665,10 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Note</Label>
+                    <Label>Ghi chú</Label>
                     <Input
                         type="textarea"
-                        placeholder="Father note"
+                        placeholder="Ghi chú"
                         value={father && father.note ? father.note : ""}
                         onChange={(e) =>
                             setState({
@@ -680,10 +683,10 @@ export default function (props) {
                 </Col>
 
                 <Col md={3} sm={12}>
-                    <Label>Mother name</Label>
+                    <Label>Họ và tên mẹ</Label>
                     <Input
                         type="text"
-                        placeholder="Mother name"
+                        placeholder="Họ và tên mẹ"
                         className="mb-2"
                         value={mother && mother.name ? mother.name : ""}
                         onChange={(e) =>
@@ -697,7 +700,7 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Mother year of birth</Label>
+                    <Label>Năm sinh mẹ</Label>
                     <YearSelected
                         className="mb-2"
                         value={
@@ -719,10 +722,10 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Mother phone number</Label>
+                    <Label>Số điện thoại mẹ</Label>
                     <Input
                         type="text"
-                        placeholder="Mother phone number"
+                        placeholder="Số điện thoại mẹ"
                         className="mb-2"
                         value={
                             mother && mother.phoneNumber
@@ -740,10 +743,10 @@ export default function (props) {
                         }
                     />
 
-                    <Label>Note</Label>
+                    <Label>Ghi chú</Label>
                     <Input
                         type="textarea"
-                        placeholder="Mother note"
+                        placeholder="Ghi chú"
                         value={mother && mother.note ? mother.note : ""}
                         onChange={(e) =>
                             setState({
@@ -768,7 +771,7 @@ export default function (props) {
             <Row className="mb-2">
                 <Col md={12}>
                     <Button color="success" onClick={onSubmit}>
-                        {id ? "Update" : "Create"}
+                        {id ? "Cập nhật" : "Tạo mới"}
                     </Button>
                 </Col>
             </Row>

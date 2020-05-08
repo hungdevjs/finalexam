@@ -31,8 +31,8 @@ function GradeAndClass(props) {
             .catch((err) =>
                 renderNoti({
                     type: "danger",
-                    title: "Failed",
-                    message: "Get all grades & classes failed",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi lấy dữ liệu",
                 })
             )
     }, [])
@@ -41,13 +41,13 @@ function GradeAndClass(props) {
         <ViewModal
             isOpen={isOpen}
             toggle={() => toggle(!isOpen)}
-            title={`Class ${currentClass} schedule`}
+            title={`Thời khóa biểu lớp ${currentClass}`}
             viewOnly
         >
             <Schedule classRoom={currentClass} />
 
             <NewTabLink
-                title="Change schedule"
+                title="Chỉnh sửa"
                 to={`/updateSchedule/${currentClass}`}
             />
         </ViewModal>
@@ -59,12 +59,12 @@ function GradeAndClass(props) {
             <Row className="mb-2">
                 <Col md={8} className="d-flex">
                     <h5 className="flex-grow-1">
-                        GRADES AND CLASSES{" "}
+                        QUẢN LÝ LỚP HỌC{" "}
                         {props.year && `${props.year}-${props.year + 1}`}
                     </h5>
                     {!isPhone && (
                         <BackBtn
-                            title="home"
+                            title="trang chủ"
                             onClick={() => history.push("/")}
                         />
                     )}
@@ -72,7 +72,7 @@ function GradeAndClass(props) {
                 {isPhone && (
                     <Col md={12}>
                         <BackBtn
-                            title="home"
+                            title="trang chủ"
                             onClick={() => history.push("/")}
                         />
                     </Col>
@@ -84,9 +84,9 @@ function GradeAndClass(props) {
                         <Table bordered responsive>
                             <thead>
                                 <tr>
-                                    <th>Grade</th>
-                                    <th>Grade</th>
-                                    <th>Main teacher</th>
+                                    <th>Khối học</th>
+                                    <th>Lớp học</th>
+                                    <th>Giáo viên chủ nhiệm</th>
                                     <th></th>
                                     <th></th>
                                 </tr>
@@ -113,7 +113,7 @@ function GradeAndClass(props) {
                                             <td className="text-center">
                                                 <div
                                                     style={btnStyle}
-                                                    title="View student list"
+                                                    title="Xem danh sách học sinh"
                                                     onClick={() =>
                                                         history.push(
                                                             "/students",
@@ -132,7 +132,7 @@ function GradeAndClass(props) {
                                             <td className="text-center">
                                                 <div
                                                     style={btnStyle}
-                                                    title="View schedule"
+                                                    title="Xem thời khóa biểu"
                                                     onClick={() => {
                                                         setCurrentClass(
                                                             grade.classRoom[0]
@@ -161,7 +161,7 @@ function GradeAndClass(props) {
                                                     <td className="text-center">
                                                         <div
                                                             style={btnStyle}
-                                                            title="View student list"
+                                                            title="Xem danh sách học sinh"
                                                             onClick={() =>
                                                                 history.push(
                                                                     "/students",
@@ -178,7 +178,7 @@ function GradeAndClass(props) {
                                                     <td className="text-center">
                                                         <div
                                                             style={btnStyle}
-                                                            title="View schedule"
+                                                            title="Xem thời khóa biểu"
                                                             onClick={() => {
                                                                 setCurrentClass(
                                                                     room.room

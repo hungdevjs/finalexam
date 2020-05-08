@@ -1,7 +1,7 @@
-import React from 'react'
-import { connect } from 'react-redux'
+import React from "react"
+import { connect } from "react-redux"
 
-import styled from 'styled-components'
+import styled from "styled-components"
 
 const LoadingContainer = styled.div`
     display: flex;
@@ -19,23 +19,21 @@ const LoadingContainer = styled.div`
 function Loading(props) {
     return (
         <div>
-        {props.loading ? 
-            <LoadingContainer>
-                <div className="spinner-border text-primary" role="status">
-                    <span className="sr-only">Loading...</span>
-                </div>
-            </LoadingContainer> :
-            <div />
-        }
+            {props.loading ? (
+                <LoadingContainer>
+                    <div className="spinner-border text-primary" role="status">
+                        <span className="sr-only">Đang lấy dữ liệu...</span>
+                    </div>
+                </LoadingContainer>
+            ) : (
+                <div />
+            )}
         </div>
     )
 }
 
-const mapStateToProps = state => ({
-    loading: state.loading.status
+const mapStateToProps = (state) => ({
+    loading: state.loading.status,
 })
 
-export default connect(
-    mapStateToProps,
-    null
-)(Loading)
+export default connect(mapStateToProps, null)(Loading)

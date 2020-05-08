@@ -66,7 +66,7 @@ const HighlightDetail = ({ highlight, afterDelete, setModal, role }) => {
                     )}
                 </div>
                 <p className="mb-2" style={{ fontSize: "0.7rem" }}>
-                    Last updated at{" "}
+                    Cập nhật lần cuối lúc{" "}
                     {time ? moment(time).format("HH:mm DD/MM/YYYY") : ""}
                 </p>
                 <p className="mb-2">{`${pureContent.slice(0, 300)}${

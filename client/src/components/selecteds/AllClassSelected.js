@@ -17,7 +17,7 @@ export default (props) => {
 
     return (
         <Select
-            placeholder="Select class"
+            placeholder="Chọn lớp học"
             options={options}
             onChange={props.onChange}
             {...props}

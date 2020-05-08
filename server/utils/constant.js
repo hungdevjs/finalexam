@@ -1,5 +1,5 @@
 module.exports = {
-    pageSize: 10,
+    pageSize: 25,
     schoolEmail: "devschool@gmail.com",
     createStudentText:
         "[Dev School] Account for student $studentName$: StudentID: $studentId$ - Password: $password$",

@@ -179,7 +179,11 @@ const Transcript = (props) => {
                                     } ${props.time?.semester}`}
                             </h5>
                             <BackBtn
-                                title={role === "admin" ? "detail" : "list"}
+                                title={
+                                    role === "admin"
+                                        ? "chi tiết học sinh"
+                                        : "danh sách học sinh"
+                                }
                                 onClick={() =>
                                     history.push(
                                         role === "admin"

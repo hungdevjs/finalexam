@@ -42,9 +42,7 @@ const CreateHighlight = (props) => {
     const onSubmit = async () => {
         try {
             if (!data || !data.title.trim() || !data.content.trim()) {
-                throw new Error(
-                    `${id ? "Update" : "Create"}  highlights failed`
-                )
+                throw new Error(`Vui lòng điền đầy đủ tiêu đề và nội dung`)
             }
 
             if (id) {
@@ -54,21 +52,21 @@ const CreateHighlight = (props) => {
             const res = await createOrUpdateHighlight(data)
             if (res.data !== true) {
                 throw new Error(
-                    `${id ? "Update" : "Create"}  highlights failed`
+                    `Lỗi trong khi ${id ? "cập nhật" : "tạo mới"} thông báo`
                 )
             }
 
             renderNoti({
                 type: "success",
-                title: "Success",
-                message: `${id ? "Update" : "Create"}  highlights successfully`,
+                title: "Thành công",
+                message: `Đã ${id ? "cập nhật" : "tạo mới"} thông báo`,
             })
 
             history.push("/")
         } catch (err) {
             renderNoti({
                 type: "danger",
-                title: "Failed",
+                title: "Lỗi",
                 message: err.message,
             })
         }
@@ -80,12 +78,15 @@ const CreateHighlight = (props) => {
                 <Col md={canEdit ? 8 : 12} className="d-flex align-items-start">
                     <h5 className="flex-grow-1">
                         {!id
-                            ? "Create highlight"
+                            ? "TẠO MỚI THÔNG BÁO"
                             : canEdit
-                            ? "Edit highlight"
-                            : "Highlight"}
+                            ? "CHỈNH SỬA THÔNG BÁO"
+                            : "THÔNG BÁO"}
                     </h5>
-                    <BackBtn title="home" onClick={() => history.push("/")} />
+                    <BackBtn
+                        title="trang chủ"
+                        onClick={() => history.push("/")}
+                    />
                 </Col>
             </Row>
             {canEdit ? (
@@ -105,13 +106,13 @@ const CreateHighlight = (props) => {
                             className="mr-2"
                             onClick={onSubmit}
                         >
-                            {id ? "Update" : "Create"}
+                            {id ? "Cập nhật" : "Tạo mới"}
                         </Button>
                         <Button
                             color="secondary"
                             onClick={() => history.push("/")}
                         >
-                            Cancel
+                            Hủy bỏ
                         </Button>
                     </Col>
                 </Row>

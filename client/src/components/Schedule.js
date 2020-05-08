@@ -25,7 +25,7 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                         <>
                             {!teacherId ? (
                                 <Label>
-                                    Schedule of class {classRoom}{" "}
+                                    Thời khóa biểu lớp {classRoom}{" "}
                                     {time.year &&
                                         time.semester &&
                                         `${time.year}-${time.year + 1} ${
@@ -35,7 +35,7 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                                 </Label>
                             ) : (
                                 <Label>
-                                    Schedule of teacher {data.name}{" "}
+                                    Thời khóa biểu giáo viên {data.name}{" "}
                                     {time.year &&
                                         time.semester &&
                                         `${time.year}-${time.year + 1} ${
@@ -86,11 +86,11 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                         </Table>
                     ) : (
                         <>
-                            <Alert color="primary">
-                                {`This ${
-                                    !teacherId ? "class" : "teacher"
-                                } doesn't have a schedule`}
-                            </Alert>
+                            {!teacherId && (
+                                <Alert color="primary">
+                                    Lớp học này chưa có thời khóa biểu
+                                </Alert>
+                            )}
                             {role === "admin" && !teacherId && (
                                 <Button
                                     color="success"
@@ -100,7 +100,7 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                                         )
                                     }
                                 >
-                                    Create schedule
+                                    Tạo mới
                                 </Button>
                             )}
                         </>

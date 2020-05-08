@@ -11,12 +11,12 @@ export default function (props) {
             <AdminReport />
             <AdminChart />
             <Row>
-                <Col md={6} xl={4} className="mb-4">
-                    <LastestHighlightOrEvent isHighlight />
-                </Col>
-
                 <Col md={12} xl={4} className="mb-4">
                     <Calendar />
+                </Col>
+
+                <Col md={6} xl={4} className="mb-4">
+                    <LastestHighlightOrEvent isHighlight />
                 </Col>
 
                 <Col md={6} xl={4} className="mb-4">

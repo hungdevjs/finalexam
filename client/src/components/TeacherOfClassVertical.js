@@ -38,9 +38,9 @@ export default ({ classRoom }) => {
                 title={`${subject} teacher of class ${classRoom}`}
                 viewOnly
             >
-                <p>Name: {name || ""}</p>
-                <p>Year of birth: {yearOfBirth || ""}</p>
-                <p>Phone number: {phoneNumber || ""}</p>
+                <p>Tên: {name || ""}</p>
+                <p>Năm sinh: {yearOfBirth || ""}</p>
+                <p>Số điện thoại: {phoneNumber || ""}</p>
                 <p>Email: {email || ""}</p>
             </ViewModal>
         )

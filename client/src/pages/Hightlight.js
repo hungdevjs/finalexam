@@ -118,9 +118,7 @@ const Highlight = ({ role, getAllHighlight }) => {
                 {!data ||
                     (data && data.length === 0 && (
                         <Col md={12}>
-                            <Alert color="primary">
-                                No highlight to display
-                            </Alert>
+                            <Alert color="primary">Không có thông báo</Alert>
                         </Col>
                     ))}
             </Row>

@@ -18,10 +18,10 @@ const TimeInfo = ({ time }) => {
             <ViewModal
                 isOpen={isOpen}
                 toggle={() => toggle(!isOpen)}
-                title="Confirm upgrade time"
+                title="Xác nhận hoàn thành năm học"
                 onConfirm={upgrade}
             >
-                <Label>Fill your password to continue</Label>
+                <Label>Điền mật khẩu để tiếp tục</Label>
                 <Input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -34,17 +34,17 @@ const TimeInfo = ({ time }) => {
         <Row className="mb-2">
             {renderModal()}
             <Col md={12}>
-                <h5>TIME INFO</h5>
+                <h5>THÔNG TIN NĂM HỌC</h5>
             </Col>
             <Col md={12}>
-                <b>Current year: {`${time?.year}-${time?.year + 1}`}</b>
+                <b>Năm học hiện tại: {`${time?.year}-${time?.year + 1}`}</b>
             </Col>
             <Col md={12}>
-                <b>Current semester: {time?.semester}</b>
+                <b>Học kỳ hiện tại: {time?.semester}</b>
             </Col>
             <Col md={12} className="pt-2">
                 <Button color="primary" onClick={() => toggle(!isOpen)}>
-                    Upgrade
+                    Hoàn thành
                 </Button>
             </Col>
         </Row>

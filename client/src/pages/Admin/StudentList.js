@@ -336,7 +336,7 @@ const StudentList = (props) => {
             {!props.isComponent && (
                 <Row className="mb-2">
                     <Col md={12} className="text-right">
-                        <b>Total students: {totalUser}</b>
+                        <b>Tổng số học sinh: {totalUser}</b>
                     </Col>
                 </Row>
             )}

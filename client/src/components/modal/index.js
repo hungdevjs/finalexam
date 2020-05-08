@@ -1,41 +1,41 @@
-import React from "react";
-import { connect } from "react-redux";
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap";
+import React from "react"
+import { connect } from "react-redux"
+import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from "reactstrap"
 
-import setModal from "../../redux/action/setModal";
+import setModal from "../../redux/action/setModal"
 
 function ModalContainer(props) {
-    const { isOpen, type, message, onConfirm } = props;
+    const { isOpen, type, message, onConfirm } = props
 
     const modalInfo = () => {
         switch (type) {
             case "danger":
                 return {
-                    header: "Failed",
+                    header: "Lỗi",
                     color: "#dc3545",
-                };
+                }
 
             case "warning":
                 return {
-                    header: "Warning",
+                    header: "Cảnh báo",
                     color: "#ffc107",
-                };
+                }
 
             case "success":
                 return {
-                    header: "Success",
+                    header: "Thành công",
                     color: "#28a745",
-                };
+                }
 
             default:
                 return {
-                    header: "Notification",
+                    header: "Thông báo",
                     color: "#007bff",
-                };
+                }
         }
-    };
+    }
 
-    const toggle = () => props.setModal({ isOpen: !isOpen });
+    const toggle = () => props.setModal({ isOpen: !isOpen })
 
     return (
         <Modal isOpen={isOpen} toggle={toggle} centered>
@@ -53,19 +53,19 @@ function ModalContainer(props) {
                     <Button
                         color={type}
                         onClick={() => {
-                            onConfirm();
-                            toggle();
+                            onConfirm()
+                            toggle()
                         }}
                     >
-                        Confirm
+                        Xác nhận
                     </Button>
                 )}
                 <Button color="secondary" onClick={toggle}>
-                    Cancel
+                    Hủy bỏ
                 </Button>
             </ModalFooter>
         </Modal>
-    );
+    )
 }
 
 const mapStateToProps = (state) => ({
@@ -74,10 +74,10 @@ const mapStateToProps = (state) => ({
     message: state.modal.message,
     onConfirm: state.modal.onConfirm,
     onCancel: state.modal.onCancel,
-});
+})
 
 const mapDispatchToProps = {
     setModal,
-};
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(ModalContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ModalContainer)

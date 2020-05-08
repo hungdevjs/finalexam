@@ -4,7 +4,7 @@ import { BASE_URL } from "../constant"
 
 const request = axios.create({
     baseURL: BASE_URL,
-    timeout: 5000,
+    timeout: 10000,
     headers: {
         "Content-Type": "application/json",
     },
@@ -18,7 +18,7 @@ request.interceptors.request.use(
         }
         return config
     },
-    (error) => Promise.reject(error),
+    (error) => Promise.reject(error)
 )
 
 export default request

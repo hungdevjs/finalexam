@@ -31,7 +31,7 @@ export default [
     },
     {
         path: "/timeInfo",
-        name: "Thông tin học kỳ",
+        name: "Thông tin năm học",
         icon: "fas fa-info",
         roles: ["admin"],
     },

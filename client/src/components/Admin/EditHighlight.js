@@ -11,7 +11,7 @@ export default ({ data, onEditorChange, onTitleChange }) => {
     return (
         <Row className="mb-2">
             <Col md={8} sm={12}>
-                <Label>Title</Label>
+                <Label>Tiêu đề</Label>
                 <Input
                     type="text"
                     className="mb-2"
@@ -36,9 +36,11 @@ export default ({ data, onEditorChange, onTitleChange }) => {
                         setTitleInvalid(true)
                     }}
                 />
-                {titleInvalid && <Feedback>Title is required</Feedback>}
+                {titleInvalid && (
+                    <Feedback>Tiêu đề không được bỏ trống</Feedback>
+                )}
 
-                <Label>Content</Label>
+                <Label>Nội dung</Label>
                 <div
                     style={{ border: contentInvalid ? "1px solid red" : "" }}
                     className="mb-2"
@@ -68,7 +70,9 @@ export default ({ data, onEditorChange, onTitleChange }) => {
                         }}
                     />
                 </div>
-                {contentInvalid && <Feedback>Content is required</Feedback>}
+                {contentInvalid && (
+                    <Feedback>Nội dung không được bỏ trống</Feedback>
+                )}
             </Col>
         </Row>
     )

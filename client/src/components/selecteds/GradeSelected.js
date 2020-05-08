@@ -21,7 +21,7 @@ export default function (props) {
 
     return (
         <Select
-            placeholder={props.placeholder || "Select grade"}
+            placeholder={props.placeholder || "Chọn khối học"}
             options={options}
             onChange={props.onChange}
             {...props}

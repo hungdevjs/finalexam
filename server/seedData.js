@@ -12,7 +12,7 @@ const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam3?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam7?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -21,7 +21,164 @@ mongoose.connect(uri, {
 })
 
 const password = passwordHash.generate("12345678")
-const dateOfBirth = "Sat Apr 24 2010 11:59:55 GMT+0700 (Indochina Time)"
+const dateOfBirth = (year) => {
+    const day = Math.floor(Math.random() * 27 + 1)
+    const month = _.sample([
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+    ])
+    return `${month} ${day} ${year} 11:59:55 GMT+0700 (Indochina Time)`
+}
+
+// function that render random names
+const firstNames = [
+    "Nguyễn",
+    "Trần",
+    "Lê",
+    "Mai",
+    "Hoàng",
+    "Đinh",
+    "Đỗ",
+    "Phạm",
+    "Vũ",
+    "Ngô",
+    "Lý",
+    "Bùi",
+    "Đặng",
+    "Phan",
+    "Dương",
+]
+
+const middleNames = [
+    "Việt",
+    "Văn",
+    "Quốc",
+    "Tuấn",
+    "Lâm",
+    "Hoàng",
+    "Trọng",
+    "Thị",
+    "Thùy",
+    "Minh",
+    "Thu",
+    "Linh",
+    "Huy",
+    "Hải",
+    "Mai",
+    "Phương",
+    "Quang",
+    "Ngọc",
+]
+
+const lastNames = [
+    "Hưng",
+    "Hoàng",
+    "Anh",
+    "Hùng",
+    "Hằng",
+    "Hiệp",
+    "Long",
+    "Trung",
+    "Duy",
+    "Dương",
+    "Linh",
+    "Ngân",
+    "Nguyệt",
+    "Ly",
+    "Nam",
+    "Chính",
+    "Hải",
+    "Ngọc",
+    "Đông",
+    "Đức",
+    "Thái",
+    "Quang",
+    "Ánh",
+    "Khôi",
+    "Tuấn",
+    "Dũng",
+    "Tùng",
+    "Huy",
+    "Trường",
+    "Nam",
+    "Giang",
+    "Hiếu",
+    "Phương",
+    "Hà",
+    "Minh",
+    "Lan",
+    "Trang",
+    "Huyền",
+    "Tân",
+    "Đạt",
+]
+
+const renderName = () => {
+    const firstName = _.sample(firstNames)
+    const studentName = `${firstName} ${_.sample(middleNames)} ${_.sample(
+        lastNames
+    )}`
+
+    const fatherName = `${firstName} ${_.sample(middleNames)} ${_.sample(
+        lastNames
+    )}`
+
+    const motherName = `${_.sample(firstNames)} ${_.sample(
+        middleNames
+    )} ${_.sample(lastNames)}`
+
+    return {
+        studentName,
+        fatherName,
+        motherName,
+    }
+}
+
+// function that render random address
+const districts = [
+    "Hoàn Kiếm",
+    "Đống Đa",
+    "Ba Đình",
+    "Hai Bà Trưng",
+    "Hoàng Mai",
+    "Thanh Xuân",
+    "Long Biên",
+    "Nam Từ Liêm",
+    "Bắc Từ Liêm",
+    "Tây Hồ",
+    "Cầu Giấy",
+    "Hà Đông",
+    "Sơn Tây",
+    "Ba Vì",
+    "Chương Mỹ",
+    "Phúc Thọ",
+    "Đan Phượng",
+    "Đông Anh",
+    "Gia Lâm",
+    "Hoài Đức",
+    "Mê Linh",
+    "Mỹ Đức",
+    "Phú Xuyên",
+    "Quốc Oai",
+    "Sóc Sơn",
+    "Thạch Thất",
+    "Thanh Oai",
+    "Thường Tín",
+    "Ứng Hòa",
+    "Thanh Trì",
+]
+
+const renderAddress = () => `${_.sample(districts)}, Hà Nội`
 
 // create admin
 console.log("Creating admin...")
@@ -147,30 +304,30 @@ for (let i = 0; i < length; i++) {
 console.log("Created schedules")
 
 // create highlights
-console.log("Creating highlights...")
+// console.log("Creating highlights...")
 
-async function createHighlight(data) {
-    const newHighlight = new Highlight(data)
-    await newHighlight.save()
-}
+// async function createHighlight(data) {
+//     const newHighlight = new Highlight(data)
+//     await newHighlight.save()
+// }
 
-for (let i = 0; i < 20; i++) {
-    let date = new Date()
-    date.setDate(date.getDate() - i)
+// for (let i = 0; i < 20; i++) {
+//     let date = new Date()
+//     date.setDate(date.getDate() - i)
 
-    const data = {
-        title: `Thông báo số ${20 - i}`,
-        time: date.toString(),
-        isDeleted: false,
-        content: `Trường Đại học Bách Khoa Hà Nội đang đào tạo trên 40.000 SV, học viên cao học và nghiên cứu sinh với 67 chuyên ngành đại học và 33 chuyên ngành cao học, 57 chuyên ngành tiến sĩ.
-        Hiện nay Trường có quan hệ hợp tác trong đào tạo, Nghiên cứu khoa học với trên 200 trường Đại học, trung tâm Nghiên cứu khoa học, viện nghiên cứu và tổ chức giáo dục của 32 quốc gia trên thế giới, là thành viên của 8 tổ chức mạng lưới đại học quốc tế. Thông qua hợp tác quốc tế, trường đã cử khoảng 500 cán bộ và sinh viên đi nước ngoài học tập, nghiên cứu, trao đổi,...Xây dựng hàng chục dự án quốc tế về đào tạo, trang bị, Nghiên cứu khoa học để góp phần tăng cường cơ sở vật chất cho Trường.
-        Bộ GD-ĐT Việt Nam đã giao cho trường Đại học Bách Khoa Hà Nội thực hiện bốn chương trình đào tạo tiên tiến là chương trình Cơ - Điện tử, Công nghệ Vật liệu, Điện - Điện tử và Kỹ thuật Y Sinh. Từ năm 1986 đến nay cơ sở vật chất của Trường đã được cải tạo và nâng cấp một cách cơ bản, cơ sở hạ tầng và cảnh quan đã khang trang sạch đẹp hơn nhiều, đã đầu tư nhiều phòng thí nghiệm hiện đại, xây dựng và đang thực hiện nhiều dự án lớn phục vụ công tác đào tạo và nghiên cứu khoa học ở trình độ cao. Điều kiện làm việc và đời sống vật chất, tinh thần của cán bộ, sinh viên không ngừng được cải thiện. Đặc biệt, tháng 9/2006 Trường đã đưa vào sử dụng Thư viện điện tử Tạ Quang Bửu với mức đầu tư 199 tỷ VNĐ.`,
-    }
+//     const data = {
+//         title: `Thông báo số ${20 - i}`,
+//         time: date.toString(),
+//         isDeleted: false,
+//         content: `Trường Đại học Bách Khoa Hà Nội đang đào tạo trên 40.000 SV, học viên cao học và nghiên cứu sinh với 67 chuyên ngành đại học và 33 chuyên ngành cao học, 57 chuyên ngành tiến sĩ.
+//         Hiện nay Trường có quan hệ hợp tác trong đào tạo, Nghiên cứu khoa học với trên 200 trường Đại học, trung tâm Nghiên cứu khoa học, viện nghiên cứu và tổ chức giáo dục của 32 quốc gia trên thế giới, là thành viên của 8 tổ chức mạng lưới đại học quốc tế. Thông qua hợp tác quốc tế, trường đã cử khoảng 500 cán bộ và sinh viên đi nước ngoài học tập, nghiên cứu, trao đổi,...Xây dựng hàng chục dự án quốc tế về đào tạo, trang bị, Nghiên cứu khoa học để góp phần tăng cường cơ sở vật chất cho Trường.
+//         Bộ GD-ĐT Việt Nam đã giao cho trường Đại học Bách Khoa Hà Nội thực hiện bốn chương trình đào tạo tiên tiến là chương trình Cơ - Điện tử, Công nghệ Vật liệu, Điện - Điện tử và Kỹ thuật Y Sinh. Từ năm 1986 đến nay cơ sở vật chất của Trường đã được cải tạo và nâng cấp một cách cơ bản, cơ sở hạ tầng và cảnh quan đã khang trang sạch đẹp hơn nhiều, đã đầu tư nhiều phòng thí nghiệm hiện đại, xây dựng và đang thực hiện nhiều dự án lớn phục vụ công tác đào tạo và nghiên cứu khoa học ở trình độ cao. Điều kiện làm việc và đời sống vật chất, tinh thần của cán bộ, sinh viên không ngừng được cải thiện. Đặc biệt, tháng 9/2006 Trường đã đưa vào sử dụng Thư viện điện tử Tạ Quang Bửu với mức đầu tư 199 tỷ VNĐ.`,
+//     }
 
-    createHighlight(data)
-}
+//     createHighlight(data)
+// }
 
-console.log("Created highlights")
+// console.log("Created highlights")
 
 // create students
 console.log("Creating students...")
@@ -183,29 +340,35 @@ async function createStudent(student) {
 }
 
 for (const room of classRoom) {
-    for (let i = 1; i < 11; i++) {
+    const numberOfStudent = Math.floor(Math.random() * 10 + 35)
+    for (let i = 1; i < numberOfStudent; i++) {
         const stId = pad + id
+        id++
+
+        const names = renderName()
+        const yearNow = new Date().getFullYear()
+
         const data = {
             studentId: stId.substr(stId.length - 5),
-            studentName: `Học sinh ${i} lớp ${room}`,
+            studentName: names.studentName,
             password,
             gender: Math.random() > 0.5,
             grade: Number(room[0]),
             classRoom: room,
-            dateOfBirth,
-            address: "Địa chỉ mặc định",
-            note: "Ghi chú mặc định",
+            dateOfBirth: dateOfBirth(yearNow - (Number(room[0]) + 6)),
+            address: renderAddress(),
+            note: "",
             father: {
-                name: `Bố học sinh ${i} lớp ${room}`,
+                name: names.fatherName,
                 yearOfBirth: "1987",
                 phoneNumber: "0123456789",
-                note: "Ghi chú mặc định của bố",
+                note: "",
             },
             mother: {
-                name: `Mẹ học sinh ${i} lớp ${room}`,
+                name: names.motherName,
                 yearOfBirth: "1987",
                 phoneNumber: "0123456789",
-                note: "Ghi chú mặc định của mẹ",
+                note: "",
             },
             isDeleted: false,
             score: {
@@ -273,7 +436,6 @@ for (const room of classRoom) {
             dayOff: [],
         }
         createStudent(data)
-        id++
     }
 }
 
@@ -291,13 +453,11 @@ for (const room of classRoom) {
     let count = 1
     subjects.map((item, index) => {
         const data = {
-            name: `Giáo viên ${item} lớp ${room} ${
-                index === 0 ? "- Chủ nhiệm" : ""
-            }`,
+            name: renderName().studentName,
             password,
             yearOfBirth: "1996",
             gender: Math.random() > 0.5,
-            email: `giaovien${count}-${room}@gmail.com`,
+            email: `teacher${count}-${room}@gmail.com`,
             phoneNumber: "0123456789",
             mainTeacherOfClass: index === 0 ? room : "",
             teacherOfClass: room,

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { connect } from "react-redux"
-import { Row, Col, Table } from "reactstrap"
+import { Row, Col, Table, Alert } from "reactstrap"
 import moment from "moment"
 
 import history from "../../config/history"
@@ -29,35 +29,41 @@ const StudentOffToday = (props) => {
                 </div>
             </Col>
             <Col md={8}>
-                <Table bordered striped hover size="sm" responsive>
-                    <thead>
-                        <tr>
-                            <th>Tên</th>
-                            <th>Lớp</th>
-                            <th>Có phép</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {props.studentOff?.map((item, index) => (
-                            <tr key={index}>
-                                <td>
-                                    <NewTabLink
-                                        to={`/user/student/edit/${item.student.id}`}
-                                        title={item.student.name}
-                                    />
-                                </td>
-                                <td>{item.student.classRoom}</td>
-                                <td className="text-center">
-                                    {item.student.permission ? (
-                                        <i className="fas fa-check text-success" />
-                                    ) : (
-                                        <i className="fas fa-times text-danger" />
-                                    )}
-                                </td>
+                {props.studentOff?.length > 0 ? (
+                    <Table bordered striped hover size="sm" responsive>
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Lớp</th>
+                                <th>Có phép</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </Table>
+                        </thead>
+                        <tbody>
+                            {props.studentOff?.map((item, index) => (
+                                <tr key={index}>
+                                    <td>
+                                        <NewTabLink
+                                            to={`/user/student/edit/${item.student.id}`}
+                                            title={item.student.name}
+                                        />
+                                    </td>
+                                    <td>{item.student.classRoom}</td>
+                                    <td className="text-center">
+                                        {item.student.permission ? (
+                                            <i className="fas fa-check text-success" />
+                                        ) : (
+                                            <i className="fas fa-times text-danger" />
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </Table>
+                ) : (
+                    <Alert color="primary">
+                        Không có học sinh nghỉ học hôm nay
+                    </Alert>
+                )}
             </Col>
         </Row>
     )

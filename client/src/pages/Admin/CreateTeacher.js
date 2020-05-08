@@ -96,14 +96,14 @@ const CreateTeacher = (props) => {
                 <Col md={12} className="d-flex align-items-start">
                     <div className="flex-grow-1">
                         <h5 className="mb-2">
-                            {id ? "EDIT" : "CREATE"}{" "}
-                            {teacherId ? "PROFILE" : "TEACHER"}
+                            {id ? "CẬP NHẬT" : "TẠO MỚI"}{" "}
+                            {teacherId ? "PROFILE" : "GIÁO VIÊN"}
                         </h5>
                     </div>
 
                     {!teacherId && (
                         <BackBtn
-                            title="home"
+                            title="trang chủ"
                             onClick={() => history.push("/")}
                         />
                     )}
@@ -114,11 +114,14 @@ const CreateTeacher = (props) => {
             <Row>
                 <Col md={6}>
                     <FormGroup>
-                        <LabelRequired>Name</LabelRequired>
+                        <LabelRequired>Họ và tên giáo viên</LabelRequired>
                         <Field
                             name="name"
                             render={({ field }) => (
-                                <Input {...field} placeholder="Name" />
+                                <Input
+                                    {...field}
+                                    placeholder="Họ và tên giáo viên"
+                                />
                             )}
                         />
                         {props.touched.name && (
@@ -127,7 +130,7 @@ const CreateTeacher = (props) => {
                     </FormGroup>
 
                     <FormGroup>
-                        <LabelRequired>Year of birth</LabelRequired>
+                        <LabelRequired>Năm sinh</LabelRequired>
                         <YearSelected
                             name="yearOfBirth"
                             onChange={(e) =>
@@ -146,10 +149,10 @@ const CreateTeacher = (props) => {
                     </FormGroup>
 
                     <FormGroup>
-                        <LabelRequired>Gender</LabelRequired>
+                        <LabelRequired>Giới tính</LabelRequired>
                         <FilterSelected
                             name="gender"
-                            placeholder="Select gender"
+                            placeholder="Chọn giới tính"
                             options={genderOptions}
                             onChange={(e) =>
                                 props.setFieldValue("gender", e.value)
@@ -157,7 +160,7 @@ const CreateTeacher = (props) => {
                             value={
                                 gender !== null && {
                                     value: gender,
-                                    label: gender ? "Male" : "Female",
+                                    label: gender ? "Nam" : "Nữ",
                                 }
                             }
                         />
@@ -182,11 +185,11 @@ const CreateTeacher = (props) => {
 
                 <Col md={6}>
                     <FormGroup>
-                        <LabelRequired>Phone number</LabelRequired>
+                        <LabelRequired>Số điện thoại</LabelRequired>
                         <Field
                             name="phoneNumber"
                             render={({ field }) => (
-                                <Input {...field} placeholder="Phone number" />
+                                <Input {...field} placeholder="Số điện thoại" />
                             )}
                         />
                         {props.touched.phoneNumber && (
@@ -196,7 +199,7 @@ const CreateTeacher = (props) => {
 
                     <FormGroup className="d-flex flex-column">
                         <div className="d-flex">
-                            <Label className="mr-2">Main teacher</Label>
+                            <Label className="mr-2">Chủ nhiệm</Label>
                             <CustomInput
                                 type="checkbox"
                                 id="mainTeacher"
@@ -244,7 +247,7 @@ const CreateTeacher = (props) => {
                         </div>
                     </FormGroup>
                     <FormGroup>
-                        <LabelRequired>Subject</LabelRequired>
+                        <LabelRequired>Dạy môn</LabelRequired>
                         <FilterSelected
                             placeholder="Select subject"
                             className="flex-grow-1 mr-1"
@@ -262,7 +265,7 @@ const CreateTeacher = (props) => {
                         )}
                     </FormGroup>
                     <FormGroup className="d-flex flex-column">
-                        <Label>Teacher of class</Label>
+                        <Label>Các lớp đang dạy</Label>
                         <AllClassSelected
                             isMulti
                             onChange={(e) => {
@@ -292,7 +295,7 @@ const CreateTeacher = (props) => {
             {id && <Schedule teacherId={id} />}
 
             <Button color="success" onClick={props.handleSubmit}>
-                {id ? "Update" : "Create"}
+                {id ? "Cập nhật" : "Tạo mới"}
             </Button>
         </Form>
     )
@@ -311,30 +314,33 @@ export default withFormik({
         teacherOfClass: [],
     }),
     validationSchema: yup.object().shape({
-        name: yup.string().required("Teacher name is required"),
+        name: yup.string().required("Họ và tên không được để trống"),
         yearOfBirth: yup
             .string()
-            .required("Teacher year of birth is required")
-            .matches(yearOfBirthRegex, "Year of birth is invalid"),
-        gender: yup.boolean().required("Teacher gender is required").nullable(),
+            .required("Năm sinh không được để trống")
+            .matches(yearOfBirthRegex, "Năm sinh không hợp lệ"),
+        gender: yup
+            .boolean()
+            .required("Giới tính không được để trống")
+            .nullable(),
         email: yup
             .string()
-            .required("Email is required")
-            .email("Email is invalid"),
+            .required("Email không được để trống")
+            .email("Email không hợp lệ"),
         phoneNumber: yup
             .string()
-            .required("Phone number is required")
-            .matches(phoneNumberRegex, "Phone number is invalid"),
+            .required("Số điện thoại không được để trống")
+            .matches(phoneNumberRegex, "Số điện thoại không hợp lệ"),
         mainTeacher: yup.boolean(),
         mainTeacherOfClass: yup.string().when("mainTeacher", {
             is: true,
-            then: yup.string().required("Class is required"),
+            then: yup.string().required("Chọn lớp đang chủ nhiệm"),
         }),
-        subject: yup.string().required("Subject is required"),
+        subject: yup.string().required("Môn học không được để trống"),
         teacherOfClass: yup
             .string()
-            .required("Teacher class is required")
-            .min(1, "Teacher class is required"),
+            .required("Các lớp đang dạy không được để trống")
+            .min(1, "Các lớp đang dạy không được để trống"),
     }),
     handleSubmit: async (values, { props }) => {
         try {
@@ -355,14 +361,14 @@ export default withFormik({
 
             renderNoti({
                 type: "success",
-                title: "Success",
-                message: `${id ? "Update" : "Create"} teacher successfully`,
+                title: "Thành công",
+                message: `Đã ${id ? "cập nhật" : "tạo mới"} giáo viên`,
             })
             history.push("/")
         } catch (err) {
             renderNoti({
                 type: "danger",
-                title: "Failed",
+                title: "Lỗi",
                 message: err.message,
             })
         }

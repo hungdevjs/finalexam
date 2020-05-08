@@ -43,8 +43,8 @@ export default (props) => {
             if (!checkFullSchedule()) {
                 renderNoti({
                     type: "danger",
-                    title: "Failed",
-                    message: "Please fill out all lessons",
+                    title: "Lỗi",
+                    message: "Vui lòng điền đầy đủ các tiết học",
                 })
                 return
             }
@@ -57,15 +57,15 @@ export default (props) => {
 
             renderNoti({
                 type: "success",
-                title: "Success",
-                message: "Update schedule successfully",
+                title: "Thành công",
+                message: "Đã cập nhật thời khóa biểu",
             })
 
             history.push("/gradeAndClass")
         } catch (err) {
             renderNoti({
                 type: "warning",
-                title: "Failed",
+                title: "Lỗi",
                 message: err.message,
             })
         }
@@ -88,7 +88,7 @@ export default (props) => {
         <div className="mb-2">
             <Row>
                 <Col md={12}>
-                    <h5>Update schedule of class {classRoom}</h5>
+                    <h5>Cập nhật thời khóa biểu lớp {classRoom}</h5>
                 </Col>
                 <Col md={12}>
                     <Table
@@ -102,11 +102,11 @@ export default (props) => {
                         <thead>
                             <tr>
                                 {[
-                                    "Monday",
-                                    "Tuesday",
-                                    "Wednesday",
-                                    "Thursday",
-                                    "Friday",
+                                    "Thứ hai",
+                                    "Thứ ba",
+                                    "Thứ tư",
+                                    "Thứ năm",
+                                    "Thứ sáu",
                                 ].map((day, index) => (
                                     <th key={index}>{day}</th>
                                 ))}
@@ -157,7 +157,7 @@ export default (props) => {
                             className="mt-2"
                             onClick={onUpdateSchedule}
                         >
-                            Update
+                            Cập nhật
                         </Button>
                     </Table>
                 </Col>

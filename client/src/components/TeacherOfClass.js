@@ -39,9 +39,9 @@ const TeacherOfClass = ({ classRoom, time }) => {
                 title={`${subject} teacher of class ${classRoom}`}
                 viewOnly
             >
-                <p>Name: {name || ""}</p>
-                <p>Year of birth: {yearOfBirth || ""}</p>
-                <p>Phone number: {phoneNumber || ""}</p>
+                <p>Tên: {name || ""}</p>
+                <p>Năm sinh: {yearOfBirth || ""}</p>
+                <p>Số điện thoại: {phoneNumber || ""}</p>
                 <p>Email: {email || ""}</p>
             </ViewModal>
         )
@@ -53,7 +53,7 @@ const TeacherOfClass = ({ classRoom, time }) => {
             <Row>
                 <Col md={12}>
                     <Label>
-                        Teacher list of class {classRoom}{" "}
+                        Danh sách giáo viên lớp {classRoom}{" "}
                         {time.year &&
                             time.semester &&
                             `${time.year}-${time.year + 1} ${time.semester}`}
@@ -62,7 +62,7 @@ const TeacherOfClass = ({ classRoom, time }) => {
                         <Table bordered striped hover size="sm" responsive>
                             <thead>
                                 <tr>
-                                    {["Main teacher", ...subjects].map(
+                                    {["GVCN", ...subjects].map(
                                         (item, index) => (
                                             <th
                                                 key={index}

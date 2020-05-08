@@ -144,10 +144,10 @@ function Header(props) {
                                     history.push("/profile")
                                 }}
                             >
-                                Profile
+                                Trang cá nhân
                             </p>
                         )}
-                    <p onClick={signOut}>Sign out</p>
+                    <p onClick={signOut}>Đăng xuất</p>
                 </UserOption>
             </UserInfoContainer>
         </HeaderContainer>

@@ -14,10 +14,10 @@ const CheckPermission = () => {
 
     return (
         <div>
-            {canAccess && <i className="fas fa-spinner fa-pulse"></i>}
+            {canAccess && <i className="fas fa-spinner fa-pulse mr-2" />}
             {canAccess
-                ? " Checking permission..."
-                : " You don't have permission to view this page"}
+                ? "Đang kiểm tra quyền truy cập..."
+                : "Bạn không có quyền truy cập nội dung này"}
         </div>
     )
 }
