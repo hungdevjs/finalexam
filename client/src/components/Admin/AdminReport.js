@@ -5,6 +5,19 @@ import { Row, Col } from "reactstrap"
 import history from "../../config/history"
 import AdminCard from "./AdminCard"
 import getAdminReport from "../../redux/action/getAdminReport"
+import Tooltip from "../common/Tooltip"
+
+const renderTooltipPermission = () => (
+    <Tooltip key="permission" id="permission">
+        <p className="mb-2">Học sinh nghỉ có phép</p>
+    </Tooltip>
+)
+
+const renderTooltipNoPermission = () => (
+    <Tooltip key="noPermission" id="noPermission">
+        <p className="mb-2">Học sinh nghỉ không có phép</p>
+    </Tooltip>
+)
 
 const AdminReport = (props) => {
     const [reports, setReports] = useState({})
@@ -15,6 +28,8 @@ const AdminReport = (props) => {
 
     return (
         <Row>
+            {renderTooltipPermission()}
+            {renderTooltipNoPermission()}
             <Col md={6} lg={3} className="mb-4">
                 <AdminCard
                     color="primary"
@@ -57,13 +72,21 @@ const AdminReport = (props) => {
                             (item) => item.student.permission
                         ).length
                     }{" "}
-                    <i className="fas fa-user-plus mr-4" />
+                    <i
+                        className="fas fa-user-plus mr-4"
+                        data-tip="permission"
+                        data-for="permission"
+                    />
                     {
                         reports.studentOff?.filter(
                             (item) => !item.student.permission
                         ).length
                     }{" "}
-                    <i className="fas fa-user-minus" />
+                    <i
+                        className="fas fa-user-minus"
+                        data-tip="noPermission"
+                        data-for="noPermission"
+                    />
                 </AdminCard>
             </Col>
         </Row>
