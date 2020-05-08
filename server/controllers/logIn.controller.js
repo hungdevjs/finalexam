@@ -97,7 +97,7 @@ module.exports.logIn = (req, res) => {
                             access_from: new Date().getTime(),
                         })
                     } else {
-                        res.status(401).json("User's information is not valid")
+                        res.status(401).json("Thông tin đăng nhập không hợp lệ")
                     }
                 })
                 .catch((err) => {
@@ -175,7 +175,7 @@ module.exports.logIn = (req, res) => {
                             access_from: new Date().getTime(),
                         })
                     } else {
-                        res.status(401).json("User's information is not valid")
+                        res.status(401).json("Thông tin đăng nhập không hợp lệ")
                     }
                 })
                 .catch((err) => {
@@ -246,14 +246,14 @@ module.exports.logIn = (req, res) => {
                         })
                     } else {
                         console.log(err.message)
-                        res.status(401).json("User's information is not valid")
+                        res.status(401).json("Thông tin đăng nhập không hợp lệ")
                     }
                 })
                 .catch((err) => {
                     res.status(401).json(err.message)
                 })
         default:
-            return res.status(400).json("Log in failed")
+            return res.status(400).json("Đăng nhập thất bại")
     }
 }
 
@@ -273,7 +273,7 @@ module.exports.getUserInformation = async (req, res) => {
                     isDeleted: false,
                 })
                 if (!admin) {
-                    throw new Error("Get user information failed")
+                    throw new Error("Lấy thông tin người dùng thất bại")
                 }
                 return res.status(200).json({
                     data: {
@@ -289,7 +289,7 @@ module.exports.getUserInformation = async (req, res) => {
                     isDeleted: false,
                 })
                 if (!teacher) {
-                    throw new Error("Get user information failed")
+                    throw new Error("Lấy thông tin người dùng thất bại")
                 }
                 return res.status(200).json({
                     data: {
@@ -312,7 +312,7 @@ module.exports.getUserInformation = async (req, res) => {
                     isDeleted: false,
                 })
                 if (!parent) {
-                    throw new Error("Get user information failed")
+                    throw new Error("Lấy thông tin người dùng thất bại")
                 }
                 return res.status(200).json({
                     data: {
@@ -610,7 +610,7 @@ module.exports.forgetPassword = async (req, res) => {
         }
 
         res.status(200).send(
-            "Reset password link is sent. It will be expired in 15 mins"
+            "Liên kết reset password đã được gửi. Hết hạn trong 15 phút"
         )
     } catch (err) {
         res.status(500).send(err.message)
@@ -631,7 +631,7 @@ module.exports.resetPassword = async (req, res) => {
             resetPasswordRequest = resetPasswordRequest.filter(
                 (item) => item.secretKey !== secretKey
             )
-            throw new Error("Reset link is expired")
+            throw new Error("Liên kết hết hạn")
         }
 
         const encodedId = secretKey.slice(2, secretKey.length)
@@ -645,7 +645,7 @@ module.exports.resetPassword = async (req, res) => {
 
         if (isAdmin) {
             const admin = await Admin.findOne({ isDeleted: false, _id: id })
-            if (!admin) throw new Error("User doesn't exist")
+            if (!admin) throw new Error("Người dùng không tồn tại")
 
             admin.password = passwordHash.generate(newPassword)
             await admin.save()
@@ -661,7 +661,7 @@ module.exports.resetPassword = async (req, res) => {
 
         if (isParent) {
             const parent = await Parent.findOne({ isDeleted: false, _id: id })
-            if (!parent) throw new Error("User doesn't exist")
+            if (!parent) throw new Error("Người dùng không tồn tại")
 
             parent.password = passwordHash.generate(newPassword)
             await parent.save()
@@ -671,7 +671,7 @@ module.exports.resetPassword = async (req, res) => {
             (item) => item.secretKey !== secretKey
         )
 
-        res.status(200).send("Update password successfully")
+        res.status(200).send("Cập nhật mật khẩu thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

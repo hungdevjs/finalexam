@@ -2,16 +2,16 @@ module.exports = {
     pageSize: 25,
     schoolEmail: "devschool@gmail.com",
     createStudentText:
-        "[Dev School] Account for student $studentName$: StudentID: $studentId$ - Password: $password$",
+        "[Dev School] Tài khoản của học sinh $studentName$: ID học sinh: $studentId$ | Mật khẩu: $password$",
     createTeacherText:
-        "[Dev School] Account for teacher $teacherName$: Email: $teacherEmail$ - Password: $password$",
+        "[Dev School] Tài khoản cho giáo viên $teacherName$: Email: $teacherEmail$ - Mật khẩu: $password$",
     smsToMainTeacherText:
-        "[Dev School] Message from parent of student $studentName$: $content$",
+        "[Dev School] Tin nhắn từ phụ huynh học sinh $studentName$: $content$",
     forgetPasswordText:
-        "[Dev School] Follow this URL to reset your password: $url$",
+        "[Dev School] Truy cập liên kết để đặt lại mật khẩu: $url$",
     forgetPasswordHtml:
-        "<strong>[Dev School]</strong> Follow this URL to reset your password: $url$",
-    forgetPasswordSubject: "Reset password",
+        "<strong>[Dev School]</strong> Truy cập liên kết để đặt lại mật khẩu: $url$",
+    forgetPasswordSubject: "Đặt lại mật khẩu",
     subjects: [
         "Toán",
         "Văn",

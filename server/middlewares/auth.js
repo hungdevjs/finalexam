@@ -9,7 +9,7 @@ module.exports.authAdmin = (req, res, next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         if (userInfo.role !== "admin") {
-            throw new Error("Permission is denied")
+            throw new Error("Từ chối quyền truy cập")
         }
         next()
     } catch (err) {
@@ -26,7 +26,7 @@ module.exports.authTeacher = (req, res, next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         if (userInfo.role !== "teacher") {
-            throw new Error("Permission is denied")
+            throw new Error("Từ chối quyền truy cập")
         }
 
         req.id = userInfo._id
@@ -46,7 +46,7 @@ module.exports.authAdminTeacher = (req, res, next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         if (userInfo.role !== "admin" && userInfo.role !== "teacher") {
-            throw new Error("Permission is denied")
+            throw new Error("Từ chối quyền truy cập")
         }
         next()
     } catch (err) {
@@ -63,7 +63,7 @@ module.exports.authTeacherStudent = (req, res, next) => {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         if (userInfo.role !== "teacher" && userInfo.role !== "parent") {
-            throw new Error("Permission is denied")
+            throw new Error("Từ chối quyền truy cập")
         }
 
         req.role = userInfo.role
@@ -88,7 +88,7 @@ module.exports.authUser = (req, res, next) => {
             userInfo.role !== "teacher" &&
             userInfo.role !== "parent"
         ) {
-            throw new Error("Permission is denied")
+            throw new Error("Từ chối quyền truy cập")
         }
         next()
     } catch (err) {

@@ -52,7 +52,7 @@ module.exports.getClassSchedule = async (req, res) => {
         const schedule = await Schedule.findOne({ isDeleted: false, classRoom })
 
         if (!schedule) {
-            throw new Error("No schedule to show")
+            throw new Error("Thời khóa biểu không tồn tại")
         }
 
         res.status(200).json(schedule)
@@ -70,7 +70,7 @@ module.exports.getStudentTranscript = async (req, res) => {
         })
 
         if (!student) {
-            throw new Error("Student doesn't exist")
+            throw new Error("Học sinh không tồn tại")
         }
 
         const data = {
@@ -112,7 +112,7 @@ module.exports.getTeacherSchedule = async (req, res) => {
         })
 
         if (!teacher) {
-            throw new Error("Teacher doesn't exist")
+            throw new Error("Giáo viên không tồn tại")
         }
 
         const { teacherOfClass, subject, _id, name } = teacher
@@ -161,7 +161,7 @@ module.exports.getSemester = async (req, res) => {
         const now = await Semester.find()
 
         if (!now) {
-            throw new Error("Get semester failed")
+            throw new Error("Không có thông tin về năm học trên hệ thống")
         }
 
         res.status(200).json({ year: now[0].year, semester: now[0].semester })
@@ -183,7 +183,7 @@ module.exports.createOrUpdateSchedule = async (req, res) => {
         const grades = await Grade.find({ isDeleted: false })
 
         if (!grades) {
-            throw new Error("Doesn't have any grade")
+            throw new Error("Không có dữ liệu khối học")
         }
 
         let allClasses = []
@@ -192,7 +192,7 @@ module.exports.createOrUpdateSchedule = async (req, res) => {
         }
 
         if (!allClasses.includes(classRoom)) {
-            throw new Error("Class doesn't exist")
+            throw new Error("Lớp học không tồn tại")
         }
 
         // check if class schedules have any conflicts
@@ -220,7 +220,7 @@ module.exports.createOrUpdateSchedule = async (req, res) => {
                     )
                 ) {
                     throw new Error(
-                        `New schedule is conflict in ${subject} with class ${room}`
+                        `Thời khóa biểu mới xung đột môn ${subject} với lớp ${room}`
                     )
                 }
             }
@@ -328,19 +328,21 @@ module.exports.createOrUpdateEvent = async (req, res) => {
         if (id) {
             const event = await Event.findOne({ _id: id, isDeleted: false })
 
-            if (!event) throw new Error("Event doesn't exist")
+            if (!event) throw new Error("Sự kiện không tồn tại")
 
-            if (!content || !content.trim()) throw new Error("Content is empty")
+            if (!content || !content.trim())
+                throw new Error("Nội dung không được bỏ trống")
 
             event.content = content
 
             await event.save()
 
-            return res.status(200).send("Update event successfully")
+            return res.status(200).send("Cập nhật sự kiện thành công")
         }
 
-        if (!validateDate(time)) throw new Error("Time is not valid")
-        if (!content || !content.trim()) throw new Error("Content is empty")
+        if (!validateDate(time)) throw new Error("Thời gian không hợp lệ")
+        if (!content || !content.trim())
+            throw new Error("Nội dung không được bỏ trống")
 
         const data = {
             time,
@@ -352,7 +354,7 @@ module.exports.createOrUpdateEvent = async (req, res) => {
 
         await newEvent.save()
 
-        res.status(201).send("Create event successfully")
+        res.status(201).send("Tạo sự kiện thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }
@@ -363,12 +365,12 @@ module.exports.deleteEvent = async (req, res) => {
         const { id } = req.params
         const event = await Event.findOne({ _id: id, isDeleted: false })
 
-        if (!event) throw new Error("Event doesn't exist")
+        if (!event) throw new Error("Sự kiện không tồn tại")
 
         event.isDeleted = true
         await event.save()
 
-        res.status(200).send("Delete event successfully")
+        res.status(200).send("Xóa sự kiện thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }
@@ -379,20 +381,20 @@ module.exports.markOff = async (req, res) => {
         const { id } = req
         const { studentId, permission, day } = req.body
 
-        if (!validateDate(day)) throw new Error("Day is not valid")
+        if (!validateDate(day)) throw new Error("Thời gian không hợp lệ")
 
         const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
-        if (!teacher) throw new Error("Teacher doesn't exist")
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
 
         const student = await Parent.findOne({
             isDeleted: false,
             _id: studentId,
         })
-        if (!student) throw new Error("Student doesn't exist")
+        if (!student) throw new Error("Học sinh không tồn tại")
 
         if (teacher.mainTeacherOfClass !== student.classRoom)
             throw new Error(
-                "Teacher doesn't have permission to mark off this student"
+                "Giáo viên không phải giáo viên chủ nhiệm của học sinh này"
             )
 
         student.dayOff = [...student.dayOff, { day, permission }]
@@ -413,7 +415,7 @@ module.exports.markOff = async (req, res) => {
         const newDayoff = new Dayoff(data)
         await newDayoff.save()
 
-        res.status(200).send("Mark off successfully")
+        res.status(200).send("Đánh dấu nghỉ học thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }
@@ -424,20 +426,20 @@ module.exports.teacherGetStudentOff = async (req, res) => {
         const { id } = req
 
         const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
-        if (!teacher) throw new Error("Teacher doesn't exist")
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
 
         if (
             !teacher.mainTeacherOfClass ||
             teacher.mainTeacherOfClass.length === 0
         )
-            throw new Error("Teacher is not main teacher")
+            throw new Error("Giáo viên không phải giáo viên chủ nhiệm")
 
         const students = await Parent.find({
             isDeleted: false,
             classRoom: teacher.mainTeacherOfClass,
         })
 
-        if (!students) throw new Error("Students doesn't exist")
+        if (!students) throw new Error("Học sinh không tồn tại")
 
         const studentOffToday = students.filter(
             (student) =>

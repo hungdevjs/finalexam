@@ -47,7 +47,7 @@ module.exports.getHighlight = async (req, res) => {
         })
 
         if (!highlight) {
-            throw new Error("Highlight doesn't exist")
+            throw new Error("Không có thông báo")
         }
 
         res.status(200).json(highlight)
@@ -66,7 +66,7 @@ module.exports.deleteHighlight = async (req, res) => {
         })
 
         if (!highlight) {
-            throw new Error("Highlight doesn't exist")
+            throw new Error("Thông báo không tồn tại")
         }
 
         highlight.isDeleted = true
@@ -87,7 +87,7 @@ module.exports.createOrUpdateHighlight = async (req, res) => {
 
         if (id) {
             highlight = await Highlight.findOne({ _id: id, isDeleted: false })
-            if (!highlight) throw new Error("Highlight doesn't exist")
+            if (!highlight) throw new Error("Thông báo không tồn tại")
 
             highlight.title = title
             highlight.content = content

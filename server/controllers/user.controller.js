@@ -178,7 +178,7 @@ module.exports.deleteUser = (req, res) => {
                         if (student) {
                             student.isDeleted = true
                             await student.save()
-                            res.status(200).json("Student is deleted")
+                            res.status(200).json("Xóa học sinh thành công")
                         } else {
                             res.status(400).json("Bad request")
                         }
@@ -193,7 +193,7 @@ module.exports.deleteUser = (req, res) => {
                         if (teacher) {
                             teacher.isDeleted = true
                             await teacher.save()
-                            res.status(200).json("Student is deleted")
+                            res.status(200).json("Xóa giáo viên thành công")
                         } else {
                             res.status(400).json("Bad request")
                         }
@@ -217,12 +217,12 @@ module.exports.createStudent = (req, res) => {
         Grade.findOne({ isDeleted: false, grade })
             .then((gr) => {
                 if (!validateDate(dateOfBirth))
-                    throw new Error("Date of birth is not valid")
+                    throw new Error("Ngày sinh không hợp lệ")
 
-                if (!gr) throw new Error("Student grade doesn't exist")
+                if (!gr) throw new Error("Khối học không tồn tại")
 
                 if (gr && !gr.classRoom.includes(classRoom))
-                    throw new Error("Student class doesn't exist")
+                    throw new Error("Lớp học không tồn tại")
 
                 data.studentId = shortid.generate()
 
@@ -368,7 +368,7 @@ module.exports.getStudent = (req, res) => {
 
                     res.status(200).json(data)
                 } else {
-                    res.status(200).json("Student doesn't exist")
+                    res.status(200).json("Học sinh không tồn tại")
                 }
             })
             .catch((err) => {
@@ -414,26 +414,25 @@ module.exports.updateStudent = (req, res) => {
                     Grade.findOne({ isDeleted: false, grade })
                         .then(async (gr) => {
                             if (!validateDate(dateOfBirth))
-                                throw new Error("Date of birth is not valid")
+                                throw new Error("Ngày sinh không hợp lệ")
 
-                            if (!gr)
-                                throw new Error("Student grade doesn't exist")
+                            if (!gr) throw new Error("Khối học không tồn tại")
 
                             if (gr && !gr.classRoom.includes(classRoom))
-                                throw new Error("Student class doesn't exist")
+                                throw new Error("Lớp học không tồn tại")
 
                             updateArr.forEach((item) => {
                                 student[item.field] = item.value
                             })
 
                             await student.save()
-                            res.status(200).send("Update successfully")
+                            res.status(200).send("Cập nhật học sinh thành công")
                         })
                         .catch((err) => {
                             res.status(400).send(err.message)
                         })
                 } else {
-                    res.status(400).send("Student doesn't exist")
+                    res.status(400).send("Học sinh không tồn tại")
                 }
             })
             .catch((err) => {
@@ -476,7 +475,7 @@ module.exports.getTeacher = (req, res) => {
 
                     res.status(200).json(data)
                 } else {
-                    res.status(200).json("Teacher doesn't exist")
+                    res.status(200).json("Giáo viên không tồn tại")
                 }
             })
             .catch((err) => {
@@ -504,7 +503,7 @@ module.exports.createTeacher = async (req, res) => {
         // check if teacher email exist
         const teacher = await Teacher.findOne({ email, isDeleted: false })
         if (teacher) {
-            throw new Error("Teacher email exist")
+            throw new Error("Email đã được sử dụng")
         }
 
         // check if mainClass exist
@@ -518,7 +517,7 @@ module.exports.createTeacher = async (req, res) => {
             }
 
             if (!classes.includes(mainTeacherOfClass)) {
-                throw new Error("Class doesn't exist")
+                throw new Error("Lớp học không tồn tại")
             }
 
             const mainClass = await Teacher.find({
@@ -532,13 +531,15 @@ module.exports.createTeacher = async (req, res) => {
                 .includes(mainTeacherOfClass)
 
             if (invalidMainclass) {
-                throw new Error(`Class ${mainTeacherOfClass} had main teacher`)
+                throw new Error(
+                    `Lớp ${mainTeacherOfClass} đã có giáo viên chủ nhiệm`
+                )
             }
         }
 
         // check if subject is valid
         if (!subjects.includes(subject)) {
-            throw new Error(`Subject is invalid`)
+            throw new Error(`Môn học không hợp lệ`)
         }
 
         // check if subject-teacherClass exist
@@ -553,9 +554,9 @@ module.exports.createTeacher = async (req, res) => {
 
         if (invalidSubjectClass.length > 0) {
             throw new Error(
-                `Class ${invalidSubjectClass.join(
+                `Lớp ${invalidSubjectClass.join(
                     ", "
-                )} had teacher for subject ${subject}`
+                )} đã có giáo viên môn ${subject}`
             )
         }
 
@@ -602,7 +603,7 @@ module.exports.updateTeacher = async (req, res) => {
         })
 
         if (!currentTeacher) {
-            throw new Error("Teacher doesn't exist")
+            throw new Error("Giáo viên không tồn tại")
         }
 
         const data = req.body
@@ -629,7 +630,7 @@ module.exports.updateTeacher = async (req, res) => {
 
         if (teacherSameMainClass.length > 0) {
             throw new Error(
-                `This user conflicts main class with ${teacherSameMainClass
+                `Chung lớp chủ nhiệm với giáo viên ${teacherSameMainClass
                     .map((tc) => tc.name)
                     .join(", ")}`
             )
@@ -637,7 +638,7 @@ module.exports.updateTeacher = async (req, res) => {
 
         // check if subject is valid
         if (!subjects.includes(subject)) {
-            throw new Error(`Subject is invalid`)
+            throw new Error(`Môn học không hợp lệ`)
         }
 
         // check subject-class exist
@@ -653,7 +654,7 @@ module.exports.updateTeacher = async (req, res) => {
 
         if (teacherSameSubjectClass.length > 0) {
             throw new Error(
-                `This user conflicts class with ${teacherSameSubjectClass
+                `Chung lớp chủ nhiệm với giáo viên ${teacherSameSubjectClass
                     .map((tc) => tc.name)
                     .join(", ")}`
             )
@@ -676,7 +677,7 @@ module.exports.updateTeacher = async (req, res) => {
         })
 
         await currentTeacher.save()
-        res.status(200).send("Update successfully")
+        res.status(200).send("Cập nhật giáo viên thành công")
     } catch (err) {
         res.json({ error: err.message })
     }
@@ -690,7 +691,7 @@ module.exports.updateProfile = async (req, res) => {
         const { role, id } = req
 
         if (role !== expectedRole || id !== expectedId) {
-            throw new Error("Permission denied")
+            throw new Error("Từ chối quyền truy cập")
         }
 
         const data = req.body
@@ -702,7 +703,7 @@ module.exports.updateProfile = async (req, res) => {
                     isDeleted: false,
                 })
                 if (!student) {
-                    throw new Error("Student doesn't exist")
+                    throw new Error("Học sinh không tồn tại")
                 }
 
                 const {
@@ -716,7 +717,7 @@ module.exports.updateProfile = async (req, res) => {
                 } = data
 
                 if (!validateDate(dateOfBirth)) {
-                    throw new Error("Date of birth is not valid")
+                    throw new Error("Ngày sinh không hợp lệ")
                 }
 
                 const updateArrStudent = [
@@ -734,7 +735,7 @@ module.exports.updateProfile = async (req, res) => {
                 })
 
                 await student.save()
-                res.status(200).send("Update successfully")
+                res.status(200).send("Cập nhật thành công")
 
                 break
 
@@ -744,7 +745,7 @@ module.exports.updateProfile = async (req, res) => {
                     isDeleted: false,
                 })
                 if (!teacher) {
-                    throw new Error("Teacher doesn't exist")
+                    throw new Error("Giáo viên không tồn tại")
                 }
 
                 const { name, yearOfBirth, email, phoneNumber } = data
@@ -763,7 +764,7 @@ module.exports.updateProfile = async (req, res) => {
                 })
 
                 await teacher.save()
-                res.status(200).send("Update successfully")
+                res.status(200).send("Cập nhật thành công")
 
                 break
 
@@ -783,7 +784,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
         let totalPage = 1
         const teacher = await Teacher.findOne({ _id: id, isDeleted: false })
         if (!teacher) {
-            throw new Error("Teacher doesn't exist")
+            throw new Error("Giáo viên không tồn tại")
         }
 
         const classRooms = [
@@ -850,7 +851,7 @@ module.exports.updateTranscript = async (req, res) => {
 
         const teacher = await Teacher.findOne({ _id: id, isDeleted: false })
         if (!teacher) {
-            throw new Error("Teacher doesn't exist")
+            throw new Error("Giáo viên không tồn tại")
         }
 
         const student = await Parent.findOne({
@@ -858,25 +859,21 @@ module.exports.updateTranscript = async (req, res) => {
             isDeleted: false,
         })
         if (!student) {
-            throw new Error("Student doesn't exist")
+            throw new Error("Học sinh không tồn tại")
         }
 
         if (!teacher.teacherOfClass.includes(student.classRoom)) {
-            throw new Error(
-                "Teacher can't change transcript of student of another class"
-            )
+            throw new Error("Giáo viên không phải là giáo viên chủ nhiệm")
         }
 
         if (teacher.subject !== subject.subject) {
-            throw new Error(
-                "Teacher can't change transcript of another subject"
-            )
+            throw new Error("Giáo viên không có quyền sửa điểm môn học khác")
         }
 
         student.score[subject.name] = subject.score
         await student.save()
 
-        res.status(200).send("Update transcript successfully")
+        res.status(200).send("Cập nhật bảng điểm thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }
@@ -886,19 +883,20 @@ module.exports.sendMessageToMainTeacher = async (req, res) => {
     try {
         const { studentId, content, type } = req.body
         console.log(req.body)
-        if (!["sms", "email"].includes(type)) throw new Error("Invalid option")
+        if (!["sms", "email"].includes(type))
+            throw new Error("Tùy chọn không hỗ trợ")
 
         const student = await Parent.findOne({
             isDeleted: false,
             _id: studentId,
         })
-        if (!student) throw new Error("Student doesn't exist")
+        if (!student) throw new Error("Học sinh không tồn tại")
 
         const mainTeacher = await Teacher.findOne({
             isDeleted: false,
             mainTeacherOfClass: student.classRoom,
         })
-        if (!mainTeacher) throw new Error("Teacher doesn't exist")
+        if (!mainTeacher) throw new Error("Giáo viên không tồn tại")
 
         if (type === "sms") {
             // send sms to teacher
@@ -914,7 +912,7 @@ module.exports.sendMessageToMainTeacher = async (req, res) => {
             sendSms(to, body)
         }
 
-        res.status(200).send("Send SMS successfully")
+        res.status(200).send("Gửi SMS thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

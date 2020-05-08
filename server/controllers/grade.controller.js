@@ -27,7 +27,7 @@ module.exports.getAllGradeWithMainTeacher = async (req, res) => {
         const teachers = await Teacher.find({ isDeleted: false })
 
         if (!grades) {
-            throw new Error("No grades and classes to show")
+            throw new Error("Không có lớp học")
         }
 
         const result = grades.map((grade) => ({
