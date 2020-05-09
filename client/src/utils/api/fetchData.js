@@ -138,3 +138,6 @@ export const forgetPassword = (data) =>
     request.post("login/forgetPassword", data)
 
 export const resetPassword = (data) => request.post("login/resetPassword", data)
+
+export const changePassword = (data) =>
+    request.post("user/changePassword", data)

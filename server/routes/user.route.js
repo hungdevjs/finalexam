@@ -34,4 +34,6 @@ router.post(
     controller.sendMessageToMainTeacher
 )
 
+router.post("/changePassword", controller.changePassword)
+
 module.exports = router

@@ -83,6 +83,7 @@ module.exports.authUser = (req, res, next) => {
     try {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+
         if (
             userInfo.role !== "admin" &&
             userInfo.role !== "teacher" &&
@@ -90,6 +91,8 @@ module.exports.authUser = (req, res, next) => {
         ) {
             throw new Error("Từ chối quyền truy cập")
         }
+
+        req.userInfo = userInfo
         next()
     } catch (err) {
         res.status(401).send(err.message)

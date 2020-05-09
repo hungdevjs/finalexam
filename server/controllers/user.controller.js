@@ -1,4 +1,3 @@
-const jwt = require("jsonwebtoken")
 const shortid = require("shortid")
 const _ = require("lodash")
 const passwordHash = require("password-hash")
@@ -16,6 +15,7 @@ const {
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
+const Admin = require("../models/admin.model")
 
 module.exports.getAllUser = (req, res) => {
     try {
@@ -913,6 +913,68 @@ module.exports.sendMessageToMainTeacher = async (req, res) => {
         }
 
         res.status(200).send("Gửi SMS thành công")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.changePassword = async (req, res) => {
+    try {
+        const { userInfo } = req
+        const { password, newPassword } = req.body
+
+        const isAdmin = userInfo.role === "admin"
+        const isTeacher = userInfo.role === "teacher"
+        const isParent = userInfo.role === "parent"
+
+        const { _id } = userInfo
+
+        if (isAdmin) {
+            const admin = await Admin.findOne({ isDeleted: false, _id })
+            if (!admin) throw new Error("Người dùng không tồn tại")
+
+            if (!passwordHash.verify(password, admin.password))
+                throw new Error("Sai mật khẩu")
+
+            if (!newPassword.trim() || newPassword.trim().length < 8)
+                throw new Error("Mật khẩu phải bao gồm ít nhất 8 ký tự")
+
+            admin.password = passwordHash.generate(newPassword)
+
+            await admin.save()
+        }
+
+        if (isTeacher) {
+            const teacher = await Teacher.findOne({ isDeleted: false, _id })
+            if (!teacher) throw new Error("Người dùng không tồn tại")
+
+            if (!passwordHash.verify(password, teacher.password))
+                throw new Error("Sai mật khẩu")
+
+            if (!newPassword.trim() || newPassword.trim().length < 8)
+                throw new Error("Mật khẩu phải bao gồm ít nhất 8 ký tự")
+
+            teacher.password = passwordHash.generate(newPassword)
+
+            await teacher.save()
+        }
+
+        if (isParent) {
+            const parent = await Admin.findOne({ isDeleted: false, _id })
+            if (!parent) throw new Error("Người dùng không tồn tại")
+
+            if (!passwordHash.verify(password, parent.password))
+                throw new Error("Sai mật khẩu")
+
+            if (!newPassword.trim() || newPassword.trim().length < 8)
+                throw new Error("Mật khẩu phải bao gồm ít nhất 8 ký tự")
+
+            parent.password = passwordHash.generate(newPassword)
+
+            await parent.save()
+        }
+
+        res.status(200).send("Đổi mật khẩu thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

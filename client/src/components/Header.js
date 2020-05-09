@@ -6,6 +6,7 @@ import history from "../config/history"
 import changeOptionNavigate from "../redux/action/changeOptionNavigate"
 import setUserInformation from "../redux/action/setUserInformation"
 import setTime from "../redux/action/setTime"
+import ChangePasswordModal from "./ChangePasswordModal"
 
 const HeaderContainer = styled.div`
     width: ${(props) => `calc(100vw - ${props.option})`};
@@ -88,6 +89,7 @@ const changeWidthNavigate = (props) => {
 function Header(props) {
     const [userInfo, setUserInfo] = useState("")
     const [show, setShow] = useState(false)
+    const [isOpen, toggle] = useState(false)
 
     useEffect(() => {
         if (
@@ -115,6 +117,10 @@ function Header(props) {
 
     return (
         <HeaderContainer {...props}>
+            <ChangePasswordModal
+                isOpen={isOpen}
+                toggle={() => toggle(!isOpen)}
+            />
             <NavigateButton
                 {...props}
                 onClick={() => changeWidthNavigate(props)}
@@ -147,6 +153,16 @@ function Header(props) {
                                 Trang cá nhân
                             </p>
                         )}
+                    {props.userInformation?.role === "admin" && (
+                        <p
+                            onClick={() => {
+                                setShow(false)
+                                toggle(!isOpen)
+                            }}
+                        >
+                            Đổi mật khẩu
+                        </p>
+                    )}
                     <p onClick={signOut}>Đăng xuất</p>
                 </UserOption>
             </UserInfoContainer>
