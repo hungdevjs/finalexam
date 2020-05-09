@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { Router, Route, Switch } from "react-router-dom"
 import history from "../config/history"
 import { connect } from "react-redux"
@@ -23,6 +23,7 @@ const ContentContainer = styled.div`
 `
 
 function Layout(props) {
+    const [pathName, setPathName] = useState(window.location.pathname)
     // check if user is login
     useEffect(() => {
         if (
@@ -39,9 +40,14 @@ function Layout(props) {
             })
         }
     }, [])
+
+    history.listen((location) => {
+        setPathName(location.pathname)
+    })
+
     return (
         <div className="min-vh-100vh d-flex">
-            {props.role && <Navigate />}
+            {props.role && <Navigate pathName={pathName} />}
             <div style={{ zIndex: 9999 }}>{props.role && <Header />}</div>
             <ContentContainer {...props}>
                 <Router history={history}>

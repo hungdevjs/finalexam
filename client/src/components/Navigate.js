@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import history from "../config/history"
 import styled from "styled-components"
 import { connect } from "react-redux"
@@ -60,17 +60,7 @@ const NavName = styled.span`
 `
 
 function Navigate(props) {
-    const { role } = props
-
-    const [pathName, setPathName] = useState(null)
-
-    useEffect(() => {
-        if (window.location.pathname !== "/login") {
-            setPathName(window.location.pathname)
-        } else {
-            setPathName("/")
-        }
-    }, [])
+    const { role, pathName } = props
 
     return (
         <NavigateContainer {...props}>
@@ -84,7 +74,7 @@ function Navigate(props) {
                                 path={nav.path}
                                 key={index}
                                 onClick={() => {
-                                    setPathName(nav.path)
+                                    // setPathName(nav.path)
                                     history.push(`${nav.path}`)
                                 }}
                             >
