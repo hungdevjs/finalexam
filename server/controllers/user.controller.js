@@ -43,8 +43,6 @@ module.exports.getAllUser = (req, res) => {
                                 : 1
                         })
 
-                        const totalUser = data.length
-
                         if (searchString) {
                             data = data.filter((student) =>
                                 student.studentName
@@ -59,6 +57,8 @@ module.exports.getAllUser = (req, res) => {
                                     student.grade === parseInt(filterGrade)
                             )
                         }
+
+                        const totalUser = data.length
 
                         if (currentPage > 0) {
                             totalPage = Math.ceil(data.length / pageSize) || 1
@@ -103,8 +103,6 @@ module.exports.getAllUser = (req, res) => {
                                 : 1
                         })
 
-                        const totalUser = data.length
-
                         if (searchString) {
                             data = data.filter((teacher) =>
                                 teacher.name
@@ -128,6 +126,8 @@ module.exports.getAllUser = (req, res) => {
                                 (teacher) => teacher.subject === filterSubject
                             )
                         }
+
+                        const totalUser = data.length
 
                         if (currentPage > 0) {
                             totalPage = Math.ceil(data.length / pageSize)
@@ -929,6 +929,8 @@ module.exports.changePassword = async (req, res) => {
 
         const { _id } = userInfo
 
+        console.log(userInfo)
+
         if (isAdmin) {
             const admin = await Admin.findOne({ isDeleted: false, _id })
             if (!admin) throw new Error("Người dùng không tồn tại")
@@ -960,7 +962,7 @@ module.exports.changePassword = async (req, res) => {
         }
 
         if (isParent) {
-            const parent = await Admin.findOne({ isDeleted: false, _id })
+            const parent = await Parent.findOne({ isDeleted: false, _id })
             if (!parent) throw new Error("Người dùng không tồn tại")
 
             if (!passwordHash.verify(password, parent.password))

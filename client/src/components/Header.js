@@ -153,7 +153,7 @@ function Header(props) {
                                 Trang cá nhân
                             </p>
                         )}
-                    {props.userInformation?.role === "admin" && (
+                    {props.userInformation?.role && (
                         <p
                             onClick={() => {
                                 setShow(false)
