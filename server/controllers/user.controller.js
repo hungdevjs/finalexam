@@ -882,7 +882,6 @@ module.exports.updateTranscript = async (req, res) => {
 module.exports.sendMessageToMainTeacher = async (req, res) => {
     try {
         const { studentId, content, type } = req.body
-        console.log(req.body)
         if (!["sms", "email"].includes(type))
             throw new Error("Tùy chọn không hỗ trợ")
 

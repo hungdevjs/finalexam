@@ -8,7 +8,6 @@ const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
 const Schedule = require("../models/schedule.model")
 const Semester = require("../models/semester.model")
-const Missing = require("../models/missing.model")
 const Event = require("../models/event.model")
 const Dayoff = require("../models/dayoff.model")
 
