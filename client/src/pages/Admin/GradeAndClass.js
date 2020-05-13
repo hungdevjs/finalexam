@@ -33,7 +33,7 @@ function GradeAndClass(props) {
                     type: "danger",
                     title: "Lỗi",
                     message: "Lỗi trong khi lấy dữ liệu",
-                })
+                }),
             )
     }, [])
 
@@ -122,7 +122,7 @@ function GradeAndClass(props) {
                                                                     grade
                                                                         .classRoom[0]
                                                                         .room,
-                                                            }
+                                                            },
                                                         )
                                                     }
                                                 >
@@ -136,7 +136,7 @@ function GradeAndClass(props) {
                                                     onClick={() => {
                                                         setCurrentClass(
                                                             grade.classRoom[0]
-                                                                .room
+                                                                .room,
                                                         )
                                                         toggle(!isOpen)
                                                     }}
@@ -168,7 +168,7 @@ function GradeAndClass(props) {
                                                                     {
                                                                         optionClass:
                                                                             room.room,
-                                                                    }
+                                                                    },
                                                                 )
                                                             }
                                                         >
@@ -181,7 +181,7 @@ function GradeAndClass(props) {
                                                             title="Xem thời khóa biểu"
                                                             onClick={() => {
                                                                 setCurrentClass(
-                                                                    room.room
+                                                                    room.room,
                                                                 )
                                                                 toggle(!isOpen)
                                                             }}
@@ -190,7 +190,7 @@ function GradeAndClass(props) {
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            ) : null
+                                            ) : null,
                                         )}
                                     </React.Fragment>
                                 ))}
@@ -203,12 +203,12 @@ function GradeAndClass(props) {
     )
 }
 
-const mapDispatchToProps = {
-    getAllGradeWithMainTeacher,
-}
-
 const mapStateToProps = (state) => ({
     year: state.time.year,
 })
+
+const mapDispatchToProps = {
+    getAllGradeWithMainTeacher,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(GradeAndClass)

@@ -42,7 +42,7 @@ const TeacherList = (props) => {
                 optionClass,
                 "",
                 optionSubject,
-                currentPage
+                currentPage,
             )
             .then((res) => {
                 setData(res.data)
@@ -82,7 +82,7 @@ const TeacherList = (props) => {
                     title: "Thành công",
                     message: "Đã xóa giáo viên",
                     type: "success",
-                })
+                }),
             )
             .then(() => getData())
             .catch((err) => {
@@ -222,7 +222,7 @@ const TeacherList = (props) => {
                                                         type: "warning",
                                                         onConfirm: () =>
                                                             deleteTeacher(
-                                                                teacher.id
+                                                                teacher.id,
                                                             ),
                                                     })
                                                 }}
@@ -246,13 +246,13 @@ const TeacherList = (props) => {
     )
 }
 
+const mapStateToProps = (state) => ({
+    year: state.time.year,
+})
+
 const mapDispatchToProps = {
     getAllUser,
     setModal,
 }
-
-const mapStateToProps = (state) => ({
-    year: state.time.year,
-})
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeacherList)

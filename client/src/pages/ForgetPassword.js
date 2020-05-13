@@ -19,47 +19,43 @@ const ForgetPassword = (props) => {
     const [identity, setIdentity] = useState("")
     const [checkInfo, setCheckInfo] = useState(false)
 
+    const sendRequest = async (e) => {
+        e.preventDefault()
+        setCheckInfo(true)
+        if (!identity.trim()) return
+
+        try {
+            const res = await props.forgetPassword({
+                role,
+                identity,
+            })
+
+            if (!res) throw new Error("Vui lòng kiểm tra lại thông tin của bạn")
+
+            renderNoti({
+                type: "success",
+                title: "Thành công",
+                message: `Vui lòng kiểm tra ${
+                    role === "parent" ? "tin nhắn SMS" : "email"
+                } để nhận liên kết đặt lại mật khẩu. Liên kết sẽ hết hạn sau 15 phút`,
+            })
+            setIdentity("")
+            setCheckInfo(false)
+        } catch (err) {
+            renderNoti({
+                type: "danger",
+                title: "Lỗi",
+                message: err.message,
+            })
+        }
+    }
+
     return (
         <div
             className="d-flex justify-content-center align-items-center"
             style={{ height: "75vh" }}
         >
-            <Form
-                style={{ width: "300px" }}
-                onSubmit={async (e) => {
-                    e.preventDefault()
-                    setCheckInfo(true)
-                    if (!identity.trim()) return
-
-                    try {
-                        const res = await props.forgetPassword({
-                            role,
-                            identity,
-                        })
-
-                        if (!res)
-                            throw new Error(
-                                "Vui lòng kiểm tra lại thông tin của bạn"
-                            )
-
-                        renderNoti({
-                            type: "success",
-                            title: "Thành công",
-                            message: `Vui lòng kiểm tra ${
-                                role === "parent" ? "tin nhắn SMS" : "email"
-                            } để nhận liên kết đặt lại mật khẩu. Liên kết sẽ hết hạn sau 15 phút`,
-                        })
-                        setIdentity("")
-                        setCheckInfo(false)
-                    } catch (err) {
-                        renderNoti({
-                            type: "danger",
-                            title: "Lỗi",
-                            message: err.message,
-                        })
-                    }
-                }}
-            >
+            <Form style={{ width: "300px" }} onSubmit={(e) => sendRequest(e)}>
                 <img
                     src="/logo.png"
                     alt=""

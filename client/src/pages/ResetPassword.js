@@ -18,40 +18,39 @@ const ResetPassword = (props) => {
         },
     } = props
 
+    const sendRequest = async (e) => {
+        e.preventDefault()
+        setCheckPassword(true)
+        if (!password.trim() || password !== confirmPassword) return
+
+        try {
+            const res = await props.resetPassword({
+                secretKey,
+                newPassword: password,
+            })
+            if (!res) throw new Error("Đã có lỗi xảy ra")
+
+            renderNoti({
+                type: "success",
+                title: "Thành công",
+                message: "Bạn đã đặt lại mật khẩu thành công",
+            })
+            history.push("/login")
+        } catch (err) {
+            renderNoti({
+                type: "danger",
+                title: "Lỗi",
+                message: err.message,
+            })
+        }
+    }
+
     return (
         <div
             className="d-flex justify-content-center align-items-center"
             style={{ height: "75vh" }}
         >
-            <Form
-                style={{ width: "300px" }}
-                onSubmit={async (e) => {
-                    e.preventDefault()
-                    setCheckPassword(true)
-                    if (!password.trim() || password !== confirmPassword) return
-
-                    try {
-                        const res = await props.resetPassword({
-                            secretKey,
-                            newPassword: password,
-                        })
-                        if (!res) throw new Error("Đã có lỗi xảy ra")
-
-                        renderNoti({
-                            type: "success",
-                            title: "Thành công",
-                            message: "Bạn đã đặt lại mật khẩu thành công",
-                        })
-                        history.push("/login")
-                    } catch (err) {
-                        renderNoti({
-                            type: "danger",
-                            title: "Lỗi",
-                            message: err.message,
-                        })
-                    }
-                }}
-            >
+            <Form style={{ width: "300px" }} onSubmit={(e) => sendRequest(e)}>
                 <img
                     src="/logo.png"
                     alt=""

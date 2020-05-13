@@ -27,16 +27,20 @@ export default (props) => {
     })
 
     useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
         getAllSubject().then((res) =>
-            setOptions(res.data.map((item) => ({ value: item, label: item })))
+            setOptions(res.data.map((item) => ({ value: item, label: item }))),
         )
 
         if (classRoom) {
             getClassSchedule(classRoom).then((res) =>
-                setSchedule(res.data.schedule)
+                setSchedule(res.data.schedule),
             )
         }
-    }, [])
+    }
 
     const onUpdateSchedule = async () => {
         try {
@@ -74,7 +78,7 @@ export default (props) => {
     const checkFullSchedule = () =>
         Object.values(schedule).every(
             (daySchedule) =>
-                daySchedule.length === 5 && daySchedule.every((item) => item)
+                daySchedule.length === 5 && daySchedule.every((item) => item),
         )
 
     const onChangeSchedule = (key, index, value) => {
@@ -138,7 +142,7 @@ export default (props) => {
                                                         onChangeSchedule(
                                                             day,
                                                             number,
-                                                            e.value
+                                                            e.value,
                                                         )
                                                     }}
                                                     isDisabled={
@@ -147,7 +151,7 @@ export default (props) => {
                                                     }
                                                 />
                                             </td>
-                                        )
+                                        ),
                                     )}
                                 </tr>
                             ))}

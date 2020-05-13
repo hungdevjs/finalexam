@@ -6,7 +6,6 @@ export default () => async (dispatch) => {
 
     try {
         const res = await teacherGetStudentOff()
-        console.log(res)
         dispatch({
             type: "SET_STUDENT_OFF",
             payload: res.data,

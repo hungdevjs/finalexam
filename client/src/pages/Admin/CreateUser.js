@@ -1,16 +1,19 @@
-import React from 'react'
+import React from "react"
 
-import CreateStudent from './CreateStudent'
-import CreateTeacher from './CreateTeacher'
+import CreateStudent from "./CreateStudent"
+import CreateTeacher from "./CreateTeacher"
 
-export default function(props) {
+export default function (props) {
+    console.log(props)
     return (
         <div>
-            {props.match.params.role === 'student' ? 
-                <CreateStudent {...props} /> : 
-                props.match.params.role === 'teacher' ?
-                    <CreateTeacher {...props} /> :
-                    ''}
+            {props.match.params.role === "student" ? (
+                <CreateStudent {...props} />
+            ) : props.match.params.role === "teacher" ? (
+                <CreateTeacher {...props} />
+            ) : (
+                ""
+            )}
         </div>
     )
 }
