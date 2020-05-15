@@ -4,7 +4,6 @@ import CreateStudent from "./CreateStudent"
 import CreateTeacher from "./CreateTeacher"
 
 export default function (props) {
-    console.log(props)
     return (
         <div>
             {props.match.params.role === "student" ? (

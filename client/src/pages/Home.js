@@ -19,8 +19,6 @@ function Home(props) {
         }
     }, [props.userInformation])
 
-    const { time } = props
-
     return (
         <div>
             {role && <h5>TỔNG QUAN</h5>}
@@ -38,7 +36,6 @@ function Home(props) {
 
 const mapStateToProps = (state) => ({
     userInformation: state.user.userInformation,
-    time: state.time,
 })
 
 export default connect(mapStateToProps, null)(Home)

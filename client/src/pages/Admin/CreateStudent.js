@@ -87,6 +87,10 @@ export default function (props) {
 
     // load student data
     useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
         if (id) {
             getStudentData(id).then((res) => {
                 const {
@@ -153,7 +157,7 @@ export default function (props) {
                 })
             })
         }
-    }, [])
+    }
 
     const checkSingleInput = (key) => {
         if (
@@ -364,7 +368,7 @@ export default function (props) {
                     title: "Thành công",
                     message: `Đã ${id ? "cập nhật" : "tạo mới"} học sinh`,
                     type: "success",
-                })
+                }),
             )
             .then(() => history.push("/"))
     }
@@ -447,7 +451,7 @@ export default function (props) {
                                     gender.value !== ""
                                         ? genderOptions.find(
                                               (option) =>
-                                                  option.value === gender.value
+                                                  option.value === gender.value,
                                           )
                                         : null
                                 }
@@ -494,7 +498,7 @@ export default function (props) {
                                         (item) => ({
                                             value: item,
                                             label: item,
-                                        })
+                                        }),
                                     )
                                     setClassOptions(classArray)
                                 }}

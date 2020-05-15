@@ -9,13 +9,17 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
     const [data, setData] = useState({})
 
     useEffect(() => {
+        getData()
+    }, [classRoom])
+
+    const getData = () => {
         if (classRoom && !teacherId) {
             getClassSchedule(classRoom).then((res) => setData(res.data))
         }
         if (teacherId) {
             getTeacherSchedule(teacherId).then((res) => setData(res.data))
         }
-    }, [classRoom])
+    }
 
     return (
         <div className="mb-2">
@@ -96,7 +100,7 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                                     color="success"
                                     onClick={() =>
                                         history.push(
-                                            `/updateSchedule/${classRoom}`
+                                            `/updateSchedule/${classRoom}`,
                                         )
                                     }
                                 >

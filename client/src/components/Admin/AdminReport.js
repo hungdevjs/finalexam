@@ -69,7 +69,7 @@ const AdminReport = (props) => {
                     <span className="mr-4">Học sinh nghỉ học:</span>
                     {
                         reports.studentOff?.filter(
-                            (item) => item.student.permission
+                            (item) => item.student.permission,
                         ).length
                     }{" "}
                     <i
@@ -79,7 +79,7 @@ const AdminReport = (props) => {
                     />
                     {
                         reports.studentOff?.filter(
-                            (item) => !item.student.permission
+                            (item) => !item.student.permission,
                         ).length
                     }{" "}
                     <i

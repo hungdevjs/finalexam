@@ -46,6 +46,10 @@ const CreateTeacher = (props) => {
     const [filterSubject, setFilterSubject] = useState([])
 
     useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
         if (!teacherId) {
             getAllSubject().then((res) => {
                 const options = res.data
@@ -66,17 +70,17 @@ const CreateTeacher = (props) => {
                 props.setFieldValue("phoneNumber", data.phoneNumber)
                 props.setFieldValue(
                     "mainTeacher",
-                    data.mainTeacherOfClass && data.mainTeacherOfClass.trim()
+                    data.mainTeacherOfClass && data.mainTeacherOfClass.trim(),
                 )
                 props.setFieldValue(
                     "mainTeacherOfClass",
-                    data.mainTeacherOfClass
+                    data.mainTeacherOfClass,
                 )
                 props.setFieldValue("subject", data.subject)
                 props.setFieldValue("teacherOfClass", data.teacherOfClass)
             })
         }
-    }, [])
+    }
 
     const {
         name,
@@ -206,12 +210,12 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacher",
-                                        e.target.checked
+                                        e.target.checked,
                                     )
                                     if (!e.target.checked) {
                                         props.setFieldValue(
                                             "mainTeacherOfClass",
-                                            ""
+                                            "",
                                         )
                                     }
                                 }}
@@ -227,7 +231,7 @@ const CreateTeacher = (props) => {
                                 onChange={(e) => {
                                     props.setFieldValue(
                                         "mainTeacherOfClass",
-                                        e.value
+                                        e.value,
                                     )
                                 }}
                                 value={
@@ -271,7 +275,7 @@ const CreateTeacher = (props) => {
                             onChange={(e) => {
                                 props.setFieldValue(
                                     "teacherOfClass",
-                                    e ? e.map((item) => item.value) : []
+                                    e ? e.map((item) => item.value) : [],
                                 )
                             }}
                             value={
@@ -351,7 +355,7 @@ export default withFormik({
                 ? (teacherId ? updateProfile : updateTeacher)(
                       values,
                       id,
-                      "teacher"
+                      "teacher",
                   )
                 : createTeacher(values))
 
