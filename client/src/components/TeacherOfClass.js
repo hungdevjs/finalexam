@@ -8,7 +8,7 @@ import { subjects } from "../utils/constant"
 
 import ViewModal from "../components/modal/ViewModal"
 
-const TeacherOfClass = ({ classRoom, time }) => {
+const TeacherOfClass = ({ classRoom, time, noLabel }) => {
     const [data, setData] = useState({})
     const [isOpen, toggle] = useState(false)
     const [currentTeacher, setCurrentTeacher] = useState({})
@@ -52,12 +52,16 @@ const TeacherOfClass = ({ classRoom, time }) => {
             {renderModal()}
             <Row>
                 <Col md={12}>
-                    <Label>
-                        Danh sách giáo viên lớp {classRoom}{" "}
-                        {time.year &&
-                            time.semester &&
-                            `${time.year}-${time.year + 1} ${time.semester}`}
-                    </Label>
+                    {!noLabel && (
+                        <Label>
+                            Danh sách giáo viên lớp {classRoom}{" "}
+                            {time.year &&
+                                time.semester &&
+                                `${time.year}-${time.year + 1} ${
+                                    time.semester
+                                }`}
+                        </Label>
+                    )}
                     {data && Object.keys(data).length > 0 && (
                         <Table bordered striped hover size="sm" responsive>
                             <thead>

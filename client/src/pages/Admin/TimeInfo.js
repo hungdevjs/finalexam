@@ -23,6 +23,7 @@ const TimeInfo = ({ time }) => {
             >
                 <Label>Điền mật khẩu để tiếp tục</Label>
                 <Input
+                    placeholder="Mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />

@@ -33,6 +33,9 @@ module.exports.getAllUser = (req, res) => {
                 ? { isDeleted: false, classRoom: filterClass }
                 : { isDeleted: false }
             Parent.find(filter)
+                .select(
+                    "_id classRoom grade gender studentName father mother note address dateOfBirth"
+                )
                 .then((students) => {
                     if (students) {
                         let totalPage = 1
@@ -69,18 +72,7 @@ module.exports.getAllUser = (req, res) => {
                         }
 
                         res.status(200).json({
-                            data: data.map((student) => ({
-                                id: student._id,
-                                classRoom: student.classRoom,
-                                grade: student.grade,
-                                gender: student.gender,
-                                studentName: student.studentName,
-                                father: student.father,
-                                mother: student.mother,
-                                note: student.note,
-                                address: student.address,
-                                dateOfBirth: student.dateOfBirth,
-                            })),
+                            data,
                             totalPage,
                             totalUser,
                         })
@@ -93,6 +85,9 @@ module.exports.getAllUser = (req, res) => {
                 })
         } else if (role === "teacher") {
             Teacher.find({ isDeleted: false })
+                .select(
+                    "_id name email yearOfBirth gender phoneNumber mainTeacherOfClass teacherOfClass subject"
+                )
                 .then((teachers) => {
                     if (teachers) {
                         let totalPage = 1
@@ -138,17 +133,7 @@ module.exports.getAllUser = (req, res) => {
                         }
 
                         res.status(200).json({
-                            data: data.map((teacher) => ({
-                                id: teacher._id,
-                                name: teacher.name,
-                                email: teacher.email,
-                                yearOfBirth: teacher.yearOfBirth,
-                                gender: teacher.gender,
-                                phoneNumber: teacher.phoneNumber,
-                                mainTeacherOfClass: teacher.mainTeacherOfClass,
-                                teacherOfClass: teacher.teacherOfClass,
-                                subject: teacher.subject,
-                            })),
+                            data,
                             totalPage,
                             totalUser,
                         })
@@ -337,36 +322,12 @@ module.exports.getStudent = (req, res) => {
         const id = req.params.id
 
         Parent.findOne({ _id: id, isDeleted: false })
+            .select(
+                " _id studentName gender classRoom dateOfBirth address note studentId father mother"
+            )
             .then((student) => {
                 if (student) {
-                    const {
-                        _id,
-                        studentName,
-                        gender,
-                        grade,
-                        classRoom,
-                        dateOfBirth,
-                        address,
-                        note,
-                        studentId,
-                        father,
-                        mother,
-                    } = student
-                    const data = {
-                        _id,
-                        studentName,
-                        gender,
-                        grade,
-                        classRoom,
-                        dateOfBirth,
-                        address,
-                        note,
-                        studentId,
-                        father,
-                        mother,
-                    }
-
-                    res.status(200).json(data)
+                    res.status(200).json(student)
                 } else {
                     res.status(200).json("Học sinh không tồn tại")
                 }
@@ -448,32 +409,12 @@ module.exports.getTeacher = (req, res) => {
         const id = req.params.id
 
         Teacher.findOne({ _id: id, isDeleted: false })
+            .select(
+                "_id name gender email yearOfBirth phoneNumber mainTeacherOfClass teacherOfClass subject"
+            )
             .then((teacher) => {
                 if (teacher) {
-                    const {
-                        _id,
-                        name,
-                        gender,
-                        email,
-                        yearOfBirth,
-                        phoneNumber,
-                        mainTeacherOfClass,
-                        teacherOfClass,
-                        subject,
-                    } = teacher
-                    const data = {
-                        _id,
-                        name,
-                        gender,
-                        email,
-                        yearOfBirth,
-                        phoneNumber,
-                        mainTeacherOfClass,
-                        teacherOfClass,
-                        subject,
-                    }
-
-                    res.status(200).json(data)
+                    res.status(200).json(teacher)
                 } else {
                     res.status(200).json("Giáo viên không tồn tại")
                 }
@@ -791,7 +732,10 @@ module.exports.teacherGetAllStudent = async (req, res) => {
             ...new Set([teacher.mainTeacherOfClass, ...teacher.teacherOfClass]),
         ]
 
-        const students = (await Parent.find({ isDeleted: false })) || []
+        const students =
+            (await Parent.find({ isDeleted: false }).select(
+                "_id studentName classRoom grade gender dateOfBirth father mother note address dayOff"
+            )) || []
         let data = students
             .filter((student) => classRooms.includes(student.classRoom))
             .sort((student1, student2) => {
@@ -823,19 +767,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
         }
 
         res.status(200).json({
-            data: data.map((student) => ({
-                id: student._id,
-                classRoom: student.classRoom,
-                grade: student.grade,
-                gender: student.gender,
-                studentName: student.studentName,
-                father: student.father,
-                mother: student.mother,
-                note: student.note,
-                address: student.address,
-                dateOfBirth: student.dateOfBirth,
-                dayOff: student.dayOff,
-            })),
+            data,
             totalPage,
             totalUser,
         })

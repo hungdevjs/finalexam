@@ -7,6 +7,7 @@ import ProfileContainer from "../../components/ProfileContainer"
 import AdminBlock from "../../components/Admin/AdminBlock"
 import LastestHighlightOrEvent from "../../components/LastestHighlightOrEvent"
 import TeacherMainClass from "../../components/TeacherMainClass"
+import TeacherOfClass from "../../components/TeacherOfClass"
 import StudentOff from "../../components/StudentOff"
 
 const Teacher = ({ user }) => {
@@ -38,9 +39,22 @@ const Teacher = ({ user }) => {
                 </Col>
 
                 {user.mainTeacherOfClass && user.mainTeacherOfClass.trim() && (
-                    <Col md={12} className="mb-4">
-                        <TeacherMainClass userInformation={user} />
-                    </Col>
+                    <>
+                        <Col md={12} className="mb-4">
+                            <TeacherMainClass userInformation={user} />
+                        </Col>
+                        <Col md={12} className="mb-4">
+                            <AdminBlock
+                                title={`Danh sách giáo viên lớp ${user.mainTeacherOfClass}`}
+                                icon="fas fa-list"
+                            >
+                                <TeacherOfClass
+                                    classRoom={user.mainTeacherOfClass}
+                                    noLabel
+                                />
+                            </AdminBlock>
+                        </Col>
+                    </>
                 )}
             </Row>
         </div>

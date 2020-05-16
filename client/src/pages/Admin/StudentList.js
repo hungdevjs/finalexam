@@ -51,7 +51,7 @@ const StudentList = (props) => {
             toggleMarkOff(!isOpenMarkOff)
 
             await markOffStudent({
-                studentId: student.id,
+                studentId: student._id,
                 permission,
                 day: now.toString(),
             })
@@ -373,7 +373,7 @@ const StudentList = (props) => {
                                             {role === "admin" ? (
                                                 <NewTabLink
                                                     title={student.studentName}
-                                                    to={`/user/student/edit/${student.id}`}
+                                                    to={`/user/student/edit/${student._id}`}
                                                 />
                                             ) : (
                                                 student.studentName
@@ -418,7 +418,7 @@ const StudentList = (props) => {
                                                             type: "warning",
                                                             onConfirm: () =>
                                                                 deleteStudent(
-                                                                    student.id
+                                                                    student._id
                                                                 ),
                                                         })
                                                     }}
@@ -430,7 +430,7 @@ const StudentList = (props) => {
                                                             <i className="fas fa-table"></i>
                                                         </div>
                                                     }
-                                                    to={`/student/transcript/${student.id}`}
+                                                    to={`/student/transcript/${student._id}`}
                                                 />
                                             )}
                                         </td>

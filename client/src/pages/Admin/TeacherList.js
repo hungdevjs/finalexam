@@ -42,7 +42,7 @@ const TeacherList = (props) => {
                 optionClass,
                 "",
                 optionSubject,
-                currentPage,
+                currentPage
             )
             .then((res) => {
                 setData(res.data)
@@ -82,7 +82,7 @@ const TeacherList = (props) => {
                     title: "Thành công",
                     message: "Đã xóa giáo viên",
                     type: "success",
-                }),
+                })
             )
             .then(() => getData())
             .catch((err) => {
@@ -200,7 +200,7 @@ const TeacherList = (props) => {
                                         <td>
                                             <NewTabLink
                                                 title={teacher.name}
-                                                to={`/user/teacher/edit/${teacher.id}`}
+                                                to={`/user/teacher/edit/${teacher._id}`}
                                             />
                                         </td>
                                         <td>{teacher.gender ? "Nam" : "Nữ"}</td>
@@ -222,7 +222,7 @@ const TeacherList = (props) => {
                                                         type: "warning",
                                                         onConfirm: () =>
                                                             deleteTeacher(
-                                                                teacher.id,
+                                                                teacher._id
                                                             ),
                                                     })
                                                 }}
