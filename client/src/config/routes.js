@@ -12,6 +12,7 @@ import Highlight from "../pages/Hightlight"
 import StudentOffToday from "../pages/Admin/StudentOffToday"
 import ForgetPassword from "../pages/ForgetPassword"
 import ResetPassword from "../pages/ResetPassword"
+import ConfirmTranscript from "../pages/Teacher/ConfirmTranscript"
 
 export default [
     { path: "/", component: Home },
@@ -51,5 +52,15 @@ export default [
     {
         path: "/resetPassword/:secretKey",
         component: ResetPassword,
+    },
+    {
+        path: "/confirmTranscript/:classRoom/",
+        component: ConfirmTranscript,
+        roles: ["teacher"],
+    },
+    {
+        path: "/confirmTranscript/:classRoom/:subject",
+        component: ConfirmTranscript,
+        roles: ["teacher"],
     },
 ]

@@ -2,6 +2,7 @@ const moment = require("moment")
 const { subjects } = require("../utils/constant")
 const checkConflictSchedule = require("../utils/checkConflictSchedule")
 const validateDate = require("../utils/validateDate")
+const subjectName = require("../utils/subjectName")
 
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
@@ -467,26 +468,49 @@ module.exports.teacherGetStudentOff = async (req, res) => {
 module.exports.getClassTranscript = async (req, res) => {
     try {
         const { id } = req
-        const { classRoom } = req.params
+        const { classRoom, subject } = req.params
 
         const teacher = await Teacher.findOne({
             isDeleted: false,
             _id: id,
-            mainTeacherOfClass: classRoom,
         })
-        if (!teacher) throw new Error("Giáo viên không có quyền chủ nhiệm")
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
 
-        const data = await Parent.find({
+        let data = await Parent.find({
             isDeleted: false,
             classRoom,
         }).select("studentName score")
         if (!data) throw new Error("Lớp không có học sinh")
 
-        const students = data.sort((st1, st2) =>
+        data = data.sort((st1, st2) =>
             st1.studentName.toLowerCase() < st2.studentName.toLowerCase()
                 ? -1
                 : 1
         )
+
+        let students = null
+
+        // no subject => mainTeacher view finalScore
+        if (!subject) {
+            if (teacher.mainTeacherOfClass !== classRoom)
+                throw new Error("Giáo viên không có quyền chủ nhiệm")
+
+            students = data
+        }
+
+        // have subject => teacher view transcript
+        if (subject) {
+            if (!teacher.teacherOfClass.includes(classRoom))
+                throw new Error("Giáo viên không phụ trách lớp này")
+            if (teacher.subject !== subjectName(null, subject))
+                throw new Error("Giáo viên không phụ trách môn học này")
+
+            students = data.map((student) => ({
+                _id: student._id,
+                studentName: student.studentName,
+                score: student.score[subject],
+            }))
+        }
 
         res.status(200).json(students)
     } catch (err) {

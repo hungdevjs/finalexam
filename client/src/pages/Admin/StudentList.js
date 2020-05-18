@@ -24,6 +24,7 @@ import setModal from "../../redux/action/setModal"
 import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
 import { markOffStudent } from "../../utils/api/fetchData"
+import subjectName from "../../utils/subjectName"
 
 const StudentList = (props) => {
     const { user } = props
@@ -354,31 +355,49 @@ const StudentList = (props) => {
                     </Col>
                 )}
                 {!props.isComponent && (
-                    <Col md={3}>
-                        <FilterSelected
-                            isClearable
-                            placeholder="Lọc theo lớp"
-                            options={filterClassStudent}
-                            onChange={(e) => {
-                                setCurrentPage(1)
-                                if (e) {
-                                    setOptionClass(e.value)
-                                } else {
-                                    setOptionClass("")
+                    <>
+                        <Col md={3}>
+                            <FilterSelected
+                                isClearable
+                                placeholder="Lọc theo lớp"
+                                options={filterClassStudent}
+                                onChange={(e) => {
+                                    setCurrentPage(1)
+                                    if (e) {
+                                        setOptionClass(e.value)
+                                    } else {
+                                        setOptionClass("")
+                                    }
+                                }}
+                                value={
+                                    optionClass && {
+                                        value: optionClass,
+                                        label: optionClass,
+                                    }
                                 }
-                            }}
-                            value={
-                                optionClass && {
-                                    value: optionClass,
-                                    label: optionClass,
+                                isDisabled={
+                                    role === "admin" &&
+                                    filterClassStudent.length === 0
                                 }
-                            }
-                            isDisabled={
-                                role === "admin" &&
-                                filterClassStudent.length === 0
-                            }
-                        />
-                    </Col>
+                            />
+                        </Col>
+                        {optionClass && optionClass.trim() && (
+                            <Col md={3}>
+                                <Button
+                                    color="success"
+                                    onClick={() =>
+                                        history.push(
+                                            `/confirmTranscript/${optionClass}/${subjectName(
+                                                user.subject
+                                            )}`
+                                        )
+                                    }
+                                >
+                                    Bảng điểm lớp {optionClass}
+                                </Button>
+                            </Col>
+                        )}
+                    </>
                 )}
             </Row>
             {!props.isComponent && (
@@ -409,8 +428,8 @@ const StudentList = (props) => {
                                     <th>Mẹ</th>
                                     <th>Địa chỉ</th>
                                     <th>Ghi chú</th>
-                                    <th>
-                                        {props.isMainTeacher && (
+                                    {props.isMainTeacher && (
+                                        <th>
                                             <div
                                                 className="text-center"
                                                 style={{ cursor: "pointer" }}
@@ -423,10 +442,11 @@ const StudentList = (props) => {
                                             >
                                                 <i className="fas fa-check text-success" />
                                             </div>
-                                        )}
-                                    </th>
+                                        </th>
+                                    )}
 
-                                    {props.isComponent && <th></th>}
+                                    {(props.isComponent ||
+                                        role === "admin") && <th></th>}
                                 </tr>
                             </thead>
                             <tbody>
@@ -470,7 +490,6 @@ const StudentList = (props) => {
                                         </td>
                                         <td>{student.address}</td>
                                         <td>
-                                            {student.note}{" "}
                                             {props.isMainTeacher && (
                                                 <EditBtn
                                                     title="Cập nhật ghi chú"
@@ -480,35 +499,39 @@ const StudentList = (props) => {
                                                         toggleNote(!isOpenNote)
                                                     }}
                                                 />
-                                            )}
+                                            )}{" "}
+                                            {student.note}
                                         </td>
-                                        <td className="text-center">
-                                            {role === "admin" ? (
-                                                <DeleteBtn
-                                                    onClick={() => {
-                                                        props.setModal({
-                                                            isOpen: true,
-                                                            message:
-                                                                "Bạn có chắc muốn xóa học sinh này ?",
-                                                            type: "warning",
-                                                            onConfirm: () =>
-                                                                deleteStudent(
-                                                                    student._id
-                                                                ),
-                                                        })
-                                                    }}
-                                                />
-                                            ) : (
-                                                <NewTabLink
-                                                    title={
-                                                        <div title="Xem bảng điểm">
-                                                            <i className="fas fa-table"></i>
-                                                        </div>
-                                                    }
-                                                    to={`/student/transcript/${student._id}`}
-                                                />
-                                            )}
-                                        </td>
+                                        {(props.isMainTeacher ||
+                                            role === "admin") && (
+                                            <td className="text-center">
+                                                {role === "admin" ? (
+                                                    <DeleteBtn
+                                                        onClick={() => {
+                                                            props.setModal({
+                                                                isOpen: true,
+                                                                message:
+                                                                    "Bạn có chắc muốn xóa học sinh này ?",
+                                                                type: "warning",
+                                                                onConfirm: () =>
+                                                                    deleteStudent(
+                                                                        student._id
+                                                                    ),
+                                                            })
+                                                        }}
+                                                    />
+                                                ) : (
+                                                    <NewTabLink
+                                                        title={
+                                                            <div title="Xem bảng điểm">
+                                                                <i className="fas fa-table"></i>
+                                                            </div>
+                                                        }
+                                                        to={`/student/transcript/${student._id}`}
+                                                    />
+                                                )}
+                                            </td>
+                                        )}
 
                                         {props.isComponent && (
                                             <td>

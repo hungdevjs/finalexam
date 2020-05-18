@@ -46,7 +46,13 @@ router.post("/markoff", authTeacher, controller.markOff)
 router.get("/studentOff", authTeacher, controller.teacherGetStudentOff)
 
 router.get(
-    "/getClassTranscript/:classRoom",
+    "/getClassTranscript/:classRoom/:subject",
+    authTeacher,
+    controller.getClassTranscript
+)
+
+router.get(
+    "/getClassTranscript/:classRoom/",
     authTeacher,
     controller.getClassTranscript
 )
