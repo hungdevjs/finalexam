@@ -463,3 +463,33 @@ module.exports.teacherGetStudentOff = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.getClassTranscript = async (req, res) => {
+    try {
+        const { id } = req
+        const { classRoom } = req.params
+
+        const teacher = await Teacher.findOne({
+            isDeleted: false,
+            _id: id,
+            mainTeacherOfClass: classRoom,
+        })
+        if (!teacher) throw new Error("Giáo viên không có quyền chủ nhiệm")
+
+        const data = await Parent.find({
+            isDeleted: false,
+            classRoom,
+        }).select("studentName score")
+        if (!data) throw new Error("Lớp không có học sinh")
+
+        const students = data.sort((st1, st2) =>
+            st1.studentName.toLowerCase() < st2.studentName.toLowerCase()
+                ? -1
+                : 1
+        )
+
+        res.status(200).json(students)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

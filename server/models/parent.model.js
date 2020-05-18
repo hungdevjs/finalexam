@@ -135,6 +135,12 @@ const parentSchema = new Schema({
             x3: [{ type: Number, _id: false, enum: validScore }],
         },
     },
+    finalScore: {
+        type: Number,
+    },
+    conduct: {
+        type: String,
+    },
     dayOff: [
         {
             _id: false,

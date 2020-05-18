@@ -45,4 +45,10 @@ router.post("/markoff", authTeacher, controller.markOff)
 
 router.get("/studentOff", authTeacher, controller.teacherGetStudentOff)
 
+router.get(
+    "/getClassTranscript/:classRoom",
+    authTeacher,
+    controller.getClassTranscript
+)
+
 module.exports = router

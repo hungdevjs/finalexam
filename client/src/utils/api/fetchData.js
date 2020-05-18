@@ -144,3 +144,6 @@ export const changePassword = (data) =>
 
 export const updateStudentNote = (data) =>
     request.post("user/updateStudentNote", data)
+
+export const getClassTranscript = (classRoom) =>
+    request.get(`information/getClassTranscript/${classRoom}`)

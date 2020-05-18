@@ -409,7 +409,22 @@ const StudentList = (props) => {
                                     <th>Mẹ</th>
                                     <th>Địa chỉ</th>
                                     <th>Ghi chú</th>
-                                    <th></th>
+                                    <th>
+                                        {props.isMainTeacher && (
+                                            <div
+                                                className="text-center"
+                                                style={{ cursor: "pointer" }}
+                                                title="Tổng kết điểm"
+                                                onClick={() =>
+                                                    history.push(
+                                                        `/confirmTranscript/${props.classRoom}`
+                                                    )
+                                                }
+                                            >
+                                                <i className="fas fa-check text-success" />
+                                            </div>
+                                        )}
+                                    </th>
 
                                     {props.isComponent && <th></th>}
                                 </tr>
