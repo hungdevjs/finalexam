@@ -3,7 +3,10 @@ const _ = require("lodash")
 const passwordHash = require("password-hash")
 
 const validateDate = require("../utils/validateDate")
+const finalMark = require("../utils/finalMark")
 const sendSms = require("../utils/sendSms")
+const subjectName = require("../utils/subjectName")
+
 const {
     pageSize,
     createStudentText,
@@ -802,6 +805,13 @@ module.exports.updateTranscript = async (req, res) => {
             throw new Error("Giáo viên không có quyền sửa điểm môn học khác")
         }
 
+        if (
+            student.score[subject.name].medium &&
+            student.score[subject.name].medium !== -1
+        ) {
+            throw new Error("Điểm đã tổng kết không thể thay đổi")
+        }
+
         student.score[subject.name] = subject.score
         await student.save()
 
@@ -932,6 +942,43 @@ module.exports.updateStudentNote = async (req, res) => {
         await student.save()
 
         res.status(200).send("Cập nhật ghi chú thành công")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.finalTransriptSubject = async (req, res) => {
+    try {
+        const { id } = req
+        const { subject, classRoom } = req.body
+
+        const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
+
+        if (!teacher.teacherOfClass.includes(classRoom))
+            throw new Error("Giáo viên không quản lý lớp học này")
+
+        if (teacher.subject !== subjectName(null, subject))
+            throw new Error("Giáo viên không dạy môn học này")
+
+        // calculate transcript
+        const students = await Parent.find({ isDeleted: false, classRoom })
+        if (!students || students.length === 0)
+            throw new Error("Lớp học không có học sinh nào")
+
+        for (const student of students) {
+            if (
+                student.score[subject].medium &&
+                student.score[subject].medium !== -1
+            )
+                throw new Error("Bảng điểm đã được tổng kết")
+
+            student.score[subject].medium = finalMark(student.score[subject])
+
+            student.save()
+        }
+
+        res.status(200).send("Tổng kết điểm thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

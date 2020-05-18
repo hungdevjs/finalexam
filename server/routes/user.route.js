@@ -38,4 +38,10 @@ router.post("/changePassword", controller.changePassword)
 
 router.post("/updateStudentNote", authTeacher, controller.updateStudentNote)
 
+router.post(
+    "/finalTranscriptSubject",
+    authTeacher,
+    controller.finalTransriptSubject
+)
+
 module.exports = router

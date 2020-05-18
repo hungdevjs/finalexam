@@ -10,7 +10,7 @@ import EditBtn from "../../components/buttons/EditBtn"
 import getClassTranscript from "../../redux/action/getClassTranscript"
 import studentName from "../../utils/subjectName"
 import renderNoti from "../../utils/renderNoti"
-import { updateTranscript } from "../../utils/api/fetchData"
+import { updateTranscript, finalMark } from "../../utils/api/fetchData"
 import subjectName from "../../utils/subjectName"
 
 const ConfirmTranscript = (props) => {
@@ -21,9 +21,13 @@ const ConfirmTranscript = (props) => {
     } = props
 
     const [data, setData] = useState([])
+    const [isOverSubject, setOverSubject] = useState(false)
 
     const [currentScore, setCurrentScore] = useState({})
     const [isOpen, toggle] = useState(false)
+
+    const [isOpenFinal, toggleFinal] = useState(false)
+
     const [student, setStudent] = useState({})
 
     useEffect(() => {
@@ -31,9 +35,16 @@ const ConfirmTranscript = (props) => {
     }, [])
 
     const getData = () => {
-        props
-            .getClassTranscript({ classRoom, subject })
-            .then((data) => setData(data))
+        props.getClassTranscript({ classRoom, subject }).then((data) => {
+            setData(data)
+            if (
+                subject &&
+                data[0].score.medium &&
+                data[0].score.medium !== -1
+            ) {
+                setOverSubject(true)
+            }
+        })
     }
 
     const editTranscript = (x, index, e) => {
@@ -67,13 +78,12 @@ const ConfirmTranscript = (props) => {
             const data = { studentId: student._id, subject }
             await updateTranscript(data)
 
+            getData()
             renderNoti({
                 type: "success",
                 title: "Thành công",
                 message: "Đã cập nhật bảng điểm",
             })
-
-            getData()
         } catch (err) {
             renderNoti({
                 type: "danger",
@@ -151,6 +161,40 @@ const ConfirmTranscript = (props) => {
         </ViewModal>
     )
 
+    const onConfirmFinalMark = () =>
+        finalMark({ subject, classRoom })
+            .then((res) => {
+                toggleFinal(!isOpenFinal)
+
+                getData()
+                renderNoti({
+                    type: "success",
+                    title: "Thành công",
+                    message: "Đã cập nhật bảng điểm",
+                })
+            })
+            .catch((err) => {
+                renderNoti({
+                    type: "danger",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi tổng kết điểm",
+                })
+            })
+
+    const renderModalFinal = () => (
+        <ViewModal
+            isOpen={isOpenFinal}
+            toggle={() => toggleFinal(!isOpenFinal)}
+            title="Tổng kết điểm"
+            onConfirm={() => onConfirmFinalMark()}
+        >
+            <p>Bạn có chắc chắn muốn tổng kết điểm ?</p>
+            <p className="text-danger">
+                Điểm sau khi tổng kết sẽ không thể thay đổi.
+            </p>
+        </ViewModal>
+    )
+
     const singleMark = (score) => (
         <>
             <p>
@@ -183,6 +227,7 @@ const ConfirmTranscript = (props) => {
     return (
         <>
             <Row className="mb-2">
+                {renderModalFinal()}
                 <Col md={subject ? 8 : 12} className="d-flex align-items-start">
                     <h5 className="flex-grow-1">
                         BẢNG ĐIỂM LỚP {classRoom}{" "}
@@ -272,7 +317,9 @@ const ConfirmTranscript = (props) => {
                                                 {item}
                                             </th>
                                         ))}
-                                        <th></th>
+                                        <th>
+                                            {isOverSubject && "Điểm trung bình"}
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -302,10 +349,8 @@ const ConfirmTranscript = (props) => {
                                                 }
                                             )}
 
-                                            {(!student.score.medium ||
-                                                student.score.medium ===
-                                                    -1) && (
-                                                <td className="text-center">
+                                            <td className="text-center">
+                                                {!isOverSubject ? (
                                                     <EditBtn
                                                         title="Cập nhật điểm"
                                                         onClick={() => {
@@ -326,8 +371,10 @@ const ConfirmTranscript = (props) => {
                                                             toggle(!isOpen)
                                                         }}
                                                     />
-                                                </td>
-                                            )}
+                                                ) : (
+                                                    student.score.medium
+                                                )}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -335,9 +382,16 @@ const ConfirmTranscript = (props) => {
                         </Col>
                     )}
 
-                    <Col md={12}>
-                        <Button color="success">Tổng kết điểm</Button>
-                    </Col>
+                    {!isOverSubject && (
+                        <Col md={12}>
+                            <Button
+                                color="success"
+                                onClick={() => toggleFinal(!isOpenFinal)}
+                            >
+                                Tổng kết điểm
+                            </Button>
+                        </Col>
+                    )}
                 </Row>
             )}
         </>

@@ -117,10 +117,15 @@ const ProfileContainer = (props) => {
                             Số điện thoại:{" "}
                             <Bold>{userInformation.phoneNumber}</Bold>
                         </p>
-                        <p>
-                            Giáo viên chủ nhiệm lớp:{" "}
-                            <Bold>{userInformation.mainTeacherOfClass}</Bold>
-                        </p>
+                        {userInformation.mainTeacherOfClass &&
+                            userInformation.mainTeacherOfClass.trim() && (
+                                <p>
+                                    Giáo viên chủ nhiệm lớp:{" "}
+                                    <Bold>
+                                        {userInformation.mainTeacherOfClass}
+                                    </Bold>
+                                </p>
+                            )}
                         <p>
                             Môn học: <Bold>{userInformation.subject}</Bold>
                         </p>

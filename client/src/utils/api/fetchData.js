@@ -147,3 +147,6 @@ export const updateStudentNote = (data) =>
 
 export const getClassTranscript = ({ classRoom, subject }) =>
     request.get(`information/getClassTranscript/${classRoom}/${subject || ""}`)
+
+export const finalMark = (data) =>
+    request.post("/user/finalTranscriptSubject", data)
