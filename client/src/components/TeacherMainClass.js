@@ -12,6 +12,7 @@ export default (props) => {
             <StudentList
                 classRoom={props.userInformation.mainTeacherOfClass}
                 isComponent
+                isMainTeacher
             />
         </AdminBlock>
     )

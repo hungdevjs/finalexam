@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import { Table, Row, Col, Alert, Button } from "reactstrap"
+import { Table, Row, Col, Alert, Button, Input } from "reactstrap"
 import { connect } from "react-redux"
 import moment from "moment"
 import history from "../../config/history"
@@ -10,6 +10,7 @@ import GradeSelected from "../../components/selecteds/GradeSelected"
 import FilterSelected from "../../components/selecteds/FilterSelected"
 import CreateBtnBig from "../../components/buttons/CreateBtnBig"
 import DeleteBtn from "../../components/buttons/DeleteBtn"
+import EditBtn from "../../components/buttons/EditBtn"
 import BackBtn from "../../components/buttons/BackBtn"
 import NewTabLink from "../../components/common/NewTabLink"
 import Pagination from "../../components/common/Pagination"
@@ -18,6 +19,7 @@ import ViewModal from "../../components/modal/ViewModal"
 import getAllUser from "../../redux/action/getAllUser"
 import teacherGetAllStudent from "../../redux/action/teacherGetAllStudent"
 import teacherGetStudentOff from "../../redux/action/teacherGetStudentOff"
+import updateStudentNote from "../../redux/action/updateStudentNote"
 import setModal from "../../redux/action/setModal"
 import { deleteUser } from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
@@ -44,6 +46,9 @@ const StudentList = (props) => {
 
     const [isOpenMarkOff, toggleMarkOff] = useState(false)
     const [student, setStudent] = useState({})
+    const [note, setNote] = useState("")
+    const [isOpenNote, toggleNote] = useState(false)
+
     const now = new Date()
 
     const markOff = async (permission) => {
@@ -248,10 +253,53 @@ const StudentList = (props) => {
         toggle(true)
     }
 
+    const updateNote = (data) =>
+        props
+            .updateStudentNote(data)
+            .then((res) => {
+                if (!res) throw new Error()
+
+                renderNoti({
+                    title: "Thành công",
+                    message: "Đã cập nhật ghi chú",
+                    type: "success",
+                })
+            })
+            .then(() => {
+                getData()
+                toggleNote(!isOpenNote)
+            })
+            .catch((err) => {
+                renderNoti({
+                    type: "danger",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi cập nhật ghi chú",
+                })
+            })
+
+    const renderModalNote = () => {
+        return (
+            <ViewModal
+                isOpen={isOpenNote}
+                toggle={() => toggleNote(!isOpenNote)}
+                title={`Cập nhật ghi chú học sinh ${student.studentName}`}
+                onConfirm={() => updateNote({ studentId: student._id, note })}
+            >
+                <Input
+                    type="textarea"
+                    rows={7}
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                />
+            </ViewModal>
+        )
+    }
+
     return (
         <div>
             {renderModal()}
             {renderModalMarkOff()}
+            {props.isMainTeacher && renderModalNote()}
             {!props.isComponent && (
                 <Row className="mb-2">
                     <Col md={7}>
@@ -406,7 +454,19 @@ const StudentList = (props) => {
                                             )}
                                         </td>
                                         <td>{student.address}</td>
-                                        <td>{student.note}</td>
+                                        <td>
+                                            {student.note}{" "}
+                                            {props.isMainTeacher && (
+                                                <EditBtn
+                                                    title="Cập nhật ghi chú"
+                                                    onClick={() => {
+                                                        setStudent(student)
+                                                        setNote(student.note)
+                                                        toggleNote(!isOpenNote)
+                                                    }}
+                                                />
+                                            )}
+                                        </td>
                                         <td className="text-center">
                                             {role === "admin" ? (
                                                 <DeleteBtn
@@ -507,6 +567,7 @@ const mapDispatchToProps = {
     teacherGetAllStudent,
     teacherGetStudentOff,
     setModal,
+    updateStudentNote,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(StudentList)

@@ -141,3 +141,6 @@ export const resetPassword = (data) => request.post("login/resetPassword", data)
 
 export const changePassword = (data) =>
     request.post("user/changePassword", data)
+
+export const updateStudentNote = (data) =>
+    request.post("user/updateStudentNote", data)

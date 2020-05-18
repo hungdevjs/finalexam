@@ -860,8 +860,6 @@ module.exports.changePassword = async (req, res) => {
 
         const { _id } = userInfo
 
-        console.log(userInfo)
-
         if (isAdmin) {
             const admin = await Admin.findOne({ isDeleted: false, _id })
             if (!admin) throw new Error("Người dùng không tồn tại")
@@ -908,6 +906,32 @@ module.exports.changePassword = async (req, res) => {
         }
 
         res.status(200).send("Đổi mật khẩu thành công")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.updateStudentNote = async (req, res) => {
+    try {
+        const { id } = req
+        const { studentId, note } = req.body
+
+        const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
+
+        const student = await Parent.findOne({
+            isDeleted: false,
+            _id: studentId,
+        })
+        if (!student) throw new Error("Học sinh không tồn tại")
+
+        if (teacher.mainTeacherOfClass !== student.classRoom)
+            throw new Error("Giáo viên không có quyền chủ nhiệm học sinh này")
+
+        student.note = note
+        await student.save()
+
+        res.status(200).send("Cập nhật ghi chú thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

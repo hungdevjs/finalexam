@@ -36,4 +36,6 @@ router.post(
 
 router.post("/changePassword", controller.changePassword)
 
+router.post("/updateStudentNote", authTeacher, controller.updateStudentNote)
+
 module.exports = router
