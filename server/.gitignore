@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# remove test
+removeTest.js
+
 # testing
 /coverage
 

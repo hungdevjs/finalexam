@@ -6,6 +6,7 @@ const validateDate = require("../utils/validateDate")
 const finalMark = require("../utils/finalMark")
 const sendSms = require("../utils/sendSms")
 const subjectName = require("../utils/subjectName")
+const generateResult = require("../utils/generateResult")
 
 const {
     pageSize,
@@ -955,30 +956,108 @@ module.exports.finalTransriptSubject = async (req, res) => {
         const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
         if (!teacher) throw new Error("Giáo viên không tồn tại")
 
-        if (!teacher.teacherOfClass.includes(classRoom))
-            throw new Error("Giáo viên không quản lý lớp học này")
+        // subject => teacher of class
+        if (subject) {
+            if (!teacher.teacherOfClass.includes(classRoom))
+                throw new Error("Giáo viên không quản lý lớp học này")
 
-        if (teacher.subject !== subjectName(null, subject))
-            throw new Error("Giáo viên không dạy môn học này")
+            if (teacher.subject !== subjectName(null, subject))
+                throw new Error("Giáo viên không dạy môn học này")
 
-        // calculate transcript
-        const students = await Parent.find({ isDeleted: false, classRoom })
-        if (!students || students.length === 0)
-            throw new Error("Lớp học không có học sinh nào")
+            // calculate transcript
+            const students = await Parent.find({ isDeleted: false, classRoom })
+            if (!students || students.length === 0)
+                throw new Error("Lớp học không có học sinh nào")
 
-        for (const student of students) {
-            if (
-                student.score[subject].medium &&
-                student.score[subject].medium !== -1
-            )
-                throw new Error("Bảng điểm đã được tổng kết")
+            for (const student of students) {
+                if (
+                    student.score[subject].medium &&
+                    student.score[subject].medium !== -1
+                )
+                    throw new Error("Bảng điểm đã được tổng kết")
 
-            student.score[subject].medium = finalMark(student.score[subject])
+                student.score[subject].medium = finalMark(
+                    student.score[subject]
+                )
 
-            student.save()
+                student.save()
+            }
+        }
+
+        // !subject => main teacher of class
+        if (!subject) {
+            if (teacher.mainTeacherOfClass !== classRoom)
+                throw new Error("Giáo viên không có quyền chủ nhiệm")
+
+            const students = await Parent.find({ isDeleted: false, classRoom })
+            if (!students || students.length === 0)
+                throw new Error("Lớp học không có học sinh nào")
+
+            for (const student of students) {
+                if (student.finalScore && student.finalScore !== -1)
+                    throw new Error("Bảng điểm đã được tổng kết")
+
+                const scoreArr = Object.values(student.score).filter(
+                    (item) => item !== true
+                )
+
+                if (scoreArr.find((sj) => !sj.medium || sj.medium === -1)) {
+                    throw new Error(
+                        "Bảng điểm chưa được tổng kết đủ các môn học"
+                    )
+                }
+
+                student.finalScore = Number(
+                    (
+                        _.sumBy(
+                            Object.values(student.score),
+                            (sj) => sj.medium
+                        ) / 12
+                    ).toFixed(2)
+                )
+
+                student.result = generateResult(
+                    student.finalScore,
+                    student.conduct
+                )
+
+                student.save()
+            }
         }
 
         res.status(200).send("Tổng kết điểm thành công")
+    } catch (err) {
+        res.status(200).send({ error: err.message })
+    }
+}
+
+module.exports.updateConduct = async (req, res) => {
+    try {
+        const { id } = req
+        const { studentId, conduct } = req.body
+
+        if (!["Tốt", "Khá", "Trung bình", "Yếu"].includes(conduct))
+            throw new Error("Bad request")
+
+        const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
+
+        const student = await Parent.findOne({
+            isDeleted: false,
+            _id: studentId,
+        })
+        if (!student) throw new Error("Học sinh không tồn tại")
+
+        if (student.finalScore && student.finalScore !== -1)
+            throw new Error("Đã tổng kết học kỳ. Không thể thay đổi")
+
+        if (teacher.mainTeacherOfClass !== student.classRoom)
+            throw new Error("Giáo viên không có quyền chủ nhiệm học sinh này")
+
+        student.conduct = conduct
+        await student.save()
+
+        res.status(200).send("Cập nhật hạnh kiểm thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

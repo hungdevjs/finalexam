@@ -53,6 +53,12 @@ const AdminChart = (props) => {
                 name: "Học sinh trung bình",
                 data: columnChart ? columnChart.map((item) => item.bad) : [],
             },
+            {
+                name: "Học sinh yếu",
+                data: columnChart
+                    ? columnChart.map((item) => item.veryBad)
+                    : [],
+            },
         ],
         options: {
             chart: {

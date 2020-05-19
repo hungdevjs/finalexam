@@ -44,4 +44,6 @@ router.post(
     controller.finalTransriptSubject
 )
 
+router.post("/updateConduct", authTeacher, controller.updateConduct)
+
 module.exports = router

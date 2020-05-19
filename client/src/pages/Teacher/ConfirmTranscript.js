@@ -7,11 +7,23 @@ import history from "../../config/history"
 import ViewModal from "../../components/modal/ViewModal"
 import BackBtn from "../../components/buttons/BackBtn"
 import EditBtn from "../../components/buttons/EditBtn"
+import FilterSelected from "../../components/selecteds/FilterSelected"
 import getClassTranscript from "../../redux/action/getClassTranscript"
 import studentName from "../../utils/subjectName"
 import renderNoti from "../../utils/renderNoti"
-import { updateTranscript, finalMark } from "../../utils/api/fetchData"
+import {
+    updateTranscript,
+    finalMark,
+    updateConduct,
+} from "../../utils/api/fetchData"
 import subjectName from "../../utils/subjectName"
+
+const conductOptions = [
+    { value: "Tốt", label: "Tốt" },
+    { value: "Khá", label: "Khá" },
+    { value: "Trung bình", label: "Trung bình" },
+    { value: "Yếu", label: "Yếu" },
+]
 
 const ConfirmTranscript = (props) => {
     const {
@@ -22,13 +34,17 @@ const ConfirmTranscript = (props) => {
 
     const [data, setData] = useState([])
     const [isOverSubject, setOverSubject] = useState(false)
+    const [isOverScore, setOverScore] = useState(false)
 
     const [currentScore, setCurrentScore] = useState({})
     const [isOpen, toggle] = useState(false)
 
     const [isOpenFinal, toggleFinal] = useState(false)
 
+    const [isOpenConduct, toggleConduct] = useState(false)
+
     const [student, setStudent] = useState({})
+    const [conduct, setConduct] = useState(null)
 
     useEffect(() => {
         getData()
@@ -43,6 +59,10 @@ const ConfirmTranscript = (props) => {
                 data[0].score.medium !== -1
             ) {
                 setOverSubject(true)
+            }
+
+            if (!subject && data[0].finalScore && data[0].finalScore !== -1) {
+                setOverScore(true)
             }
         })
     }
@@ -161,12 +181,14 @@ const ConfirmTranscript = (props) => {
         </ViewModal>
     )
 
-    const onConfirmFinalMark = () =>
+    const onConfirmFinalMark = () => {
+        toggleFinal(!isOpenFinal)
         finalMark({ subject, classRoom })
             .then((res) => {
-                toggleFinal(!isOpenFinal)
+                if (res.data.error) throw new Error(res.data.error)
 
                 getData()
+
                 renderNoti({
                     type: "success",
                     title: "Thành công",
@@ -177,9 +199,10 @@ const ConfirmTranscript = (props) => {
                 renderNoti({
                     type: "danger",
                     title: "Lỗi",
-                    message: "Lỗi trong khi tổng kết điểm",
+                    message: err.message,
                 })
             })
+    }
 
     const renderModalFinal = () => (
         <ViewModal
@@ -188,12 +211,62 @@ const ConfirmTranscript = (props) => {
             title="Tổng kết điểm"
             onConfirm={() => onConfirmFinalMark()}
         >
-            <p>Bạn có chắc chắn muốn tổng kết điểm ?</p>
+            <p>
+                Bạn có chắc chắn muốn tổng kết{" "}
+                {subject ? "điểm" : "điểm và hạnh kiểm"} ?
+            </p>
             <p className="text-danger">
-                Điểm sau khi tổng kết sẽ không thể thay đổi.
+                {subject ? "Điểm" : "Điểm và hạnh kiểm"} sau khi tổng kết sẽ
+                không thể thay đổi.
             </p>
         </ViewModal>
     )
+
+    const onUpdateConduct = () => {
+        toggleConduct(!isOpenConduct)
+        updateConduct({ studentId: student._id, conduct })
+            .then((res) => {
+                getData()
+
+                renderNoti({
+                    type: "success",
+                    title: "Thành công",
+                    message: "Đã cập nhật hạnh kiểm",
+                })
+            })
+            .catch((err) => {
+                renderNoti({
+                    type: "danger",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi cập nhật hạnh kiểm",
+                })
+            })
+    }
+
+    const renderModalConduct = () => {
+        return (
+            <ViewModal
+                isOpen={isOpenConduct}
+                toggle={() => toggleConduct(!isOpenConduct)}
+                title="Cập nhật hạnh kiểm"
+                onConfirm={() => onUpdateConduct()}
+            >
+                <Col md={12}>Học sinh: {student?.studentName}</Col>
+                <Col md={12}>Lớp: {classRoom}</Col>
+                <Col md={12} className="mb-2">
+                    Năm học: {props.time.year} - Học kỳ: {props.time.semester}
+                </Col>
+                <Col md={12}>Hạnh kiểm:</Col>
+                <Col md={6}>
+                    <FilterSelected
+                        options={conductOptions}
+                        value={{ label: conduct, label: conduct }}
+                        onChange={(e) => setConduct(e.value)}
+                    />
+                </Col>
+            </ViewModal>
+        )
+    }
 
     const singleMark = (score) => (
         <>
@@ -228,6 +301,7 @@ const ConfirmTranscript = (props) => {
         <>
             <Row className="mb-2">
                 {renderModalFinal()}
+                {renderModalConduct()}
                 <Col md={subject ? 8 : 12} className="d-flex align-items-start">
                     <h5 className="flex-grow-1">
                         BẢNG ĐIỂM LỚP {classRoom}{" "}
@@ -246,51 +320,114 @@ const ConfirmTranscript = (props) => {
                         <b>Tổng số học sinh: {data.length}</b>
                     </Col>
                     {!subject && (
-                        <Col md={12}>
+                        <Col md={12} className="mb-2">
                             <Table bordered striped hover size="sm" responsive>
                                 <thead>
-                                    <tr>
-                                        {[
-                                            "STT",
-                                            "Tên học sinh",
-                                            "Toán",
-                                            "Văn",
-                                            "Anh",
-                                            "Vật lý",
-                                            "Hóa học",
-                                            "Sinh học",
-                                            "Địa",
-                                            "Sử",
-                                            "GDCD",
-                                            "Âm nhạc",
-                                            "Mỹ thuật",
-                                            "Thể dục",
-                                        ].map((item, index) => (
-                                            <th
-                                                key={index}
-                                                className="align-top"
-                                            >
-                                                {item}
-                                            </th>
-                                        ))}
-                                    </tr>
+                                    {isOverScore ? (
+                                        <tr>
+                                            {[
+                                                "Số thứ tự",
+                                                "Tên học sinh",
+                                                "Điểm trung bình",
+                                                "Hạnh kiểm",
+                                                "Xếp loại",
+                                            ].map((item, index) => (
+                                                <th key={index}>{item}</th>
+                                            ))}
+                                        </tr>
+                                    ) : (
+                                        <tr>
+                                            {[
+                                                "STT",
+                                                "Tên học sinh",
+                                                "Toán",
+                                                "Văn",
+                                                "Anh",
+                                                "Vật lý",
+                                                "Hóa học",
+                                                "Sinh học",
+                                                "Địa",
+                                                "Sử",
+                                                "GDCD",
+                                                "Âm nhạc",
+                                                "Mỹ thuật",
+                                                "Thể dục",
+                                                "Hạnh kiểm",
+                                            ].map((item, index) => (
+                                                <th
+                                                    key={index}
+                                                    className="align-top"
+                                                >
+                                                    {item}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    )}
                                 </thead>
                                 <tbody>
                                     {data.map((student, index) => (
-                                        <tr key={student._id}>
-                                            <td>{index + 1}</td>
-                                            <td>{student.studentName}</td>
-                                            {Object.values(student.score).map(
-                                                (item, index) => (
-                                                    <td key={index}>
-                                                        {item.medium &&
-                                                        item.medium !== -1
-                                                            ? item.medium
-                                                            : singleMark(item)}
+                                        <>
+                                            {isOverScore ? (
+                                                <tr key={student._id}>
+                                                    <td
+                                                        style={{
+                                                            width: "96px",
+                                                        }}
+                                                    >
+                                                        {index + 1}
                                                     </td>
-                                                )
+                                                    <td>
+                                                        {student.studentName}
+                                                    </td>
+                                                    <td>
+                                                        {student.finalScore}
+                                                    </td>
+                                                    <td>{student.conduct}</td>
+                                                    <td>{student.result}</td>
+                                                </tr>
+                                            ) : (
+                                                <tr key={student._id}>
+                                                    <td>{index + 1}</td>
+                                                    <td>
+                                                        {student.studentName}
+                                                    </td>
+                                                    {Object.values(
+                                                        student.score
+                                                    ).map((item, index) => (
+                                                        <td key={index}>
+                                                            {item.medium &&
+                                                            item.medium !== -1
+                                                                ? item.medium
+                                                                : singleMark(
+                                                                      item
+                                                                  )}
+                                                        </td>
+                                                    ))}
+                                                    <td className="text-center font-weight-bold">
+                                                        {student.conduct}{" "}
+                                                        {!isOverScore && (
+                                                            <EditBtn
+                                                                title="Cập nhật hạnh kiểm"
+                                                                onClick={() => {
+                                                                    setStudent({
+                                                                        _id:
+                                                                            student._id,
+                                                                        studentName:
+                                                                            student.studentName,
+                                                                    })
+                                                                    setConduct(
+                                                                        student.conduct
+                                                                    )
+                                                                    toggleConduct(
+                                                                        !isOpenConduct
+                                                                    )
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </td>
+                                                </tr>
                                             )}
-                                        </tr>
+                                        </>
                                     ))}
                                 </tbody>
                             </Table>
@@ -298,7 +435,7 @@ const ConfirmTranscript = (props) => {
                     )}
 
                     {subject && (
-                        <Col md={8}>
+                        <Col md={8} className="mb-2">
                             {renderModal()}
                             <Table bordered striped hover size="sm" responsive>
                                 <thead>
@@ -382,13 +519,14 @@ const ConfirmTranscript = (props) => {
                         </Col>
                     )}
 
-                    {!isOverSubject && (
+                    {!isOverSubject && !isOverScore && (
                         <Col md={12}>
                             <Button
                                 color="success"
                                 onClick={() => toggleFinal(!isOpenFinal)}
                             >
-                                Tổng kết điểm
+                                Tổng kết{" "}
+                                {subject ? "điểm" : "điểm và hạnh kiểm"}
                             </Button>
                         </Col>
                     )}

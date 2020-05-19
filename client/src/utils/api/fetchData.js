@@ -150,3 +150,5 @@ export const getClassTranscript = ({ classRoom, subject }) =>
 
 export const finalMark = (data) =>
     request.post("/user/finalTranscriptSubject", data)
+
+export const updateConduct = (data) => request.post("user/updateConduct", data)

@@ -208,12 +208,12 @@ const year = month < 9 ? now.getFullYear() - 1 : now.getFullYear()
 const semester = month < 9 ? 2 : 1
 
 const lastResult = [
-    { time: "2016-2017 II", good: 75, medium: 20, bad: 5 },
-    { time: "2017-2018 I", good: 75, medium: 10, bad: 15 },
-    { time: "2017-2018 II", good: 70, medium: 20, bad: 10 },
-    { time: "2018-2019 I", good: 70, medium: 25, bad: 5 },
-    { time: "2018-2019 II", good: 65, medium: 20, bad: 15 },
-    { time: "2019-2020 I", good: 75, medium: 20, bad: 5 },
+    { time: "2016-2017 II", good: 73, medium: 20, bad: 5, veryBad: 2 },
+    { time: "2017-2018 I", good: 72, medium: 10, bad: 15, veryBad: 3 },
+    { time: "2017-2018 II", good: 70, medium: 20, bad: 9, veryBad: 1 },
+    { time: "2018-2019 I", good: 70, medium: 23, bad: 5, veryBad: 2 },
+    { time: "2018-2019 II", good: 65, medium: 19, bad: 15, veryBad: 1 },
+    { time: "2019-2020 I", good: 75, medium: 19, bad: 5, veryBad: 1 },
 ]
 
 createSemester({ year, semester, lastResult })
@@ -446,6 +446,8 @@ for (const room of classRoom) {
                 },
             },
             dayOff: [],
+            finalScore: -1,
+            conduct: "Tốt",
         }
         createStudent(data)
     }

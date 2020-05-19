@@ -152,6 +152,11 @@ const parentSchema = new Schema({
     },
     conduct: {
         type: String,
+        enum: ["Tốt", "Khá", "Trung bình", "Yếu"],
+    },
+    result: {
+        type: String,
+        enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu"],
     },
     dayOff: [
         {
