@@ -27,7 +27,7 @@ export default ({ data, onEditorChange, onTitleChange }) => {
                             setTitleInvalid(false)
                         }
                     }}
-                    style={{ border: titleInvalid ? "1px solid red" : "" }}
+                    style={{ border: titleInvalid ? "1px solid #dc3545" : "" }}
                     onBlur={() => {
                         if (data && data.title && data.title.trim()) {
                             setTitleInvalid(false)
@@ -42,7 +42,9 @@ export default ({ data, onEditorChange, onTitleChange }) => {
 
                 <Label>Nội dung</Label>
                 <div
-                    style={{ border: contentInvalid ? "1px solid red" : "" }}
+                    style={{
+                        border: contentInvalid ? "1px solid #dc3545" : "",
+                    }}
                     className="mb-2"
                 >
                     <CKEditor

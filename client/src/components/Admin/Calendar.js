@@ -68,7 +68,7 @@ const CalendarContainer = (props) => {
                         style={{
                             border:
                                 checkContent && !content.trim()
-                                    ? "1px solid red"
+                                    ? "1px solid #dc3545"
                                     : "",
                         }}
                     />

@@ -5,6 +5,7 @@ import { Row, Col, Button, Input, Label, Table } from "reactstrap"
 import setModal from "../../redux/action/setModal"
 import getSemesterResult from "../../redux/action/getSemesterResult"
 import ViewModal from "../../components/modal/ViewModal"
+import Feedback from "../../components/common/Feedback"
 
 import renderNoti from "../../utils/renderNoti"
 
@@ -35,9 +36,10 @@ const TimeInfo = ({ time, getSemesterResult }) => {
 
     const [isOpen, toggle] = useState(false)
     const [password, setPassword] = useState("")
+    const [checkPassword, setCheckPassword] = useState(false)
 
     const upgrade = () => {
-        console.log("upgrade")
+        setCheckPassword(true)
     }
 
     const renderModal = () => {
@@ -48,12 +50,26 @@ const TimeInfo = ({ time, getSemesterResult }) => {
                 title="Xác nhận hoàn thành năm học"
                 onConfirm={upgrade}
             >
+                <p className="text-danger">
+                    Sau khi xác nhận dữ liệu sẽ không thể phục hồi.
+                </p>
                 <Label>Điền mật khẩu để tiếp tục</Label>
                 <Input
                     placeholder="Mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onBlur={() => setCheckPassword(true)}
+                    style={{
+                        border:
+                            checkPassword && !password.trim()
+                                ? "1px solid #dc3545"
+                                : "",
+                    }}
+                    minLength={8}
                 />
+                {checkPassword && !password.trim() && (
+                    <Feedback>Mật khẩu không được bỏ trống</Feedback>
+                )}
             </ViewModal>
         )
     }

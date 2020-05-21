@@ -303,11 +303,20 @@ const ConfirmTranscript = (props) => {
                 {renderModalFinal()}
                 {renderModalConduct()}
                 <Col md={subject ? 8 : 12} className="d-flex align-items-start">
-                    <h5 className="flex-grow-1">
-                        BẢNG ĐIỂM LỚP {classRoom}{" "}
-                        {subject &&
-                            `MÔN ${studentName(null, subject).toUpperCase()}`}
-                    </h5>
+                    <div className="flex-grow-1">
+                        <h5>
+                            BẢNG ĐIỂM LỚP {classRoom}{" "}
+                            {subject &&
+                                `MÔN ${studentName(
+                                    null,
+                                    subject
+                                ).toUpperCase()}`}
+                        </h5>
+                        <p className="mb-0">
+                            Năm học: {props.time.year} - Học kỳ:{" "}
+                            {props.time.semester}
+                        </p>
+                    </div>
                     <BackBtn
                         title="trang chủ"
                         onClick={() => history.push("/")}
