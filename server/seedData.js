@@ -190,8 +190,7 @@ async function createAdmin() {
     })
     await newAdmin.save()
 }
-createAdmin()
-console.log("Created admin")
+createAdmin().then(() => console.log("Created admin"))
 
 // create semester && year
 console.log("Creating semester...")
@@ -216,9 +215,9 @@ const lastResult = [
     { time: "2019-2020 I", good: 75, medium: 19, bad: 5, veryBad: 1 },
 ]
 
-createSemester({ year, semester, lastResult })
-
-console.log("Created semester")
+createSemester({ year, semester, lastResult }).then(() =>
+    console.log("Created semester")
+)
 
 // create class
 console.log("Creating grades and classes...")
@@ -229,17 +228,14 @@ const grades = [
     { grade: 9, classRoom: ["9A", "9B"] },
 ]
 
-async function createGrade(grade) {
-    grade.isDeleted = false
-    const newGrade = new Grade(grade)
-    await newGrade.save()
+async function createGrade(grades) {
+    for (const grade of grades) {
+        grade.isDeleted = false
+        const newGrade = new Grade(grade)
+        await newGrade.save()
+    }
+    console.log("Created grades and classes")
 }
-
-for (grade of grades) {
-    createGrade(grade)
-}
-
-console.log("Created grades and classes")
 
 // create schedule
 console.log("Creating schedules...")
@@ -298,10 +294,10 @@ for (let i = 0; i < length; i++) {
         },
         isDeleted: false,
     }
-    createSchedule(classSchedule)
+    createSchedule(classSchedule).then(() =>
+        console.log(`Created ${i + 1} of ${length} schedules`)
+    )
 }
-
-console.log("Created schedules")
 
 // create highlights
 // console.log("Creating highlights...")
@@ -449,11 +445,15 @@ for (const room of classRoom) {
             finalScore: -1,
             conduct: "Tốt",
         }
-        createStudent(data)
+        createStudent(data).then(() =>
+            console.log(
+                `Created ${
+                    i + 1
+                } students of ${numberOfStudent} students of class ${room}`
+            )
+        )
     }
 }
-
-console.log("Created students")
 
 // create teachers
 console.log("Creating teachers...")
@@ -479,11 +479,8 @@ for (const room of classRoom) {
             isDeleted: false,
         }
 
-        createTeacher(data)
+        createTeacher(data).then(() => console.log(`Created ${count} teachers`))
 
         count++
     })
 }
-
-console.log("Created teachers")
-console.log("Done!")

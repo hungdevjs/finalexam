@@ -1062,3 +1062,67 @@ module.exports.updateConduct = async (req, res) => {
         res.status(500).send(err.message)
     }
 }
+
+module.exports.getSemesterResult = async (req, res) => {
+    try {
+        let functionArr = []
+        let classRooms = []
+
+        const grades = await Grade.find({ isDeleted: false })
+
+        for (const grade of grades) {
+            classRooms = [...classRooms, ...grade.classRoom]
+        }
+
+        for (const classRoom of classRooms) {
+            functionArr = [
+                ...functionArr,
+                Parent.find({ isDeleted: false, classRoom })
+                    .select("grade classRoom finalScore conduct result")
+                    .exec(),
+            ]
+        }
+
+        const classStudents = await Promise.all(functionArr)
+
+        const data = classStudents.map((classStudent) => ({
+            grade: classStudent[0].grade,
+            classRoom: classStudent[0].classRoom,
+            numberOfStudent: classStudent.length,
+            isDone:
+                classStudent[0].result && classStudent[0].result.trim()
+                    ? true
+                    : false,
+            goodStudents: classStudent.filter(
+                (student) => student.result === "Giỏi"
+            ),
+            mediumStudents: classStudent.filter(
+                (student) => student.result === "Tiên tiến"
+            ),
+            badStudents: classStudent.filter(
+                (student) => student.result === "Trung bình"
+            ),
+            veryBadStudents: classStudent.filter(
+                (student) => student.result === "Yếu"
+            ),
+        }))
+
+        let result = []
+
+        for (const grade of grades) {
+            result = [
+                ...result,
+                {
+                    grade: grade.grade,
+                    classRooms: data.filter(
+                        (item) => item.grade === grade.grade
+                    ),
+                },
+            ]
+        }
+
+        res.status(200).json(result)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}

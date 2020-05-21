@@ -6,7 +6,7 @@
 .pnp.js
 
 # remove test
-removeTest.js
+changeDB.js
 
 # testing
 /coverage

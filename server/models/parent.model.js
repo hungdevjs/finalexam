@@ -156,7 +156,7 @@ const parentSchema = new Schema({
     },
     result: {
         type: String,
-        enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu"],
+        enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu", ""],
     },
     dayOff: [
         {

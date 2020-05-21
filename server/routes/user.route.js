@@ -46,4 +46,6 @@ router.post(
 
 router.post("/updateConduct", authTeacher, controller.updateConduct)
 
+router.get("/getSemesterResult", authAdmin, controller.getSemesterResult)
+
 module.exports = router
