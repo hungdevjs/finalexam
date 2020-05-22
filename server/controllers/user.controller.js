@@ -20,6 +20,7 @@ const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
 const Admin = require("../models/admin.model")
+const Semester = require("../models/semester.model")
 
 module.exports.getAllUser = (req, res) => {
     try {
@@ -732,14 +733,19 @@ module.exports.teacherGetAllStudent = async (req, res) => {
             throw new Error("Giáo viên không tồn tại")
         }
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
+
         const classRooms = [
             ...new Set([teacher.mainTeacherOfClass, ...teacher.teacherOfClass]),
         ]
 
         const students =
             (await Parent.find({ isDeleted: false }).select(
-                "_id studentName classRoom grade gender dateOfBirth father mother note address dayOff"
+                `_id studentName classRoom grade gender dateOfBirth father mother note address ${dayOff}`
             )) || []
+
         let data = students
             .filter((student) => classRooms.includes(student.classRoom))
             .sort((student1, student2) => {
@@ -748,6 +754,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
                     ? -1
                     : 1
             })
+
         const totalUser = data.length
 
         if (searchString) {
@@ -769,6 +776,20 @@ module.exports.teacherGetAllStudent = async (req, res) => {
                 currentPage * pageSize
             )
         }
+
+        data = data.map((student) => ({
+            _id: student._id,
+            studentName: student.studentName,
+            classRoom: student.classRooms,
+            grade: student.grade,
+            gender: student.gender,
+            dateOfBirth: student.dateOfBirth,
+            father: student.father,
+            mother: student.mother,
+            note: student.note,
+            address: student.address,
+            dayOff: student[dayOff],
+        }))
 
         res.status(200).json({
             data,

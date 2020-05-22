@@ -73,9 +73,12 @@ module.exports.getStudentTranscript = async (req, res) => {
             throw new Error("Học sinh không tồn tại")
         }
 
+        const semester = await Semester.findOne()
+        const score = semester.semester === 1 ? student.score1 : student.score2
+
         const data = {
             name: student.studentName,
-            score: student.score,
+            score,
         }
 
         res.status(200).json(data)
@@ -392,12 +395,16 @@ module.exports.markOff = async (req, res) => {
         })
         if (!student) throw new Error("Học sinh không tồn tại")
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
+
         if (teacher.mainTeacherOfClass !== student.classRoom)
             throw new Error(
                 "Giáo viên không phải giáo viên chủ nhiệm của học sinh này"
             )
 
-        student.dayOff = [...student.dayOff, { day, permission }]
+        student[dayOff] = [...student[dayOff], { day, permission }]
 
         await student.save()
 
@@ -441,9 +448,13 @@ module.exports.teacherGetStudentOff = async (req, res) => {
 
         if (!students) throw new Error("Học sinh không tồn tại")
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
+
         const studentOffToday = students.filter(
             (student) =>
-                student.dayOff.filter(
+                student[dayOff].filter(
                     (item) =>
                         moment(new Date(item.day)).format("DD/MM/YYYY") ===
                         moment().format("DD/MM/YYYY")
@@ -452,7 +463,7 @@ module.exports.teacherGetStudentOff = async (req, res) => {
 
         const studentOff = studentOffToday.map((student) => ({
             studentName: student.studentName,
-            permission: student.dayOff.find(
+            permission: student[dayOff].find(
                 (item) =>
                     moment(new Date(item.day)).format("DD/MM/YYYY") ===
                     moment().format("DD/MM/YYYY")
@@ -476,10 +487,17 @@ module.exports.getClassTranscript = async (req, res) => {
         })
         if (!teacher) throw new Error("Giáo viên không tồn tại")
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+
+        const score = isFirstSemester ? "score1" : "score2"
+
+        const finalScore = isFirstSemester ? "finalScore1" : "finalScore2"
+
         let data = await Parent.find({
             isDeleted: false,
             classRoom,
-        }).select("studentName score finalScore conduct result")
+        }).select(`studentName ${score} ${finalScore} conduct result`)
         if (!data) throw new Error("Lớp không có học sinh")
 
         data = data.sort((st1, st2) =>
@@ -508,8 +526,8 @@ module.exports.getClassTranscript = async (req, res) => {
             students = data.map((student) => ({
                 _id: student._id,
                 studentName: student.studentName,
-                score: student.score[subject],
-                finalScore: student.finalScore,
+                score: student[score][subject],
+                finalScore: student[finalScore],
                 conduct: student.conduct,
                 result: student.result,
             }))

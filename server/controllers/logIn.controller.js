@@ -5,6 +5,8 @@ const Base64 = require("js-base64").Base64
 const Parent = require("../models/parent.model")
 const Teacher = require("../models/teacher.model")
 const Admin = require("../models/admin.model")
+const Semester = require("../models/semester.model")
+
 const {
     developDomain,
     productDomain,
@@ -16,6 +18,10 @@ const {
 
 const sendSms = require("../utils/sendSms")
 const sendEmail = require("../utils/sendEmail")
+
+const semester = Semester.findOne().exec()
+const isFirstSemester = semester.semester === 1
+const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
 
 module.exports.logIn = (req, res) => {
     const role = req.body.role
@@ -42,7 +48,7 @@ module.exports.logIn = (req, res) => {
                             note: student.note,
                             father: student.father,
                             mother: student.mother,
-                            dayOff: student.dayOff,
+                            dayOff: student[dayOff],
                             role: "parent",
                         }
 
@@ -327,7 +333,7 @@ module.exports.getUserInformation = async (req, res) => {
                         note: parent.note,
                         father: parent.father,
                         mother: parent.mother,
-                        dayOff: parent.dayOff,
+                        dayOff: parent[dayOff],
                         role: "parent",
                     },
                 })
@@ -460,7 +466,7 @@ module.exports.getUserInformationAndNewAccessToken = (req, res) => {
                                 note: student.note,
                                 father: student.father,
                                 mother: student.mother,
-                                dayOff: student.dayOff,
+                                dayOff: student[dayOff],
                                 role: "parent",
                             }
 

@@ -12,7 +12,7 @@ const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam11?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam14?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -367,7 +367,84 @@ for (const room of classRoom) {
                 note: "",
             },
             isDeleted: false,
-            score: {
+            score1: {
+                math: {
+                    x1: [9, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                literature: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                english: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                physics: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                chemistry: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                biology: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                geography: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                history: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                law: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                music: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                art: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+                sport: {
+                    x1: [10, 9, 9],
+                    x2: [8, 7],
+                    x3: [8],
+                    medium: -1,
+                },
+            },
+            dayOff1: [],
+            finalScore1: -1,
+            conduct1: "Tốt",
+            score2: {
                 math: {
                     x1: [10, 9, 9],
                     x2: [8, 7],
@@ -441,9 +518,9 @@ for (const room of classRoom) {
                     medium: -1,
                 },
             },
-            dayOff: [],
-            finalScore: -1,
-            conduct: "Tốt",
+            dayOff2: [],
+            finalScore2: -1,
+            conduct2: "Tốt",
         }
         createStudent(data).then(() =>
             console.log(

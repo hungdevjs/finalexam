@@ -73,7 +73,7 @@ const parentSchema = new Schema({
             type: String,
         },
     },
-    score: {
+    score1: {
         math: {
             x1: [{ type: Number, _id: false, enum: validScore }],
             x2: [{ type: Number, _id: false, enum: validScore }],
@@ -147,18 +147,110 @@ const parentSchema = new Schema({
             medium: { type: Number, _id: false },
         },
     },
-    finalScore: {
+    finalScore1: {
         type: Number,
     },
-    conduct: {
+    conduct1: {
         type: String,
         enum: ["Tốt", "Khá", "Trung bình", "Yếu"],
     },
-    result: {
+    result1: {
         type: String,
         enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu", ""],
     },
-    dayOff: [
+    dayOff1: [
+        {
+            _id: false,
+            day: { type: String },
+            permission: Boolean,
+        },
+    ],
+    score2: {
+        math: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        literature: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        english: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        physics: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        chemistry: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        biology: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        geography: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        history: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        law: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        music: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        art: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+        sport: {
+            x1: [{ type: Number, _id: false, enum: validScore }],
+            x2: [{ type: Number, _id: false, enum: validScore }],
+            x3: [{ type: Number, _id: false, enum: validScore }],
+            medium: { type: Number, _id: false },
+        },
+    },
+    finalScore2: {
+        type: Number,
+    },
+    conduct2: {
+        type: String,
+        enum: ["Tốt", "Khá", "Trung bình", "Yếu"],
+    },
+    result2: {
+        type: String,
+        enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu", ""],
+    },
+    dayOff2: [
         {
             _id: false,
             day: { type: String },
