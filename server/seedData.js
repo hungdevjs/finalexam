@@ -237,6 +237,8 @@ async function createGrade(grades) {
     console.log("Created grades and classes")
 }
 
+createGrade(grades)
+
 // create schedule
 console.log("Creating schedules...")
 
@@ -444,6 +446,7 @@ for (const room of classRoom) {
             dayOff1: [],
             finalScore1: -1,
             conduct1: "Tốt",
+            result1: "",
             score2: {
                 math: {
                     x1: [10, 9, 9],
@@ -521,6 +524,7 @@ for (const room of classRoom) {
             dayOff2: [],
             finalScore2: -1,
             conduct2: "Tốt",
+            result2: "",
         }
         createStudent(data).then(() =>
             console.log(

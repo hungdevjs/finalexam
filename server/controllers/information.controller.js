@@ -491,13 +491,14 @@ module.exports.getClassTranscript = async (req, res) => {
         const isFirstSemester = semester.semester === 1
 
         const score = isFirstSemester ? "score1" : "score2"
-
         const finalScore = isFirstSemester ? "finalScore1" : "finalScore2"
+        const conduct = isFirstSemester ? "conduct1" : "conduct2"
+        const result = isFirstSemester ? "result1" : "result2"
 
         let data = await Parent.find({
             isDeleted: false,
             classRoom,
-        }).select(`studentName ${score} ${finalScore} conduct result`)
+        }).select(`studentName ${score} ${finalScore} ${conduct} ${result}`)
         if (!data) throw new Error("Lớp không có học sinh")
 
         data = data.sort((st1, st2) =>
@@ -513,7 +514,14 @@ module.exports.getClassTranscript = async (req, res) => {
             if (teacher.mainTeacherOfClass !== classRoom)
                 throw new Error("Giáo viên không có quyền chủ nhiệm")
 
-            students = data
+            students = data.map((student) => ({
+                _id: student._id,
+                studentName: student.studentName,
+                score: student[score],
+                finalScore: student[finalScore],
+                conduct: student[conduct],
+                result: student[result],
+            }))
         }
 
         // have subject => teacher view transcript
@@ -528,8 +536,8 @@ module.exports.getClassTranscript = async (req, res) => {
                 studentName: student.studentName,
                 score: student[score][subject],
                 finalScore: student[finalScore],
-                conduct: student.conduct,
-                result: student.result,
+                conduct: student[conduct],
+                result: student[result],
             }))
         }
 

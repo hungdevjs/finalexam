@@ -225,68 +225,166 @@ module.exports.createStudent = (req, res) => {
 
                 data.password = passwordHash.generate(password)
 
-                data.score = {
+                data.score1 = {
                     math: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     literature: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     english: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     physics: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     chemistry: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     biology: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     geography: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     history: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     law: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     music: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     art: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                     sport: {
                         x1: [-1, -1, -1],
                         x2: [-1, -1],
                         x3: [-1],
+                        medium: -1,
                     },
                 }
+
+                data.finalScore1 = -1
+                data.conduct1 = "Tốt"
+                data.dayOff1 = []
+                data.result1 = ""
+
+                data.score2 = {
+                    math: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    literature: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    english: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    physics: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    chemistry: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    biology: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    geography: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    history: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    law: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    music: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    art: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                    sport: {
+                        x1: [-1, -1, -1],
+                        x2: [-1, -1],
+                        x3: [-1],
+                        medium: -1,
+                    },
+                }
+
+                data.finalScore2 = -1
+                data.conduct2 = "Tốt"
+                data.dayOff2 = []
+                data.result2 = ""
+
                 data.isDeleted = false
 
                 const newStudent = new Parent(data)
@@ -780,7 +878,7 @@ module.exports.teacherGetAllStudent = async (req, res) => {
         data = data.map((student) => ({
             _id: student._id,
             studentName: student.studentName,
-            classRoom: student.classRooms,
+            classRoom: student.classRoom,
             grade: student.grade,
             gender: student.gender,
             dateOfBirth: student.dateOfBirth,
@@ -827,14 +925,18 @@ module.exports.updateTranscript = async (req, res) => {
             throw new Error("Giáo viên không có quyền sửa điểm môn học khác")
         }
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const score = isFirstSemester ? "score1" : "score2"
+
         if (
-            student.score[subject.name].medium &&
-            student.score[subject.name].medium !== -1
+            student[score][subject.name].medium &&
+            student[score][subject.name].medium !== -1
         ) {
             throw new Error("Điểm đã tổng kết không thể thay đổi")
         }
 
-        student.score[subject.name] = subject.score
+        student[score][subject.name] = subject.score
         await student.save()
 
         res.status(200).send("Cập nhật bảng điểm thành công")
@@ -977,6 +1079,13 @@ module.exports.finalTransriptSubject = async (req, res) => {
         const teacher = await Teacher.findOne({ isDeleted: false, _id: id })
         if (!teacher) throw new Error("Giáo viên không tồn tại")
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const score = isFirstSemester ? "score1" : "score2"
+        const finalScore = isFirstSemester ? "finalScore1" : "finalScore2"
+        const result = isFirstSemester ? "result1" : "result2"
+        const conduct = isFirstSemester ? "conduct1" : "conduct2"
+
         // subject => teacher of class
         if (subject) {
             if (!teacher.teacherOfClass.includes(classRoom))
@@ -992,13 +1101,13 @@ module.exports.finalTransriptSubject = async (req, res) => {
 
             for (const student of students) {
                 if (
-                    student.score[subject].medium &&
-                    student.score[subject].medium !== -1
+                    student[score][subject].medium &&
+                    student[score][subject].medium !== -1
                 )
                     throw new Error("Bảng điểm đã được tổng kết")
 
-                student.score[subject].medium = finalMark(
-                    student.score[subject]
+                student[score][subject].medium = finalMark(
+                    student[score][subject]
                 )
 
                 student.save()
@@ -1015,10 +1124,10 @@ module.exports.finalTransriptSubject = async (req, res) => {
                 throw new Error("Lớp học không có học sinh nào")
 
             for (const student of students) {
-                if (student.finalScore && student.finalScore !== -1)
+                if (student[finalScore] && student[finalScore] !== -1)
                     throw new Error("Bảng điểm đã được tổng kết")
 
-                const scoreArr = Object.values(student.score).filter(
+                const scoreArr = Object.values(student[score]).filter(
                     (item) => item !== true
                 )
 
@@ -1028,18 +1137,18 @@ module.exports.finalTransriptSubject = async (req, res) => {
                     )
                 }
 
-                student.finalScore = Number(
+                student[finalScore] = Number(
                     (
                         _.sumBy(
-                            Object.values(student.score),
+                            Object.values(student[score]),
                             (sj) => sj.medium
                         ) / 12
                     ).toFixed(2)
                 )
 
-                student.result = generateResult(
-                    student.finalScore,
-                    student.conduct
+                student[result] = generateResult(
+                    student[finalScore],
+                    student[conduct]
                 )
 
                 student.save()
@@ -1069,13 +1178,18 @@ module.exports.updateConduct = async (req, res) => {
         })
         if (!student) throw new Error("Học sinh không tồn tại")
 
-        if (student.finalScore && student.finalScore !== -1)
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const finalScore = isFirstSemester ? "finalScore1" : "finalScore2"
+        const conductStudent = isFirstSemester ? "conduct1" : "conduct2"
+
+        if (student[finalScore] && student[finalScore] !== -1)
             throw new Error("Đã tổng kết học kỳ. Không thể thay đổi")
 
         if (teacher.mainTeacherOfClass !== student.classRoom)
             throw new Error("Giáo viên không có quyền chủ nhiệm học sinh này")
 
-        student.conduct = conduct
+        student[conductStudent] = conduct
         await student.save()
 
         res.status(200).send("Cập nhật hạnh kiểm thành công")
@@ -1095,11 +1209,20 @@ module.exports.getSemesterResult = async (req, res) => {
             classRooms = [...classRooms, ...grade.classRoom]
         }
 
+        const semester = await Semester.findOne()
+        const isFirstSemester = semester.semester === 1
+        const score = isFirstSemester ? "score1" : "score2"
+        const finalScore = isFirstSemester ? "finalScore1" : "finalScore2"
+        const result = isFirstSemester ? "result1" : "result2"
+        const conduct = isFirstSemester ? "conduct1" : "conduct2"
+
         for (const classRoom of classRooms) {
             functionArr = [
                 ...functionArr,
                 Parent.find({ isDeleted: false, classRoom })
-                    .select("grade classRoom finalScore conduct result")
+                    .select(
+                        `grade classRoom ${finalScore} ${conduct} ${result}`
+                    )
                     .exec(),
             ]
         }
@@ -1111,28 +1234,28 @@ module.exports.getSemesterResult = async (req, res) => {
             classRoom: classStudent[0].classRoom,
             numberOfStudent: classStudent.length,
             isDone:
-                classStudent[0].result && classStudent[0].result.trim()
+                classStudent[0][result] && classStudent[0][result].trim()
                     ? true
                     : false,
             goodStudents: classStudent.filter(
-                (student) => student.result === "Giỏi"
+                (student) => student[result] === "Giỏi"
             ),
             mediumStudents: classStudent.filter(
-                (student) => student.result === "Tiên tiến"
+                (student) => student[result] === "Tiên tiến"
             ),
             badStudents: classStudent.filter(
-                (student) => student.result === "Trung bình"
+                (student) => student[result] === "Trung bình"
             ),
             veryBadStudents: classStudent.filter(
-                (student) => student.result === "Yếu"
+                (student) => student[result] === "Yếu"
             ),
         }))
 
-        let result = []
+        let semesterResult = []
 
         for (const grade of grades) {
-            result = [
-                ...result,
+            semesterResult = [
+                ...semesterResult,
                 {
                     grade: grade.grade,
                     classRooms: data.filter(
@@ -1142,7 +1265,7 @@ module.exports.getSemesterResult = async (req, res) => {
             ]
         }
 
-        res.status(200).json(result)
+        res.status(200).json(semesterResult)
     } catch (err) {
         res.status(500).send(err.message)
     }

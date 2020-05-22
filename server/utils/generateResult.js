@@ -1,8 +1,8 @@
 module.exports = (finalScore, conduct) => {
-    const sGood = finalScore > 8
+    const sGood = finalScore >= 8
     const sMedium = finalScore >= 6.5 && finalScore < 8
     const sBad = finalScore >= 5 && finalScore < 6.5
-    const sveryBad = finalScore < 5
+    const sVeryBad = finalScore < 5
 
     const cGood = conduct === "Tốt"
     const cMedium = conduct === "Khá"
