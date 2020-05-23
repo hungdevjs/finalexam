@@ -10,9 +10,10 @@ const Highlight = require("./models/highlight.model")
 const Schedule = require("./models/schedule.model")
 const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
+const Event = require("./models/event.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam14?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam-test1?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -302,30 +303,38 @@ for (let i = 0; i < length; i++) {
 }
 
 // create highlights
-// console.log("Creating highlights...")
+console.log("Creating highlights...")
 
-// async function createHighlight(data) {
-//     const newHighlight = new Highlight(data)
-//     await newHighlight.save()
-// }
+async function createHighlight(data) {
+    const newHighlight = new Highlight(data)
+    await newHighlight.save()
+}
 
-// for (let i = 0; i < 20; i++) {
-//     let date = new Date()
-//     date.setDate(date.getDate() - i)
+const highlight = {
+    title: "Kế hoạch tham quan dã ngoại trường THCS Dev School",
+    content:
+        "<p>Do t&igrave;nh h&igrave;nh nghỉ học c&aacute;ch ly k&eacute;o d&agrave;i, thời gian học sinh được sinh hoạt c&ugrave;ng nhau l&agrave; rất &iacute;t trong năm học n&agrave;y. V&igrave; thế nh&agrave; trường quyết định tổ chức một buổi d&atilde; ngoại k&eacute;o d&agrave;i 2 ng&agrave;y 1 đ&ecirc;m cho c&aacute;c em học sinh khối 6, 7, 8. C&aacute;c em học sinh khối 9 do thời gian c&ograve;n lại của năm học rất &iacute;t, n&ecirc;n để đảm bảo chất lượng cho kỳ thi chuyển cấp được diễn ra v&agrave;o cuối th&aacute;ng 7, c&aacute;c em sẽ học b&igrave;nh thường tại trường.</p><p>Thời gian buổi d&atilde; ngoại: 13 - 14/6/2020</p><p>Địa điểm d&atilde; ngoại: Ba V&igrave;, H&agrave; Nội</p><p>Lịch tr&igrave;nh chi tiết c&aacute;c gi&aacute;o vi&ecirc;n chủ nhiệm sẽ phổ biến đến c&aacute;c em v&agrave;o buổi sinh hoạt cuối tuần n&agrave;y.</p>",
+    time: "Fri May 22 2020 18:34:23 GMT+0700 (Indochina Time)",
+    isDeleted: false,
+}
 
-//     const data = {
-//         title: `Thông báo số ${20 - i}`,
-//         time: date.toString(),
-//         isDeleted: false,
-//         content: `Trường Đại học Bách Khoa Hà Nội đang đào tạo trên 40.000 SV, học viên cao học và nghiên cứu sinh với 67 chuyên ngành đại học và 33 chuyên ngành cao học, 57 chuyên ngành tiến sĩ.
-//         Hiện nay Trường có quan hệ hợp tác trong đào tạo, Nghiên cứu khoa học với trên 200 trường Đại học, trung tâm Nghiên cứu khoa học, viện nghiên cứu và tổ chức giáo dục của 32 quốc gia trên thế giới, là thành viên của 8 tổ chức mạng lưới đại học quốc tế. Thông qua hợp tác quốc tế, trường đã cử khoảng 500 cán bộ và sinh viên đi nước ngoài học tập, nghiên cứu, trao đổi,...Xây dựng hàng chục dự án quốc tế về đào tạo, trang bị, Nghiên cứu khoa học để góp phần tăng cường cơ sở vật chất cho Trường.
-//         Bộ GD-ĐT Việt Nam đã giao cho trường Đại học Bách Khoa Hà Nội thực hiện bốn chương trình đào tạo tiên tiến là chương trình Cơ - Điện tử, Công nghệ Vật liệu, Điện - Điện tử và Kỹ thuật Y Sinh. Từ năm 1986 đến nay cơ sở vật chất của Trường đã được cải tạo và nâng cấp một cách cơ bản, cơ sở hạ tầng và cảnh quan đã khang trang sạch đẹp hơn nhiều, đã đầu tư nhiều phòng thí nghiệm hiện đại, xây dựng và đang thực hiện nhiều dự án lớn phục vụ công tác đào tạo và nghiên cứu khoa học ở trình độ cao. Điều kiện làm việc và đời sống vật chất, tinh thần của cán bộ, sinh viên không ngừng được cải thiện. Đặc biệt, tháng 9/2006 Trường đã đưa vào sử dụng Thư viện điện tử Tạ Quang Bửu với mức đầu tư 199 tỷ VNĐ.`,
-//     }
+createHighlight(highlight).then(() => console.log("created highlight"))
 
-//     createHighlight(data)
-// }
+// create event
+console.log("Creating event")
 
-// console.log("Created highlights")
+async function createEvent(data) {
+    const newEvent = new Event(data)
+    await newEvent.save()
+}
+
+const event = {
+    time: "Sat Jun 13 2020 00:00:00 GMT+0700 (Indochina Time)",
+    content: "Dã ngoại 2 ngày 1 đêm",
+    isDeleted: false,
+}
+
+createEvent(event).then(() => console.log("Created event"))
 
 // create students
 console.log("Creating students...")
@@ -525,6 +534,24 @@ for (const room of classRoom) {
             finalScore2: -1,
             conduct2: "Tốt",
             result2: "",
+
+            subjectTotalScore: {
+                math: -1,
+                literature: -1,
+                english: -1,
+                physics: -1,
+                chemistry: -1,
+                biology: -1,
+                geography: -1,
+                history: -1,
+                law: -1,
+                music: -1,
+                art: -1,
+                sport: -1,
+            },
+            totalScore: -1,
+            totalConduct: "Tốt",
+            totalResult: "",
         }
         createStudent(data).then(() =>
             console.log(

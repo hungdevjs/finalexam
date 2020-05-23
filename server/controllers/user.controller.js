@@ -6,7 +6,11 @@ const validateDate = require("../utils/validateDate")
 const finalMark = require("../utils/finalMark")
 const sendSms = require("../utils/sendSms")
 const subjectName = require("../utils/subjectName")
-const generateResult = require("../utils/generateResult")
+const {
+    calculateResult,
+    calculateConduct,
+    calculateTotalScore,
+} = require("../utils/calculateFunctions")
 
 const {
     pageSize,
@@ -384,6 +388,24 @@ module.exports.createStudent = (req, res) => {
                 data.conduct2 = "Tốt"
                 data.dayOff2 = []
                 data.result2 = ""
+
+                data.subjectTotalScore = {
+                    math: -1,
+                    literature: -1,
+                    english: -1,
+                    physics: -1,
+                    chemistry: -1,
+                    biology: -1,
+                    geography: -1,
+                    history: -1,
+                    law: -1,
+                    music: -1,
+                    art: -1,
+                    sport: -1,
+                }
+                data.totalScore = -1
+                data.totalConduct = "Tốt"
+                data.totalResult = ""
 
                 data.isDeleted = false
 
@@ -1146,10 +1168,34 @@ module.exports.finalTransriptSubject = async (req, res) => {
                     ).toFixed(2)
                 )
 
-                student[result] = generateResult(
+                student[result] = calculateResult(
                     student[finalScore],
                     student[conduct]
                 )
+
+                // if semester = 2 -> calculate totalResult
+                if (!isFirstSemester) {
+                    // calculate conduct of entire year
+                    const totalConduct = calculateConduct(
+                        student.conduct1,
+                        student.conduct2
+                    )
+
+                    const {
+                        subjectTotalScore,
+                        totalScore,
+                    } = calculateTotalScore(student.score1, student.score2)
+
+                    const totalResult = calculateResult(
+                        totalScore,
+                        totalConduct
+                    )
+
+                    student.subjectTotalScore = subjectTotalScore
+                    student.totalConduct = totalConduct
+                    student.totalScore = totalScore
+                    student.totalResult = totalResult
+                }
 
                 student.save()
             }
@@ -1221,7 +1267,7 @@ module.exports.getSemesterResult = async (req, res) => {
                 ...functionArr,
                 Parent.find({ isDeleted: false, classRoom })
                     .select(
-                        `grade classRoom ${finalScore} ${conduct} ${result}`
+                        `grade classRoom ${finalScore} ${conduct} ${result} totalResult`
                     )
                     .exec(),
             ]
@@ -1248,6 +1294,18 @@ module.exports.getSemesterResult = async (req, res) => {
             ),
             veryBadStudents: classStudent.filter(
                 (student) => student[result] === "Yếu"
+            ),
+            totalGoodStudents: classStudent.filter(
+                (student) => student.totalResult === "Giỏi"
+            ),
+            totalMediumStudents: classStudent.filter(
+                (student) => student.totalResult === "Tiên tiến"
+            ),
+            totalBadStudents: classStudent.filter(
+                (student) => student.totalResult === "Trung bình"
+            ),
+            totalVeryBadStudents: classStudent.filter(
+                (student) => student.totalResult === "Yếu"
             ),
         }))
 

@@ -35,6 +35,7 @@ const ConfirmTranscript = (props) => {
     const [data, setData] = useState([])
     const [isOverSubject, setOverSubject] = useState(false)
     const [isOverScore, setOverScore] = useState(false)
+    const [isOverYear, setOverYear] = useState(false)
 
     const [currentScore, setCurrentScore] = useState({})
     const [isOpen, toggle] = useState(false)
@@ -63,6 +64,10 @@ const ConfirmTranscript = (props) => {
 
             if (!subject && data[0].finalScore && data[0].finalScore !== -1) {
                 setOverScore(true)
+            }
+
+            if (data[0].totalScore && data[0].totalScore !== -1) {
+                setOverYear(true)
             }
         })
     }
@@ -337,17 +342,38 @@ const ConfirmTranscript = (props) => {
                                             {[
                                                 "Số thứ tự",
                                                 "Tên học sinh",
-                                                "Điểm trung bình",
-                                                "Hạnh kiểm",
-                                                "Xếp loại",
+                                                "Điểm trung bình học kỳ",
+                                                "Hạnh kiểm học kỳ",
+                                                "Xếp loại học kỳ",
                                             ].map((item, index) => (
-                                                <th key={index}>{item}</th>
+                                                <th
+                                                    key={index}
+                                                    className="align-top"
+                                                >
+                                                    {item}
+                                                </th>
                                             ))}
+                                            {isOverYear && (
+                                                <>
+                                                    {[
+                                                        "Điểm trung bình cả năm",
+                                                        "Hạnh kiểm cả năm",
+                                                        "Xếp loại cả năm",
+                                                    ].map((item, index) => (
+                                                        <th
+                                                            key={index}
+                                                            className="align-top"
+                                                        >
+                                                            {item}
+                                                        </th>
+                                                    ))}
+                                                </>
+                                            )}
                                         </tr>
                                     ) : (
                                         <tr>
                                             {[
-                                                "STT",
+                                                "Số thứ tự",
                                                 "Tên học sinh",
                                                 "Toán",
                                                 "Văn",
@@ -393,6 +419,25 @@ const ConfirmTranscript = (props) => {
                                                     </td>
                                                     <td>{student.conduct}</td>
                                                     <td>{student.result}</td>
+                                                    {isOverYear && (
+                                                        <>
+                                                            <td>
+                                                                {
+                                                                    student.totalScore
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    student.totalConduct
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    student.totalResult
+                                                                }
+                                                            </td>
+                                                        </>
+                                                    )}
                                                 </tr>
                                             ) : (
                                                 <tr key={student._id}>
@@ -463,9 +508,16 @@ const ConfirmTranscript = (props) => {
                                                 {item}
                                             </th>
                                         ))}
-                                        <th>
-                                            {isOverSubject && "Điểm trung bình"}
-                                        </th>
+                                        {isOverSubject && (
+                                            <th className="align-top">
+                                                Điểm trung bình học kỳ
+                                            </th>
+                                        )}
+                                        {isOverYear && (
+                                            <th className="align-top">
+                                                Điểm trung bình cả năm
+                                            </th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -495,7 +547,12 @@ const ConfirmTranscript = (props) => {
                                                 }
                                             )}
 
-                                            <td className="text-center">
+                                            <td
+                                                className={
+                                                    !isOverSubject &&
+                                                    "text-center"
+                                                }
+                                            >
                                                 {!isOverSubject ? (
                                                     <EditBtn
                                                         title="Cập nhật điểm"
@@ -521,6 +578,9 @@ const ConfirmTranscript = (props) => {
                                                     student.score.medium
                                                 )}
                                             </td>
+                                            {isOverYear && (
+                                                <td>{student.totalScore}</td>
+                                            )}
                                         </tr>
                                     ))}
                                 </tbody>

@@ -26,6 +26,9 @@ const semesterSchema = new Schema({
             bad: {
                 type: Number,
             },
+            veryBad: {
+                type: Number,
+            },
             _id: false,
         },
     ],

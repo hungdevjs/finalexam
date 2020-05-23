@@ -498,7 +498,9 @@ module.exports.getClassTranscript = async (req, res) => {
         let data = await Parent.find({
             isDeleted: false,
             classRoom,
-        }).select(`studentName ${score} ${finalScore} ${conduct} ${result}`)
+        }).select(
+            `studentName ${score} ${finalScore} ${conduct} ${result} subjectTotalScore totalConduct totalScore totalResult`
+        )
         if (!data) throw new Error("Lớp không có học sinh")
 
         data = data.sort((st1, st2) =>
@@ -521,6 +523,10 @@ module.exports.getClassTranscript = async (req, res) => {
                 finalScore: student[finalScore],
                 conduct: student[conduct],
                 result: student[result],
+                subjectTotalScore: student.subjectTotalScore,
+                totalConduct: student.totalConduct,
+                totalScore: student.totalScore,
+                totalResult: student.totalResult,
             }))
         }
 
@@ -536,6 +542,7 @@ module.exports.getClassTranscript = async (req, res) => {
                 studentName: student.studentName,
                 score: student[score][subject],
                 finalScore: student[finalScore],
+                totalScore: student.subjectTotalScore[subject],
                 conduct: student[conduct],
                 result: student[result],
             }))

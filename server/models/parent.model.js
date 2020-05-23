@@ -257,6 +257,31 @@ const parentSchema = new Schema({
             permission: Boolean,
         },
     ],
+    subjectTotalScore: {
+        math: { type: Number },
+        literature: { type: Number },
+        english: { type: Number },
+        physics: { type: Number },
+        chemistry: { type: Number },
+        biology: { type: Number },
+        geography: { type: Number },
+        history: { type: Number },
+        law: { type: Number },
+        music: { type: Number },
+        art: { type: Number },
+        sport: { type: Number },
+    },
+    totalScore: {
+        type: Number,
+    },
+    totalConduct: {
+        type: String,
+        enum: ["Tốt", "Khá", "Trung bình", "Yếu"],
+    },
+    totalResult: {
+        type: String,
+        enum: ["Giỏi", "Tiên tiến", "Trung bình", "Yếu", ""],
+    },
     refreshToken: {
         type: String,
     },

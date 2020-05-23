@@ -13,6 +13,8 @@ const TimeInfo = ({ time, getSemesterResult }) => {
     const [data, setData] = useState(null)
     const [isDone, setDone] = useState(false)
 
+    const isOverYear = time.semester === 2
+
     useEffect(() => {
         getSemesterResult()
             .then((data) => {
@@ -94,13 +96,43 @@ const TimeInfo = ({ time, getSemesterResult }) => {
                         <Table bordered responsive>
                             <thead>
                                 <tr>
-                                    <th>Khối học</th>
-                                    <th>Lớp học</th>
-                                    <th>Tổng số học sinh</th>
-                                    <th>Học sinh giỏi</th>
-                                    <th>Học sinh tiên tiến</th>
-                                    <th>Học sinh trung bình</th>
-                                    <th>Học sinh yếu</th>
+                                    <th className="align-top">Khối học</th>
+                                    <th className="align-top">Lớp học</th>
+                                    <th className="align-top">
+                                        Tổng số học sinh
+                                    </th>
+                                    <th className="align-top">
+                                        Học sinh giỏi
+                                        {isOverYear && (
+                                            <p className="mb-0">
+                                                (học kỳ 2/cả năm)
+                                            </p>
+                                        )}
+                                    </th>
+                                    <th className="align-top">
+                                        Học sinh tiên tiến{" "}
+                                        {isOverYear && (
+                                            <p className="mb-0">
+                                                (học kỳ 2/cả năm)
+                                            </p>
+                                        )}
+                                    </th>
+                                    <th className="align-top">
+                                        Học sinh trung bình{" "}
+                                        {isOverYear && (
+                                            <p className="mb-0">
+                                                (học kỳ 2/cả năm)
+                                            </p>
+                                        )}
+                                    </th>
+                                    <th className="align-top">
+                                        Học sinh yếu{" "}
+                                        {isOverYear && (
+                                            <p className="mb-0">
+                                                (học kỳ 2/cả năm)
+                                            </p>
+                                        )}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,36 +162,48 @@ const TimeInfo = ({ time, getSemesterResult }) => {
                                                 {grade.classRooms[0].isDone ? (
                                                     <>
                                                         <td>
-                                                            {
+                                                            {`${
                                                                 grade
                                                                     .classRooms[0]
                                                                     .goodStudents
                                                                     .length
-                                                            }
+                                                            } ${
+                                                                isOverYear &&
+                                                                `/${grade.classRooms[0].totalGoodStudents.length}`
+                                                            }`}
                                                         </td>
                                                         <td>
-                                                            {
+                                                            {`${
                                                                 grade
                                                                     .classRooms[0]
                                                                     .mediumStudents
                                                                     .length
-                                                            }
+                                                            } ${
+                                                                isOverYear &&
+                                                                `/${grade.classRooms[0].totalMediumStudents.length}`
+                                                            }`}
                                                         </td>
                                                         <td>
-                                                            {
+                                                            {`${
                                                                 grade
                                                                     .classRooms[0]
                                                                     .badStudents
                                                                     .length
-                                                            }
+                                                            } ${
+                                                                isOverYear &&
+                                                                `/${grade.classRooms[0].totalBadStudents.length}`
+                                                            }`}
                                                         </td>
                                                         <td>
-                                                            {
+                                                            {`${
                                                                 grade
                                                                     .classRooms[0]
                                                                     .veryBadStudents
                                                                     .length
-                                                            }
+                                                            } ${
+                                                                isOverYear &&
+                                                                `/${grade.classRooms[0].totalVeryBadStudents.length}`
+                                                            }`}
                                                         </td>
                                                     </>
                                                 ) : (
