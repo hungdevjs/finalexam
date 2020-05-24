@@ -12,7 +12,6 @@ export default () => async (dispatch) => {
         })
         dispatch(setLoading(false))
     } catch (err) {
-        alert(err.message)
         console.log(err.message)
         dispatch(setLoading(false))
     }

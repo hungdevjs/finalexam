@@ -154,3 +154,6 @@ export const finalMark = (data) =>
 export const updateConduct = (data) => request.post("user/updateConduct", data)
 
 export const getSemesterResult = () => request.get("user/getSemesterResult")
+
+export const upgradeSemester = (data) =>
+    request.post("user/upgradeSemester", data)

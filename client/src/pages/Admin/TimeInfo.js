@@ -4,12 +4,13 @@ import { Row, Col, Button, Input, Label, Table } from "reactstrap"
 
 import setModal from "../../redux/action/setModal"
 import getSemesterResult from "../../redux/action/getSemesterResult"
+import upgradeSemester from "../../redux/action/upgradeSemester"
 import ViewModal from "../../components/modal/ViewModal"
 import Feedback from "../../components/common/Feedback"
 
 import renderNoti from "../../utils/renderNoti"
 
-const TimeInfo = ({ time, getSemesterResult }) => {
+const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
     const [data, setData] = useState(null)
     const [isDone, setDone] = useState(false)
 
@@ -42,6 +43,24 @@ const TimeInfo = ({ time, getSemesterResult }) => {
 
     const upgrade = () => {
         setCheckPassword(true)
+        if (password && password.trim() && password.length >= 8) {
+            upgradeSemester(password)
+                .then((res) => {
+                    console.log(res)
+                    renderNoti({
+                        type: "success",
+                        title: "Thành công",
+                        message: "Đã cập nhật học kỳ",
+                    })
+                })
+                .catch(() =>
+                    renderNoti({
+                        type: "danger",
+                        title: "Lỗi",
+                        message: "Lỗi trong khi cập nhật học kỳ",
+                    })
+                )
+        }
     }
 
     const renderModal = () => {
@@ -292,6 +311,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getSemesterResult,
+    upgradeSemester,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TimeInfo)

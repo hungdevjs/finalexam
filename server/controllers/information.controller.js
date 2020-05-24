@@ -294,8 +294,12 @@ module.exports.getAdminChart = async (req, res) => {
             grade: 9,
         })
 
-        const semester = await Semester.find()
-        const columnChart = semester[0].lastResult
+        const semester = await Semester.findOne()
+        const { lastResult } = semester
+        const columnChart = lastResult.slice(
+            lastResult.length - 6,
+            lastResult.length
+        )
 
         const data = {
             pieChart: { grade6, grade7, grade8, grade9 },

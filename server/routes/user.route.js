@@ -48,4 +48,6 @@ router.post("/updateConduct", authTeacher, controller.updateConduct)
 
 router.get("/getSemesterResult", authAdmin, controller.getSemesterResult)
 
+router.post("/upgradeSemester", authAdmin, controller.upgradeSemester)
+
 module.exports = router

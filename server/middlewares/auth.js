@@ -8,9 +8,12 @@ module.exports.authAdmin = (req, res, next) => {
     try {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
+
         if (userInfo.role !== "admin") {
             throw new Error("Từ chối quyền truy cập")
         }
+
+        req.id = userInfo._id
         next()
     } catch (err) {
         res.status(401).send(err.message)
