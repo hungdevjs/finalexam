@@ -19,14 +19,14 @@ const {
 const sendSms = require("../utils/sendSms")
 const sendEmail = require("../utils/sendEmail")
 
-const semester = Semester.findOne().exec()
-const isFirstSemester = semester.semester === 1
-const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
-
-module.exports.logIn = (req, res) => {
+module.exports.logIn = async (req, res) => {
     const role = req.body.role
     const identity = req.body.identity
     const password = req.body.password
+
+    const semester = await Semester.findOne()
+    const isFirstSemester = semester.semester === 1
+    const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
 
     switch (role) {
         case "parent":
@@ -268,6 +268,10 @@ module.exports.getUserInformation = async (req, res) => {
         ? req.headers.authorization.split(" ")[1]
         : ""
 
+    const semester = await Semester.findOne()
+    const isFirstSemester = semester.semester === 1
+    const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
+
     try {
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY)
         const userInfo = jwt.decode(token, process.env.ACCESS_TOKEN_SECRET_KEY)
@@ -346,10 +350,14 @@ module.exports.getUserInformation = async (req, res) => {
     }
 }
 
-module.exports.getUserInformationAndNewAccessToken = (req, res) => {
+module.exports.getUserInformationAndNewAccessToken = async (req, res) => {
     const token = req.headers.authorization
         ? req.headers.authorization.split(" ")[1]
         : ""
+
+    const semester = await Semester.findOne()
+    const isFirstSemester = semester.semester === 1
+    const dayOff = isFirstSemester ? "dayOff1" : "dayOff2"
 
     try {
         jwt.verify(token, process.env.REFRESH_TOKEN_SECRET_KEY)
