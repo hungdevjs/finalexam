@@ -7,6 +7,7 @@ require("dotenv").config()
 const app = express()
 const PORT = process.env.PORT || 8000
 const { authUser } = require("./middlewares/auth")
+const checkUpdate = require("./middlewares/checkUpdate")
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -28,6 +29,11 @@ const connection = mongoose.connection
 connection.once("open", () =>
     console.log("MongoDB database connected successfully!")
 )
+
+const updateRoute = require("./routes/update.route")
+app.use("/updateStatus", updateRoute)
+
+app.use(checkUpdate)
 
 const logInRoute = require("./routes/logIn.route")
 app.use("/login", logInRoute)

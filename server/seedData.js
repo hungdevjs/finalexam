@@ -13,7 +13,7 @@ const Semester = require("./models/semester.model")
 const Event = require("./models/event.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam-test4?retryWrites=true&w=majority"
+    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam-test9?retryWrites=true&w=majority"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,

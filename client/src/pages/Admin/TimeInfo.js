@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
 import { Row, Col, Button, Input, Label, Table } from "reactstrap"
 
-import setModal from "../../redux/action/setModal"
+import history from "../../config/history"
 import getSemesterResult from "../../redux/action/getSemesterResult"
 import upgradeSemester from "../../redux/action/upgradeSemester"
 import ViewModal from "../../components/modal/ViewModal"
@@ -19,7 +19,11 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
     useEffect(() => {
         getSemesterResult()
             .then((data) => {
-                setData(data)
+                setData(
+                    data.filter(
+                        (item) => item.classRooms && item.classRooms.length > 0
+                    )
+                )
                 if (
                     data.every((grade) =>
                         grade.classRooms.every((classRoom) => classRoom.isDone)
@@ -44,20 +48,23 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
     const upgrade = () => {
         setCheckPassword(true)
         if (password && password.trim() && password.length >= 8) {
-            upgradeSemester(password)
-                .then((res) => {
-                    console.log(res)
+            upgradeSemester({ password })
+                .then((data) => {
+                    if (!data) throw new Error("Lỗi trong khi cập nhật học kỳ")
                     renderNoti({
                         type: "success",
-                        title: "Thành công",
-                        message: "Đã cập nhật học kỳ",
+                        title: "Thông báo",
+                        message: data,
                     })
+                    toggle(!isOpen)
+                    localStorage.remove("access_token")
+                    history.push("/updating")
                 })
-                .catch(() =>
+                .catch((err) =>
                     renderNoti({
                         type: "danger",
                         title: "Lỗi",
-                        message: "Lỗi trong khi cập nhật học kỳ",
+                        message: err.message,
                     })
                 )
         }
@@ -76,6 +83,7 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                 </p>
                 <Label>Điền mật khẩu để tiếp tục</Label>
                 <Input
+                    type="password"
                     placeholder="Mật khẩu"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -187,8 +195,9 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                                                                     .goodStudents
                                                                     .length
                                                             } ${
-                                                                isOverYear &&
-                                                                `/${grade.classRooms[0].totalGoodStudents.length}`
+                                                                isOverYear
+                                                                    ? `/${grade.classRooms[0].totalGoodStudents.length}`
+                                                                    : ""
                                                             }`}
                                                         </td>
                                                         <td>
@@ -198,8 +207,9 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                                                                     .mediumStudents
                                                                     .length
                                                             } ${
-                                                                isOverYear &&
-                                                                `/${grade.classRooms[0].totalMediumStudents.length}`
+                                                                isOverYear
+                                                                    ? `/${grade.classRooms[0].totalMediumStudents.length}`
+                                                                    : ""
                                                             }`}
                                                         </td>
                                                         <td>
@@ -209,8 +219,9 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                                                                     .badStudents
                                                                     .length
                                                             } ${
-                                                                isOverYear &&
-                                                                `/${grade.classRooms[0].totalBadStudents.length}`
+                                                                isOverYear
+                                                                    ? `/${grade.classRooms[0].totalBadStudents.length}`
+                                                                    : ""
                                                             }`}
                                                         </td>
                                                         <td>
@@ -220,8 +231,9 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                                                                     .veryBadStudents
                                                                     .length
                                                             } ${
-                                                                isOverYear &&
-                                                                `/${grade.classRooms[0].totalVeryBadStudents.length}`
+                                                                isOverYear
+                                                                    ? `/${grade.classRooms[0].totalVeryBadStudents.length}`
+                                                                    : ""
                                                             }`}
                                                         </td>
                                                     </>
@@ -248,32 +260,52 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                                                             {classRoom.isDone ? (
                                                                 <>
                                                                     <td>
-                                                                        {
-                                                                            classRoom
-                                                                                .goodStudents
-                                                                                .length
-                                                                        }
+                                                                        {`
+                                                                           ${
+                                                                               classRoom
+                                                                                   .goodStudents
+                                                                                   .length
+                                                                           } ${
+                                                                            isOverYear
+                                                                                ? `/${classRoom.totalGoodStudents.length}`
+                                                                                : ""
+                                                                        }`}
                                                                     </td>
                                                                     <td>
-                                                                        {
-                                                                            classRoom
-                                                                                .mediumStudents
-                                                                                .length
-                                                                        }
+                                                                        {`
+                                                                           ${
+                                                                               classRoom
+                                                                                   .mediumStudents
+                                                                                   .length
+                                                                           } ${
+                                                                            isOverYear
+                                                                                ? `/${classRoom.totalMediumStudents.length}`
+                                                                                : ""
+                                                                        }`}
                                                                     </td>
                                                                     <td>
-                                                                        {
-                                                                            classRoom
-                                                                                .badStudents
-                                                                                .length
-                                                                        }
+                                                                        {`
+                                                                           ${
+                                                                               classRoom
+                                                                                   .badStudents
+                                                                                   .length
+                                                                           } ${
+                                                                            isOverYear
+                                                                                ? `/${classRoom.totalBadStudents.length}`
+                                                                                : ""
+                                                                        }`}
                                                                     </td>
                                                                     <td>
-                                                                        {
-                                                                            classRoom
-                                                                                .veryBadStudents
-                                                                                .length
-                                                                        }
+                                                                        {`
+                                                                           ${
+                                                                               classRoom
+                                                                                   .veryBadStudents
+                                                                                   .length
+                                                                           } ${
+                                                                            isOverYear
+                                                                                ? `/${classRoom.totalVeryBadStudents.length}`
+                                                                                : ""
+                                                                        }`}
                                                                     </td>
                                                                 </>
                                                             ) : (

@@ -4,6 +4,7 @@ import { Table, Row, Col, Label, Alert, Button } from "reactstrap"
 
 import history from "../config/history"
 import { getClassSchedule, getTeacherSchedule } from "../utils/api/fetchData"
+import NewTabLink from "./common/NewTabLink"
 
 const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
     const [data, setData] = useState({})
@@ -53,41 +54,55 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                     {data &&
                     data.schedule &&
                     Object.keys(data.schedule).length > 0 ? (
-                        <Table bordered striped hover size="sm" responsive>
-                            <thead>
-                                <tr>
-                                    {[
-                                        "Thứ hai",
-                                        "Thứ ba",
-                                        "Thứ tư",
-                                        "Thứ năm",
-                                        "Thứ sáu",
-                                    ].map((day, index) => (
-                                        <th key={index}>{day}</th>
-                                    ))}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {[0, 1, 2, 3, 4].map((number) => (
-                                    <tr key={number}>
+                        <>
+                            <Table bordered striped hover size="sm" responsive>
+                                <thead>
+                                    <tr>
                                         {[
-                                            "mon",
-                                            "tue",
-                                            "wed",
-                                            "thu",
-                                            "fri",
-                                        ].map((item, index) => (
-                                            <td
-                                                key={index}
-                                                style={{ height: "33.33px" }}
-                                            >
-                                                {data.schedule[item][number]}
-                                            </td>
+                                            "Thứ hai",
+                                            "Thứ ba",
+                                            "Thứ tư",
+                                            "Thứ năm",
+                                            "Thứ sáu",
+                                        ].map((day, index) => (
+                                            <th key={index}>{day}</th>
                                         ))}
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
+                                </thead>
+                                <tbody>
+                                    {[0, 1, 2, 3, 4].map((number) => (
+                                        <tr key={number}>
+                                            {[
+                                                "mon",
+                                                "tue",
+                                                "wed",
+                                                "thu",
+                                                "fri",
+                                            ].map((item, index) => (
+                                                <td
+                                                    key={index}
+                                                    style={{
+                                                        height: "33.33px",
+                                                    }}
+                                                >
+                                                    {
+                                                        data.schedule[item][
+                                                            number
+                                                        ]
+                                                    }
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                            {!teacherId && (
+                                <NewTabLink
+                                    title="Chỉnh sửa"
+                                    to={`/updateSchedule/${classRoom}`}
+                                />
+                            )}
+                        </>
                     ) : (
                         <>
                             {!teacherId && (
@@ -100,7 +115,7 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                                     color="success"
                                     onClick={() =>
                                         history.push(
-                                            `/updateSchedule/${classRoom}`,
+                                            `/updateSchedule/${classRoom}`
                                         )
                                     }
                                 >

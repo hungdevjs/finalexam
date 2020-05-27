@@ -6,6 +6,10 @@ const validateDate = require("../utils/validateDate")
 const finalMark = require("../utils/finalMark")
 const sendSms = require("../utils/sendSms")
 const subjectName = require("../utils/subjectName")
+const upgradeClassRoom = require("../utils/upgradeClassRoom")
+
+const { setAccess } = require("../validateUpdate")
+
 const {
     calculateResult,
     calculateConduct,
@@ -1275,39 +1279,46 @@ module.exports.getSemesterResult = async (req, res) => {
 
         const classStudents = await Promise.all(functionArr)
 
-        const data = classStudents.map((classStudent) => ({
-            grade: classStudent[0].grade,
-            classRoom: classStudent[0].classRoom,
-            numberOfStudent: classStudent.length,
-            isDone:
-                classStudent[0][result] && classStudent[0][result].trim()
-                    ? true
-                    : false,
-            goodStudents: classStudent.filter(
-                (student) => student[result] === "Giỏi"
-            ),
-            mediumStudents: classStudent.filter(
-                (student) => student[result] === "Tiên tiến"
-            ),
-            badStudents: classStudent.filter(
-                (student) => student[result] === "Trung bình"
-            ),
-            veryBadStudents: classStudent.filter(
-                (student) => student[result] === "Yếu"
-            ),
-            totalGoodStudents: classStudent.filter(
-                (student) => student.totalResult === "Giỏi"
-            ),
-            totalMediumStudents: classStudent.filter(
-                (student) => student.totalResult === "Tiên tiến"
-            ),
-            totalBadStudents: classStudent.filter(
-                (student) => student.totalResult === "Trung bình"
-            ),
-            totalVeryBadStudents: classStudent.filter(
-                (student) => student.totalResult === "Yếu"
-            ),
-        }))
+        const data = classStudents
+            .map((classStudent) =>
+                classStudent && classStudent.length > 0
+                    ? {
+                          grade: classStudent[0].grade,
+                          classRoom: classStudent[0].classRoom,
+                          numberOfStudent: classStudent.length,
+                          isDone:
+                              classStudent[0][result] &&
+                              classStudent[0][result].trim()
+                                  ? true
+                                  : false,
+                          goodStudents: classStudent.filter(
+                              (student) => student[result] === "Giỏi"
+                          ),
+                          mediumStudents: classStudent.filter(
+                              (student) => student[result] === "Tiên tiến"
+                          ),
+                          badStudents: classStudent.filter(
+                              (student) => student[result] === "Trung bình"
+                          ),
+                          veryBadStudents: classStudent.filter(
+                              (student) => student[result] === "Yếu"
+                          ),
+                          totalGoodStudents: classStudent.filter(
+                              (student) => student.totalResult === "Giỏi"
+                          ),
+                          totalMediumStudents: classStudent.filter(
+                              (student) => student.totalResult === "Tiên tiến"
+                          ),
+                          totalBadStudents: classStudent.filter(
+                              (student) => student.totalResult === "Trung bình"
+                          ),
+                          totalVeryBadStudents: classStudent.filter(
+                              (student) => student.totalResult === "Yếu"
+                          ),
+                      }
+                    : null
+            )
+            .filter(Boolean)
 
         let semesterResult = []
 
@@ -1325,6 +1336,362 @@ module.exports.getSemesterResult = async (req, res) => {
 
         res.status(200).json(semesterResult)
     } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.upgradeSemester = async (req, res) => {
+    try {
+        const { password } = req.body
+        const { id } = req
+
+        const admin = await Admin.findOne({ isDeleted: false, _id: id })
+        if (!admin) throw new Error("Quản lý không tồn tại")
+
+        if (!passwordHash.verify(password, admin.password))
+            throw new Error("Mật khẩu sai")
+
+        // check if semester is over
+        const time = await Semester.findOne()
+        const isFirstSemester = time.semester === 1
+        const students = await Parent.find({ isDeleted: false })
+
+        const result = isFirstSemester ? "result1" : "totalResult"
+
+        const goodStudents = students.filter(
+            (student) => student[result] === "Giỏi"
+        )
+
+        const mediumStudents = students.filter(
+            (student) => student[result] === "Tiên tiến"
+        )
+
+        const badStudents = students.filter(
+            (student) => student[result] === "Trung bình"
+        )
+
+        const veryBadStudents = students.filter(
+            (student) => student[result] === "Yếu"
+        )
+
+        const totalStudents =
+            goodStudents.length +
+            mediumStudents.length +
+            badStudents.length +
+            veryBadStudents.length
+
+        if (students.length !== totalStudents) {
+            throw new Error("Chưa tổng kết toàn bộ học sinh")
+        }
+
+        res.status(200).send(
+            "Hệ thống sẽ được cập nhật và sẽ không hoạt động trong thời gian cập nhật."
+        )
+
+        setAccess(false)
+
+        // start upgrade
+        // start upgrade semester
+        // currentSemester is 1 => only update semester, no student db
+        if (isFirstSemester) {
+            const { year, lastResult } = time
+
+            const data = {
+                time: `${year}-${year + 1} I`,
+                good: goodStudents.length,
+                medium: mediumStudents.length,
+                bad: badStudents.length,
+                veryBad: veryBadStudents.length,
+            }
+
+            lastResult.push(data)
+            time.lastResult = lastResult
+            time.semester = 2
+
+            await time.save()
+        }
+
+        // currentSemester is 2
+        // => update semester: semester, year, lastResult
+
+        // => update student: classRoom, grade, score1/2, finalScore1/2, conduct1/2, result1/2, dayOff1/2,
+        //      subjectTotalScore, totalScore, totalConduct, totalResult
+
+        // update classRooms in grade
+
+        // => update teacher: mainTeacherOfClass
+
+        // => update schedule:
+        if (!isFirstSemester) {
+            // update Grades && classRooms
+            const sixGrade = await Grade.findOne({ isDeleted: false, grade: 6 })
+            const sevenGrade = await Grade.findOne({
+                isDeleted: false,
+                grade: 7,
+            })
+            const eightGrade = await Grade.findOne({
+                isDeleted: false,
+                grade: 8,
+            })
+            const nineGrade = await Grade.findOne({
+                isDeleted: false,
+                grade: 9,
+            })
+
+            nineGrade.classRoom = eightGrade.classRoom.map((room) =>
+                upgradeClassRoom(room)
+            )
+            await nineGrade.save()
+
+            eightGrade.classRoom = sevenGrade.classRoom.map((room) =>
+                upgradeClassRoom(room)
+            )
+            await eightGrade.save()
+
+            sevenGrade.classRoom = sixGrade.classRoom.map((room) =>
+                upgradeClassRoom(room)
+            )
+            await sevenGrade.save()
+
+            // update Student
+            for (const student of students) {
+                // backup data ??? (optional)
+
+                // if student is grade 9 now => set isDeleted to true, grade to the year of graduation
+                // if (backup data => hard delete)
+                if (student.grade === 9) {
+                    student.grade = time.year + 1
+                    student.isDeleted = true
+                } else {
+                    student.score1 = {
+                        math: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        literature: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        english: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        physics: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        chemistry: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        biology: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        geography: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        history: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        law: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        music: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        art: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        sport: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                    }
+
+                    student.finalScore1 = -1
+                    student.conduct1 = "Tốt"
+                    student.dayOff1 = []
+                    student.result1 = ""
+
+                    student.score2 = {
+                        math: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        literature: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        english: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        physics: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        chemistry: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        biology: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        geography: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        history: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        law: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        music: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        art: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                        sport: {
+                            x1: [-1, -1, -1],
+                            x2: [-1, -1],
+                            x3: [-1],
+                            medium: -1,
+                        },
+                    }
+
+                    student.finalScore2 = -1
+                    student.conduct2 = "Tốt"
+                    student.dayOff2 = []
+                    student.result2 = ""
+
+                    student.subjectTotalScore = {
+                        math: -1,
+                        literature: -1,
+                        english: -1,
+                        physics: -1,
+                        chemistry: -1,
+                        biology: -1,
+                        geography: -1,
+                        history: -1,
+                        law: -1,
+                        music: -1,
+                        art: -1,
+                        sport: -1,
+                    }
+                    student.totalScore = -1
+                    student.totalConduct = "Tốt"
+                    student.totalResult = ""
+
+                    student.grade = student.grade + 1
+                    student.classRoom = upgradeClassRoom(student.classRoom)
+                }
+
+                await student.save()
+            }
+
+            // update Teacher
+            const teachers = await Teacher.find({ isDeleted: false })
+            const mainTeachers = teachers.filter(
+                (item) =>
+                    item.mainTeacherOfClass && item.mainTeacherOfClass.trim()
+            )
+
+            for (const teacher of mainTeachers) {
+                const { mainTeacherOfClass } = teacher
+
+                if (mainTeacherOfClass.split("")[0] !== "9") {
+                    teacher.mainTeacherOfClass = upgradeClassRoom(
+                        mainTeacherOfClass
+                    )
+                } else {
+                    teacher.mainTeacherOfClass = ""
+                }
+
+                await teacher.save()
+            }
+
+            // update Semester
+            const { year, lastResult } = time
+
+            const data = {
+                time: `${year}-${year + 1} II`,
+                good: goodStudents.length,
+                medium: mediumStudents.length,
+                bad: badStudents.length,
+                veryBad: veryBadStudents.length,
+            }
+
+            lastResult.push(data)
+            time.lastResult = lastResult
+            time.year = year + 1
+            time.semester = 1
+
+            await time.save()
+            // update Schedule
+        }
+
+        setAccess(true)
+    } catch (err) {
+        console.log(err.message)
         res.status(500).send(err.message)
     }
 }

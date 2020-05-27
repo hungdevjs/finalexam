@@ -33,7 +33,7 @@ function GradeAndClass(props) {
                     type: "danger",
                     title: "Lỗi",
                     message: "Lỗi trong khi lấy dữ liệu",
-                }),
+                })
             )
     }, [])
 
@@ -45,11 +45,6 @@ function GradeAndClass(props) {
             viewOnly
         >
             <Schedule classRoom={currentClass} />
-
-            <NewTabLink
-                title="Chỉnh sửa"
-                to={`/updateSchedule/${currentClass}`}
-            />
         </ViewModal>
     )
 
@@ -102,13 +97,20 @@ function GradeAndClass(props) {
                                             </th>
                                             <td>{grade.classRoom[0].room}</td>
                                             <td>
-                                                <NewTabLink
-                                                    to={`/user/teacher/edit/${grade.classRoom[0].mainTeacher._id}`}
-                                                    title={
-                                                        grade.classRoom[0]
-                                                            .mainTeacher.name
-                                                    }
-                                                />
+                                                {grade.classRoom[0] &&
+                                                grade.classRoom[0]
+                                                    .mainTeacher ? (
+                                                    <NewTabLink
+                                                        to={`/user/teacher/edit/${grade.classRoom[0].mainTeacher._id}`}
+                                                        title={
+                                                            grade.classRoom[0]
+                                                                .mainTeacher
+                                                                .name
+                                                        }
+                                                    />
+                                                ) : (
+                                                    ""
+                                                )}
                                             </td>
                                             <td className="text-center">
                                                 <div
@@ -122,7 +124,7 @@ function GradeAndClass(props) {
                                                                     grade
                                                                         .classRoom[0]
                                                                         .room,
-                                                            },
+                                                            }
                                                         )
                                                     }
                                                 >
@@ -136,7 +138,7 @@ function GradeAndClass(props) {
                                                     onClick={() => {
                                                         setCurrentClass(
                                                             grade.classRoom[0]
-                                                                .room,
+                                                                .room
                                                         )
                                                         toggle(!isOpen)
                                                     }}
@@ -150,13 +152,18 @@ function GradeAndClass(props) {
                                                 <tr key={i}>
                                                     <td>{room.room}</td>
                                                     <td>
-                                                        <NewTabLink
-                                                            to={`/user/teacher/edit/${room.mainTeacher._id}`}
-                                                            title={
-                                                                room.mainTeacher
-                                                                    .name
-                                                            }
-                                                        />
+                                                        {room.mainTeacher ? (
+                                                            <NewTabLink
+                                                                to={`/user/teacher/edit/${room.mainTeacher._id}`}
+                                                                title={
+                                                                    room
+                                                                        .mainTeacher
+                                                                        .name
+                                                                }
+                                                            />
+                                                        ) : (
+                                                            ""
+                                                        )}
                                                     </td>
                                                     <td className="text-center">
                                                         <div
@@ -168,7 +175,7 @@ function GradeAndClass(props) {
                                                                     {
                                                                         optionClass:
                                                                             room.room,
-                                                                    },
+                                                                    }
                                                                 )
                                                             }
                                                         >
@@ -181,7 +188,7 @@ function GradeAndClass(props) {
                                                             title="Xem thời khóa biểu"
                                                             onClick={() => {
                                                                 setCurrentClass(
-                                                                    room.room,
+                                                                    room.room
                                                                 )
                                                                 toggle(!isOpen)
                                                             }}
@@ -190,7 +197,7 @@ function GradeAndClass(props) {
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            ) : null,
+                                            ) : null
                                         )}
                                     </React.Fragment>
                                 ))}

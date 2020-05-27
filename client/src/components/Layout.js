@@ -11,6 +11,7 @@ import Login from "../pages/Login"
 import Navigate from "./Navigate"
 import Header from "./Header"
 import Footer from "./Footer"
+import Updating from "../pages/Updating"
 import Page404 from "../pages/Page404"
 
 import getUserInformation from "../redux/action/getUserInformation"
@@ -56,6 +57,7 @@ function Layout(props) {
                             <PrivateRoute exact key={route.path} {...route} />
                         ))}
                         <Route path="/login" exact component={Login} />
+                        <Route path="/updating" exact component={Updating} />
                         <Route component={Page404} />
                     </Switch>
                 </Router>
@@ -66,7 +68,7 @@ function Layout(props) {
 }
 
 const mapStateToProps = (state) => ({
-    role: state.user.userInformation.role,
+    role: state.user?.userInformation?.role,
     option: state.navigate.option,
 })
 

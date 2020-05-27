@@ -157,3 +157,5 @@ export const getSemesterResult = () => request.get("user/getSemesterResult")
 
 export const upgradeSemester = (data) =>
     request.post("user/upgradeSemester", data)
+
+export const checkUpdateStatus = () => request.get("updateStatus")

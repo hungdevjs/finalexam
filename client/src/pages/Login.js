@@ -8,6 +8,7 @@ import Select from "react-select"
 
 import logIn from "../redux/action/login"
 import renderNoti from "../utils/renderNoti"
+import { checkUpdateStatus } from "../utils/api/fetchData"
 
 const LoginContainer = styled.div`
     display: flex;
@@ -42,12 +43,18 @@ function LogIn(props) {
     }, [props.userInformation])
 
     useEffect(() => {
-        if (
-            localStorage.getItem("access_token") ||
-            localStorage.getItem("refresh_token")
-        ) {
-            history.push("/")
-        }
+        checkUpdateStatus().then((res) => {
+            if (!res.data) {
+                history.push("/updating")
+            } else {
+                if (
+                    localStorage.getItem("access_token") ||
+                    localStorage.getItem("refresh_token")
+                ) {
+                    history.push("/")
+                }
+            }
+        })
     }, [])
 
     const [identity, setIdentity] = useState("")
