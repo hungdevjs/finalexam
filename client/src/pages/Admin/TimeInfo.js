@@ -57,7 +57,7 @@ const TimeInfo = ({ time, getSemesterResult, upgradeSemester }) => {
                         message: data,
                     })
                     toggle(!isOpen)
-                    localStorage.remove("access_token")
+                    localStorage.removeItem("access_token")
                     history.push("/updating")
                 })
                 .catch((err) =>

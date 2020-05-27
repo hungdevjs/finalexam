@@ -8,6 +8,7 @@ import history from "../../config/history"
 
 import NewTabLink from "../../components/common/NewTabLink"
 import BackBtn from "../../components/buttons/BackBtn"
+import DeleteBtn from "../../components/buttons/DeleteBtn"
 import ViewModal from "../../components/modal/ViewModal"
 import Schedule from "../../components/Schedule"
 
@@ -21,8 +22,10 @@ function GradeAndClass(props) {
     const [isOpen, toggle] = useState(false)
     const [currentClass, setCurrentClass] = useState(null)
 
-    const [isPhone, setIsPhone] = useState(window.innerWidth < 768)
-    window.addEventListener("resize", () => setIsPhone(window.innerWidth < 768))
+    const [isPhone, setIsPhone] = useState(window.innerWidth <= 768)
+    window.addEventListener("resize", () =>
+        setIsPhone(window.innerWidth <= 768)
+    )
 
     useEffect(() => {
         props
@@ -52,20 +55,29 @@ function GradeAndClass(props) {
         <div>
             {renderScheduleModal()}
             <Row className="mb-2">
-                <Col md={8} className="d-flex">
+                <Col md={!isPhone && 8} className="d-flex align-items-start">
                     <h5 className="flex-grow-1">
                         QUẢN LÝ LỚP HỌC{" "}
                         {props.year && `${props.year}-${props.year + 1}`}
                     </h5>
                     {!isPhone && (
-                        <BackBtn
-                            title="trang chủ"
-                            onClick={() => history.push("/")}
-                        />
+                        <>
+                            <Button color="success" className="mr-2">
+                                Tạo lớp học
+                            </Button>
+                            <BackBtn
+                                title="trang chủ"
+                                onClick={() => history.push("/")}
+                            />
+                        </>
                     )}
                 </Col>
                 {isPhone && (
                     <Col md={12}>
+                        <Button color="success" className="mr-2">
+                            Tạo lớp học
+                        </Button>
+
                         <BackBtn
                             title="trang chủ"
                             onClick={() => history.push("/")}
@@ -75,7 +87,7 @@ function GradeAndClass(props) {
             </Row>
             {grades && grades.length > 0 && (
                 <Row className="mb-2">
-                    <Col md={8}>
+                    <Col md={!isPhone && 8}>
                         <Table bordered responsive>
                             <thead>
                                 <tr>
@@ -84,123 +96,141 @@ function GradeAndClass(props) {
                                     <th>Giáo viên chủ nhiệm</th>
                                     <th></th>
                                     <th></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {grades.map((grade, index) => (
-                                    <React.Fragment key={index}>
-                                        <tr>
-                                            <th
-                                                rowSpan={grade.classRoom.length}
-                                            >
-                                                {grade.grade}
-                                            </th>
-                                            <td>{grade.classRoom[0].room}</td>
-                                            <td>
-                                                {grade.classRoom[0] &&
-                                                grade.classRoom[0]
-                                                    .mainTeacher ? (
-                                                    <NewTabLink
-                                                        to={`/user/teacher/edit/${grade.classRoom[0].mainTeacher._id}`}
-                                                        title={
-                                                            grade.classRoom[0]
-                                                                .mainTeacher
-                                                                .name
-                                                        }
-                                                    />
-                                                ) : (
-                                                    ""
-                                                )}
-                                            </td>
-                                            <td className="text-center">
-                                                <div
-                                                    style={btnStyle}
-                                                    title="Xem danh sách học sinh"
-                                                    onClick={() =>
-                                                        history.push(
-                                                            "/students",
-                                                            {
-                                                                optionClass:
-                                                                    grade
-                                                                        .classRoom[0]
-                                                                        .room,
-                                                            }
-                                                        )
+                                {grades.map((grade, index) =>
+                                    grade.classRoom &&
+                                    grade.classRoom.length > 0 ? (
+                                        <React.Fragment key={index}>
+                                            <tr>
+                                                <th
+                                                    rowSpan={
+                                                        grade.classRoom.length
                                                     }
                                                 >
-                                                    <i className="fas fa-users"></i>
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                <div
-                                                    style={btnStyle}
-                                                    title="Xem thời khóa biểu"
-                                                    onClick={() => {
-                                                        setCurrentClass(
-                                                            grade.classRoom[0]
-                                                                .room
-                                                        )
-                                                        toggle(!isOpen)
-                                                    }}
-                                                >
-                                                    <i className="fas fa-calendar-alt"></i>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        {grade.classRoom.map((room, i) =>
-                                            i > 0 ? (
-                                                <tr key={i}>
-                                                    <td>{room.room}</td>
-                                                    <td>
-                                                        {room.mainTeacher ? (
-                                                            <NewTabLink
-                                                                to={`/user/teacher/edit/${room.mainTeacher._id}`}
-                                                                title={
-                                                                    room
-                                                                        .mainTeacher
-                                                                        .name
-                                                                }
-                                                            />
-                                                        ) : (
-                                                            ""
-                                                        )}
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div
-                                                            style={btnStyle}
-                                                            title="Xem danh sách học sinh"
-                                                            onClick={() =>
-                                                                history.push(
-                                                                    "/students",
-                                                                    {
-                                                                        optionClass:
-                                                                            room.room,
-                                                                    }
-                                                                )
+                                                    {grade.grade}
+                                                </th>
+                                                <td>
+                                                    {grade.classRoom[0]?.room}
+                                                </td>
+                                                <td>
+                                                    {grade.classRoom[0] &&
+                                                    grade.classRoom[0]
+                                                        .mainTeacher ? (
+                                                        <NewTabLink
+                                                            to={`/user/teacher/edit/${grade.classRoom[0].mainTeacher._id}`}
+                                                            title={
+                                                                grade
+                                                                    .classRoom[0]
+                                                                    .mainTeacher
+                                                                    .name
                                                             }
-                                                        >
-                                                            <i className="fas fa-users"></i>
-                                                        </div>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div
-                                                            style={btnStyle}
-                                                            title="Xem thời khóa biểu"
-                                                            onClick={() => {
-                                                                setCurrentClass(
-                                                                    room.room
-                                                                )
-                                                                toggle(!isOpen)
-                                                            }}
-                                                        >
-                                                            <i className="fas fa-calendar-alt"></i>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ) : null
-                                        )}
-                                    </React.Fragment>
-                                ))}
+                                                        />
+                                                    ) : (
+                                                        ""
+                                                    )}
+                                                </td>
+                                                <td className="text-center">
+                                                    <div
+                                                        style={btnStyle}
+                                                        title="Xem danh sách học sinh"
+                                                        onClick={() =>
+                                                            history.push(
+                                                                "/students",
+                                                                {
+                                                                    optionClass:
+                                                                        grade
+                                                                            .classRoom[0]
+                                                                            .room,
+                                                                }
+                                                            )
+                                                        }
+                                                    >
+                                                        <i className="fas fa-users"></i>
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    <div
+                                                        style={btnStyle}
+                                                        title="Xem thời khóa biểu"
+                                                        onClick={() => {
+                                                            setCurrentClass(
+                                                                grade
+                                                                    .classRoom[0]
+                                                                    .room
+                                                            )
+                                                            toggle(!isOpen)
+                                                        }}
+                                                    >
+                                                        <i className="fas fa-calendar-alt"></i>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <DeleteBtn />
+                                                </td>
+                                            </tr>
+                                            {grade.classRoom.map((room, i) =>
+                                                i > 0 ? (
+                                                    <tr key={i}>
+                                                        <td>{room.room}</td>
+                                                        <td>
+                                                            {room.mainTeacher ? (
+                                                                <NewTabLink
+                                                                    to={`/user/teacher/edit/${room.mainTeacher._id}`}
+                                                                    title={
+                                                                        room
+                                                                            .mainTeacher
+                                                                            .name
+                                                                    }
+                                                                />
+                                                            ) : (
+                                                                ""
+                                                            )}
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div
+                                                                style={btnStyle}
+                                                                title="Xem danh sách học sinh"
+                                                                onClick={() =>
+                                                                    history.push(
+                                                                        "/students",
+                                                                        {
+                                                                            optionClass:
+                                                                                room.room,
+                                                                        }
+                                                                    )
+                                                                }
+                                                            >
+                                                                <i className="fas fa-users"></i>
+                                                            </div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div
+                                                                style={btnStyle}
+                                                                title="Xem thời khóa biểu"
+                                                                onClick={() => {
+                                                                    setCurrentClass(
+                                                                        room.room
+                                                                    )
+                                                                    toggle(
+                                                                        !isOpen
+                                                                    )
+                                                                }}
+                                                            >
+                                                                <i className="fas fa-calendar-alt"></i>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <DeleteBtn />
+                                                        </td>
+                                                    </tr>
+                                                ) : null
+                                            )}
+                                        </React.Fragment>
+                                    ) : null
+                                )}
                             </tbody>
                         </Table>
                     </Col>

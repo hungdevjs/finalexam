@@ -1279,46 +1279,39 @@ module.exports.getSemesterResult = async (req, res) => {
 
         const classStudents = await Promise.all(functionArr)
 
-        const data = classStudents
-            .map((classStudent) =>
-                classStudent && classStudent.length > 0
-                    ? {
-                          grade: classStudent[0].grade,
-                          classRoom: classStudent[0].classRoom,
-                          numberOfStudent: classStudent.length,
-                          isDone:
-                              classStudent[0][result] &&
-                              classStudent[0][result].trim()
-                                  ? true
-                                  : false,
-                          goodStudents: classStudent.filter(
-                              (student) => student[result] === "Giỏi"
-                          ),
-                          mediumStudents: classStudent.filter(
-                              (student) => student[result] === "Tiên tiến"
-                          ),
-                          badStudents: classStudent.filter(
-                              (student) => student[result] === "Trung bình"
-                          ),
-                          veryBadStudents: classStudent.filter(
-                              (student) => student[result] === "Yếu"
-                          ),
-                          totalGoodStudents: classStudent.filter(
-                              (student) => student.totalResult === "Giỏi"
-                          ),
-                          totalMediumStudents: classStudent.filter(
-                              (student) => student.totalResult === "Tiên tiến"
-                          ),
-                          totalBadStudents: classStudent.filter(
-                              (student) => student.totalResult === "Trung bình"
-                          ),
-                          totalVeryBadStudents: classStudent.filter(
-                              (student) => student.totalResult === "Yếu"
-                          ),
-                      }
-                    : null
-            )
-            .filter(Boolean)
+        const data = classStudents.map((classStudent) => ({
+            grade: classStudent[0].grade,
+            classRoom: classStudent[0].classRoom,
+            numberOfStudent: classStudent.length,
+            isDone:
+                classStudent[0][result] && classStudent[0][result].trim()
+                    ? true
+                    : false,
+            goodStudents: classStudent.filter(
+                (student) => student[result] === "Giỏi"
+            ),
+            mediumStudents: classStudent.filter(
+                (student) => student[result] === "Tiên tiến"
+            ),
+            badStudents: classStudent.filter(
+                (student) => student[result] === "Trung bình"
+            ),
+            veryBadStudents: classStudent.filter(
+                (student) => student[result] === "Yếu"
+            ),
+            totalGoodStudents: classStudent.filter(
+                (student) => student.totalResult === "Giỏi"
+            ),
+            totalMediumStudents: classStudent.filter(
+                (student) => student.totalResult === "Tiên tiến"
+            ),
+            totalBadStudents: classStudent.filter(
+                (student) => student.totalResult === "Trung bình"
+            ),
+            totalVeryBadStudents: classStudent.filter(
+                (student) => student.totalResult === "Yếu"
+            ),
+        }))
 
         let semesterResult = []
 
@@ -1452,6 +1445,9 @@ module.exports.upgradeSemester = async (req, res) => {
                 upgradeClassRoom(room)
             )
             await sevenGrade.save()
+
+            sixGrade.classRoom = []
+            await sixGrade.save()
 
             // update Student
             for (const student of students) {
@@ -1692,6 +1688,56 @@ module.exports.upgradeSemester = async (req, res) => {
         setAccess(true)
     } catch (err) {
         console.log(err.message)
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.deleteClassRoom = async (req, res) => {
+    try {
+        const { classRoom } = req.query
+        const currentGrade = Number(classRoom.split("")[0])
+
+        const grade = await Grade.findOne({
+            isDeleted: false,
+            grade: currentGrade,
+        })
+        if (!grade) throw new Error("Lớp học không tồn tại")
+
+        if (!grade.classRoom.includes(classRoom))
+            throw new Error("Lớp học không tồn tại")
+
+        grade.classRoom = grade.classRoom.filter((item) => item !== classRoom)
+        await grade.save()
+
+        const schedule = await Schedule.findOne({ isDeleted: false, classRoom })
+        if (schedule) {
+            schedule.isDeleted = true
+            await schedule.save()
+        }
+
+        res.status(200).send("Đã xóa lớp học")
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
+module.exports.addClassRoom = async (req, res) => {
+    try {
+        const { grade } = req.body
+        if (![6, 7, 8, 9].includes(grade)) throw new Error("Bad request")
+
+        const currentGrade = await Grade.findOne({ isDeleted: false, grade })
+        if (!currentGrade) throw new Error("Bad request")
+
+        const length = currentGrade.classRoom.length
+        lastestCharacter = currentGrade[length - 1].substring(1)
+
+        const nextCharCode = lastestCharacter.charCodeAt(0) + 1
+        const nextCharacter = String.fromCharCode(nextCharCode)
+
+        const newClassRoom = grade + nextCharacter
+        grade.classRoom = [...grade.classRoom, newClassRoom]
+    } catch (err) {
         res.status(500).send(err.message)
     }
 }
