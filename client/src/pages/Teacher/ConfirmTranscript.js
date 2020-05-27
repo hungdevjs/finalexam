@@ -129,7 +129,8 @@ const ConfirmTranscript = (props) => {
                 <Col md={12}>Học sinh: {student?.studentName}</Col>
                 <Col md={12}>Lớp: {classRoom}</Col>
                 <Col md={12}>
-                    Năm học: {props.time.year} - Học kỳ: {props.time.semester}
+                    Năm học: {props.time.year}-{props.time.year + 1} || Học kỳ:{" "}
+                    {props.time.semester}
                 </Col>
                 <Col md={12} className="mb-2">
                     Môn học: {currentScore.subject}
@@ -259,7 +260,8 @@ const ConfirmTranscript = (props) => {
                 <Col md={12}>Học sinh: {student?.studentName}</Col>
                 <Col md={12}>Lớp: {classRoom}</Col>
                 <Col md={12} className="mb-2">
-                    Năm học: {props.time.year} - Học kỳ: {props.time.semester}
+                    Năm học: {props.time.year}-{props.time.year + 1} | Học kỳ:{" "}
+                    {props.time.semester}
                 </Col>
                 <Col md={12}>Hạnh kiểm:</Col>
                 <Col md={6}>
@@ -277,27 +279,33 @@ const ConfirmTranscript = (props) => {
         <>
             <p>
                 <span className="mr-2 font-weight-bold">HS1:</span>
-                {score.x1.map((item, index) => (
-                    <span key={index} className="mr-2">
-                        {item}
-                    </span>
-                ))}
+                {score.x1
+                    .filter((item) => item !== -1)
+                    .map((item, index) => (
+                        <span key={index} className="mr-2">
+                            {item}
+                        </span>
+                    ))}
             </p>
             <p>
                 <span className="mr-2 font-weight-bold">HS2:</span>
-                {score.x2.map((item, index) => (
-                    <span key={index} className="mr-2">
-                        {item}
-                    </span>
-                ))}
+                {score.x2
+                    .filter((item) => item !== -1)
+                    .map((item, index) => (
+                        <span key={index} className="mr-2">
+                            {item}
+                        </span>
+                    ))}
             </p>
             <p>
                 <span className="mr-2 font-weight-bold">HS3:</span>
-                {score.x3.map((item, index) => (
-                    <span key={index} className="mr-2">
-                        {item}
-                    </span>
-                ))}
+                {score.x3
+                    .filter((item) => item !== -1)
+                    .map((item, index) => (
+                        <span key={index} className="mr-2">
+                            {item}
+                        </span>
+                    ))}
             </p>
         </>
     )
@@ -318,8 +326,8 @@ const ConfirmTranscript = (props) => {
                                 ).toUpperCase()}`}
                         </h5>
                         <p className="mb-0">
-                            Năm học: {props.time.year} - Học kỳ:{" "}
-                            {props.time.semester}
+                            Năm học: {props.time.year}-{props.time.year + 1} |
+                            Học kỳ: {props.time.semester}
                         </p>
                     </div>
                     <BackBtn

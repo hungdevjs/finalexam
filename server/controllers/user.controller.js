@@ -1730,7 +1730,8 @@ module.exports.addClassRoom = async (req, res) => {
         if (!currentGrade) throw new Error("Bad request")
 
         const length = currentGrade.classRoom.length
-        lastestCharacter = currentGrade[length - 1].substring(1)
+        lastestCharacter =
+            length > 0 ? currentGrade[length - 1].substring(1) : "@"
 
         const nextCharCode = lastestCharacter.charCodeAt(0) + 1
         const nextCharacter = String.fromCharCode(nextCharCode)
