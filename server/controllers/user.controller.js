@@ -29,6 +29,7 @@ const Teacher = require("../models/teacher.model")
 const Grade = require("../models/grade.model")
 const Admin = require("../models/admin.model")
 const Semester = require("../models/semester.model")
+const Schedule = require("../models/schedule.model")
 
 module.exports.getAllUser = (req, res) => {
     try {
@@ -1692,9 +1693,25 @@ module.exports.upgradeSemester = async (req, res) => {
     }
 }
 
+module.exports.getAllNoMainTeacher = async (req, res) => {
+    try {
+        const teachers = await Teacher.find({ isDeleted: false }).select(
+            "mainTeacherOfClass name"
+        )
+
+        const noMainTeachers = teachers.filter(
+            (teacher) => teacher.mainTeacherOfClass === ""
+        )
+
+        res.status(200).json(noMainTeachers)
+    } catch (err) {
+        res.status(500).send(err.message)
+    }
+}
+
 module.exports.deleteClassRoom = async (req, res) => {
     try {
-        const { classRoom } = req.query
+        const { classRoom } = req.body
         const currentGrade = Number(classRoom.split("")[0])
 
         const grade = await Grade.findOne({
@@ -1705,6 +1722,25 @@ module.exports.deleteClassRoom = async (req, res) => {
 
         if (!grade.classRoom.includes(classRoom))
             throw new Error("Lớp học không tồn tại")
+
+        const student = await Parent.findOne({ isDeleted: false, classRoom })
+        if (student) throw new Error("Không thể xóa lớp học đã có học sinh")
+
+        const teachers = await Teacher.find({ isDeleted: false })
+
+        for (const teacher of teachers) {
+            if (teacher.mainTeacherOfClass === classRoom) {
+                teacher.mainTeacherOfClass = ""
+                await teacher.save()
+            }
+
+            if (teacher.teacherOfClass.includes(classRoom)) {
+                teacher.teacherOfClass = teacher.teacherOfClass.filter(
+                    (item) => item !== classRoom
+                )
+                await teacher.save()
+            }
+        }
 
         grade.classRoom = grade.classRoom.filter((item) => item !== classRoom)
         await grade.save()
@@ -1717,13 +1753,13 @@ module.exports.deleteClassRoom = async (req, res) => {
 
         res.status(200).send("Đã xóa lớp học")
     } catch (err) {
-        res.status(500).send(err.message)
+        res.status(200).send({ err: err.message })
     }
 }
 
-module.exports.addClassRoom = async (req, res) => {
+module.exports.createClassRoom = async (req, res) => {
     try {
-        const { grade } = req.body
+        const { grade, teacherId } = req.body
         if (![6, 7, 8, 9].includes(grade)) throw new Error("Bad request")
 
         const currentGrade = await Grade.findOne({ isDeleted: false, grade })
@@ -1731,13 +1767,28 @@ module.exports.addClassRoom = async (req, res) => {
 
         const length = currentGrade.classRoom.length
         lastestCharacter =
-            length > 0 ? currentGrade[length - 1].substring(1) : "@"
+            length > 0 ? currentGrade.classRoom[length - 1].substring(1) : "@"
 
         const nextCharCode = lastestCharacter.charCodeAt(0) + 1
         const nextCharacter = String.fromCharCode(nextCharCode)
 
         const newClassRoom = grade + nextCharacter
-        grade.classRoom = [...grade.classRoom, newClassRoom]
+
+        const teacher = await Teacher.findOne({
+            isDeleted: false,
+            _id: teacherId,
+        })
+        if (!teacher) throw new Error("Giáo viên không tồn tại")
+
+        if (teacher.mainTeacherOfClass && teacher.mainTeacherOfClass.trim())
+            throw new Error("Giáo viên đã chủ nhiệm lớp khác")
+        teacher.mainTeacherOfClass = newClassRoom
+        await teacher.save()
+
+        currentGrade.classRoom = [...currentGrade.classRoom, newClassRoom]
+        await currentGrade.save()
+
+        res.status(200).send("Tạo lớp học thành công")
     } catch (err) {
         res.status(500).send(err.message)
     }

@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { connect } from "react-redux"
-import { Table, Row, Col, Button } from "reactstrap"
+import { Table, Row, Col, Button, Label } from "reactstrap"
 
+import setModal from "../../redux/action/setModal"
 import getAllGradeWithMainTeacher from "../../redux/action/getAllGradeWithMainTeacher"
+import {
+    getAllNoMainTeacher,
+    createClassRoom,
+    deleteClassRoom,
+} from "../../utils/api/fetchData"
 import renderNoti from "../../utils/renderNoti"
 import history from "../../config/history"
 
@@ -11,6 +17,8 @@ import BackBtn from "../../components/buttons/BackBtn"
 import DeleteBtn from "../../components/buttons/DeleteBtn"
 import ViewModal from "../../components/modal/ViewModal"
 import Schedule from "../../components/Schedule"
+import GradeSelected from "../../components/selecteds/GradeSelected"
+import FilterSelected from "../../components/selecteds/FilterSelected"
 
 const btnStyle = {
     cursor: "pointer",
@@ -20,7 +28,13 @@ function GradeAndClass(props) {
     const [grades, setGrades] = useState([])
 
     const [isOpen, toggle] = useState(false)
+    const [isOpenCreateClass, toggleCreateClass] = useState(false)
+
     const [currentClass, setCurrentClass] = useState(null)
+    const [teacherOptions, setTeacherOptions] = useState([])
+
+    const [grade, setGrade] = useState(null)
+    const [teacherId, setTeacherId] = useState(null)
 
     const [isPhone, setIsPhone] = useState(window.innerWidth <= 768)
     window.addEventListener("resize", () =>
@@ -28,6 +42,10 @@ function GradeAndClass(props) {
     )
 
     useEffect(() => {
+        getData()
+    }, [])
+
+    const getData = () => {
         props
             .getAllGradeWithMainTeacher()
             .then((data) => setGrades(data))
@@ -38,7 +56,103 @@ function GradeAndClass(props) {
                     message: "Lỗi trong khi lấy dữ liệu",
                 })
             )
-    }, [])
+
+        getAllNoMainTeacher().then((res) =>
+            setTeacherOptions(
+                res.data.map((teacher) => ({
+                    label: teacher.name,
+                    value: teacher._id,
+                }))
+            )
+        )
+    }
+
+    const deleteClass = (classRoom) => {
+        const removeClass = () =>
+            deleteClassRoom({ classRoom })
+                .then((res) => {
+                    if (res.data.err) throw new Error(res.data.err)
+
+                    renderNoti({
+                        type: "success",
+                        title: "Thành công",
+                        message: "Đã xóa lớp học",
+                    })
+                    getData()
+                })
+                .catch((err) => {
+                    renderNoti({
+                        type: "danger",
+                        title: "Lỗi",
+                        message: err.message,
+                    })
+                })
+
+        props.setModal({
+            isOpen: true,
+            type: "warning",
+            message: `Bạn có chắc chắn muốn xóa lớp học này`,
+            onConfirm: removeClass,
+        })
+    }
+
+    const createClass = () => {
+        if (!grade || !teacherId) {
+            props.setModal({
+                isOpen: true,
+                type: "danger",
+                message: "Vui lòng chọn đầy đủ khối học và giáo viên chủ nhiệm",
+            })
+
+            return
+        }
+
+        toggleCreateClass(!isOpenCreateClass)
+
+        createClassRoom({ grade, teacherId })
+            .then(() => {
+                renderNoti({
+                    type: "success",
+                    title: "Thành công",
+                    message: "Đã tạo lớp học",
+                })
+                getData()
+            })
+            .catch(() => {
+                renderNoti({
+                    type: "danger",
+                    title: "Lỗi",
+                    message: "Lỗi trong khi tạo lớp học",
+                })
+            })
+    }
+
+    const renderModalCreateClass = () => (
+        <ViewModal
+            isOpen={isOpenCreateClass}
+            toggle={() => toggleCreateClass(!isOpenCreateClass)}
+            title="Tạo lớp học"
+            onConfirm={() => createClass()}
+        >
+            <Row>
+                <Col md={6}>
+                    <Label>Chọn khối học</Label>
+                    <GradeSelected
+                        placeholder="Chọn khối học"
+                        onChange={(e) => setGrade(e.value)}
+                    />
+                </Col>
+                <Col md={6}>
+                    <Label>Chọn giáo viên chủ nhiệm</Label>
+                    <FilterSelected
+                        placeholder="Chọn giáo viên"
+                        options={teacherOptions}
+                        onChange={(e) => setTeacherId(e.value)}
+                    />
+                </Col>
+            </Row>
+        </ViewModal>
+    )
 
     const renderScheduleModal = () => (
         <ViewModal
@@ -54,6 +168,7 @@ function GradeAndClass(props) {
     return (
         <div>
             {renderScheduleModal()}
+            {renderModalCreateClass()}
             <Row className="mb-2">
                 <Col md={!isPhone && 8} className="d-flex align-items-start">
                     <h5 className="flex-grow-1">
@@ -62,7 +177,13 @@ function GradeAndClass(props) {
                     </h5>
                     {!isPhone && (
                         <>
-                            <Button color="success" className="mr-2">
+                            <Button
+                                color="success"
+                                className="mr-2"
+                                onClick={() =>
+                                    toggleCreateClass(!isOpenCreateClass)
+                                }
+                            >
                                 Tạo lớp học
                             </Button>
                             <BackBtn
@@ -74,7 +195,13 @@ function GradeAndClass(props) {
                 </Col>
                 {isPhone && (
                     <Col md={12}>
-                        <Button color="success" className="mr-2">
+                        <Button
+                            color="success"
+                            className="mr-2"
+                            onClick={() =>
+                                toggleCreateClass(!isOpenCreateClass)
+                            }
+                        >
                             Tạo lớp học
                         </Button>
 
@@ -168,7 +295,15 @@ function GradeAndClass(props) {
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <DeleteBtn />
+                                                    <DeleteBtn
+                                                        onClick={() => {
+                                                            deleteClass(
+                                                                grade
+                                                                    .classRoom[0]
+                                                                    .room
+                                                            )
+                                                        }}
+                                                    />
                                                 </td>
                                             </tr>
                                             {grade.classRoom.map((room, i) =>
@@ -223,7 +358,13 @@ function GradeAndClass(props) {
                                                             </div>
                                                         </td>
                                                         <td>
-                                                            <DeleteBtn />
+                                                            <DeleteBtn
+                                                                onClick={() => {
+                                                                    deleteClass(
+                                                                        room.room
+                                                                    )
+                                                                }}
+                                                            />
                                                         </td>
                                                     </tr>
                                                 ) : null
@@ -246,6 +387,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getAllGradeWithMainTeacher,
+    setModal,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GradeAndClass)

@@ -50,4 +50,10 @@ router.get("/getSemesterResult", authAdmin, controller.getSemesterResult)
 
 router.post("/upgradeSemester", authAdmin, controller.upgradeSemester)
 
+router.get("/getAllNoMainTeacher", authAdmin, controller.getAllNoMainTeacher)
+
+router.post("/createClassRoom", authAdmin, controller.createClassRoom)
+
+router.post("/deleteClassRoom", authAdmin, controller.deleteClassRoom)
+
 module.exports = router

@@ -159,3 +159,11 @@ export const upgradeSemester = (data) =>
     request.post("user/upgradeSemester", data)
 
 export const checkUpdateStatus = () => request.get("updateStatus")
+
+export const getAllNoMainTeacher = () => request.get("user/getAllNoMainTeacher")
+
+export const createClassRoom = (data) =>
+    request.post("user/createClassRoom", data)
+
+export const deleteClassRoom = (data) =>
+    request.post("user/deleteClassRoom", data)
