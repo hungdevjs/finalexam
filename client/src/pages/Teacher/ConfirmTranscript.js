@@ -516,6 +516,9 @@ const ConfirmTranscript = (props) => {
                                                 {item}
                                             </th>
                                         ))}
+                                        {!isOverSubject && !isOverYear && (
+                                            <th></th>
+                                        )}
                                         {isOverSubject && (
                                             <th className="align-top">
                                                 Điểm trung bình học kỳ
