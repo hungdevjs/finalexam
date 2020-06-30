@@ -18,7 +18,7 @@ app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`)
 })
 
-const uri = process.env.ATLAS_URI
+const uri = process.env.DB_OPTION === "LOCAL" ? process.env.MONGO_URL_LOCAL : process.env.ATLAS_URI
 mongoose.connect(uri, {
     useNewUrlParser: true,
     useCreateIndex: true,

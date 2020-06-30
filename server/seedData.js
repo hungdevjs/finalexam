@@ -13,7 +13,7 @@ const Semester = require("./models/semester.model")
 const Event = require("./models/event.model")
 
 const uri =
-    "mongodb+srv://hungdevjs:Asdfgh1@3@cluster0-qz7nc.gcp.mongodb.net/finalexam-test1?retryWrites=true&w=majority"
+    "mongodb://localhost:27017"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -556,7 +556,7 @@ for (const room of classRoom) {
         createStudent(data).then(() =>
             console.log(
                 `Created ${
-                    i + 1
+                i + 1
                 } students of ${numberOfStudent} students of class ${room}`
             )
         )
