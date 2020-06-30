@@ -138,18 +138,18 @@ const StudentList = (props) => {
         try {
             const res = await (role === "admin"
                 ? props.getAllUser(
-                      "student",
-                      searchString,
-                      optionClass,
-                      optionGrade,
-                      "",
-                      currentPage
-                  )
+                    "student",
+                    searchString,
+                    optionClass,
+                    optionGrade,
+                    "",
+                    currentPage
+                )
                 : props.teacherGetAllStudent(
-                      searchString,
-                      optionClass,
-                      currentPage
-                  ))
+                    searchString,
+                    optionClass,
+                    currentPage
+                ))
 
             setData(res.data)
             setTotalPage(res.totalPage)
@@ -235,7 +235,7 @@ const StudentList = (props) => {
                 toggle={() => toggle(!isOpen)}
                 title={`Thông tin ${
                     parent.position === "father" ? "bố" : "mẹ"
-                }`}
+                    }`}
                 viewOnly
             >
                 <p>Tên: {parent.name || ""}</p>
@@ -381,7 +381,7 @@ const StudentList = (props) => {
                                 }
                             />
                         </Col>
-                        {optionClass && optionClass.trim() && (
+                        {role === "teacher" && user.subject && optionClass && optionClass.trim() && (
                             <Col md={3}>
                                 <Button
                                     color="success"
@@ -459,8 +459,8 @@ const StudentList = (props) => {
                                                     to={`/user/student/edit/${student._id}`}
                                                 />
                                             ) : (
-                                                student.studentName
-                                            )}
+                                                    student.studentName
+                                                )}
                                         </td>
                                         <td>{student.gender ? "Nam" : "Nữ"}</td>
 
@@ -504,34 +504,34 @@ const StudentList = (props) => {
                                         </td>
                                         {(props.isMainTeacher ||
                                             role === "admin") && (
-                                            <td className="text-center">
-                                                {role === "admin" ? (
-                                                    <DeleteBtn
-                                                        onClick={() => {
-                                                            props.setModal({
-                                                                isOpen: true,
-                                                                message:
-                                                                    "Bạn có chắc muốn xóa học sinh này ?",
-                                                                type: "warning",
-                                                                onConfirm: () =>
-                                                                    deleteStudent(
-                                                                        student._id
-                                                                    ),
-                                                            })
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <NewTabLink
-                                                        title={
-                                                            <div title="Xem bảng điểm">
-                                                                <i className="fas fa-table"></i>
-                                                            </div>
-                                                        }
-                                                        to={`/student/transcript/${student._id}`}
-                                                    />
-                                                )}
-                                            </td>
-                                        )}
+                                                <td className="text-center">
+                                                    {role === "admin" ? (
+                                                        <DeleteBtn
+                                                            onClick={() => {
+                                                                props.setModal({
+                                                                    isOpen: true,
+                                                                    message:
+                                                                        "Bạn có chắc muốn xóa học sinh này ?",
+                                                                    type: "warning",
+                                                                    onConfirm: () =>
+                                                                        deleteStudent(
+                                                                            student._id
+                                                                        ),
+                                                                })
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                            <NewTabLink
+                                                                title={
+                                                                    <div title="Xem bảng điểm">
+                                                                        <i className="fas fa-table"></i>
+                                                                    </div>
+                                                                }
+                                                                to={`/student/transcript/${student._id}`}
+                                                            />
+                                                        )}
+                                                </td>
+                                            )}
 
                                         {props.isComponent && (
                                             <td>
@@ -543,10 +543,10 @@ const StudentList = (props) => {
                                                         )
                                                             ? "Đánh dấu nghỉ học"
                                                             : checkPermissionOff(
-                                                                  student.dayOff
-                                                              )
-                                                            ? "Nghỉ học có phép"
-                                                            : "Nghỉ học không phép"
+                                                                student.dayOff
+                                                            )
+                                                                ? "Nghỉ học có phép"
+                                                                : "Nghỉ học không phép"
                                                     }
                                                     onClick={() =>
                                                         onMarkOff(student)
@@ -555,23 +555,23 @@ const StudentList = (props) => {
                                                     {checkMarkOff(
                                                         student.dayOff
                                                     ) ? (
-                                                        <i
-                                                            className="far fa-hand-paper"
-                                                            style={{
-                                                                cursor:
-                                                                    "pointer",
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <i
-                                                            className={`fas fa-times text-primary ${
-                                                                !checkPermissionOff(
-                                                                    student.dayOff
-                                                                ) &&
-                                                                "text-danger"
-                                                            }`}
-                                                        />
-                                                    )}
+                                                            <i
+                                                                className="far fa-hand-paper"
+                                                                style={{
+                                                                    cursor:
+                                                                        "pointer",
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <i
+                                                                className={`fas fa-times text-primary ${
+                                                                    !checkPermissionOff(
+                                                                        student.dayOff
+                                                                    ) &&
+                                                                    "text-danger"
+                                                                    }`}
+                                                            />
+                                                        )}
                                                 </div>
                                             </td>
                                         )}
@@ -580,8 +580,8 @@ const StudentList = (props) => {
                             </tbody>
                         </Table>
                     ) : (
-                        <Alert color="primary">Không có học sinh</Alert>
-                    )}
+                            <Alert color="primary">Không có học sinh</Alert>
+                        )}
                 </Col>
             </Row>
             {data && data.length > 0 && (
