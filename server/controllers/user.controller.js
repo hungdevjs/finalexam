@@ -725,7 +725,7 @@ module.exports.updateTeacher = async (req, res) => {
 
         if (teacherSameSubjectClass.length > 0) {
             throw new Error(
-                `Chung lớp chủ nhiệm với giáo viên ${teacherSameSubjectClass
+                `Chung lớp dạy với giáo viên ${teacherSameSubjectClass
                     .map((tc) => tc.name)
                     .join(", ")}`
             )
