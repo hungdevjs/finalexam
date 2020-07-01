@@ -429,9 +429,9 @@ module.exports.createStudent = (req, res) => {
                             process.env.ENVIRONMENT === "DEVELOPMENT"
                                 ? "+84335210659"
                                 : (
-                                      data.father.phoneNumber ||
-                                      data.mother.phoneNumber
-                                  ).replace("0", "+84")
+                                    data.father.phoneNumber ||
+                                    data.mother.phoneNumber
+                                ).replace("0", "+84")
 
                         sendSms(to, body)
 
@@ -453,7 +453,7 @@ module.exports.getStudent = (req, res) => {
 
         Parent.findOne({ _id: id, isDeleted: false })
             .select(
-                " _id studentName gender classRoom dateOfBirth address note studentId father mother"
+                " _id studentName gender grade classRoom dateOfBirth address note studentId father mother"
             )
             .then((student) => {
                 if (student) {
