@@ -41,7 +41,7 @@ const CreateHighlight = (props) => {
 
     const onSubmit = async () => {
         try {
-            if (!data || !data.title.trim() || !data.content.trim()) {
+            if (!data || !data.title || !data.title.trim() || !data.content || !data.content.trim()) {
                 throw new Error(`Vui lòng điền đầy đủ tiêu đề và nội dung`)
             }
 
@@ -80,8 +80,8 @@ const CreateHighlight = (props) => {
                         {!id
                             ? "TẠO MỚI THÔNG BÁO"
                             : canEdit
-                            ? "CHỈNH SỬA THÔNG BÁO"
-                            : "THÔNG BÁO"}
+                                ? "CHỈNH SỬA THÔNG BÁO"
+                                : "THÔNG BÁO"}
                     </h5>
                     <BackBtn
                         title="trang chủ"
@@ -96,8 +96,8 @@ const CreateHighlight = (props) => {
                     onEditorChange={onEditorChange}
                 />
             ) : (
-                <ViewHighlight data={data} />
-            )}
+                    <ViewHighlight data={data} />
+                )}
             {canEdit && (
                 <Row>
                     <Col md={8} sm={12}>

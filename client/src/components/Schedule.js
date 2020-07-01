@@ -34,96 +34,96 @@ const Schedule = ({ classRoom, role, teacherId, time, isComponent }) => {
                                     {time.year &&
                                         time.semester &&
                                         `${time.year}-${time.year + 1} ${
-                                            time.semester
+                                        time.semester
                                         }`}{" "}
                                     {}
                                 </Label>
                             ) : (
-                                <Label>
-                                    Thời khóa biểu giáo viên {data.name}{" "}
-                                    {time.year &&
-                                        time.semester &&
-                                        `${time.year}-${time.year + 1} ${
+                                    <Label>
+                                        Thời khóa biểu giáo viên {data.name}{" "}
+                                        {time.year &&
+                                            time.semester &&
+                                            `${time.year}-${time.year + 1} ${
                                             time.semester
-                                        }`}
-                                </Label>
-                            )}
+                                            }`}
+                                    </Label>
+                                )}
                         </>
                     )}
 
                     {data &&
-                    data.schedule &&
-                    Object.keys(data.schedule).length > 0 ? (
-                        <>
-                            <Table bordered striped hover size="sm" responsive>
-                                <thead>
-                                    <tr>
-                                        {[
-                                            "Thứ hai",
-                                            "Thứ ba",
-                                            "Thứ tư",
-                                            "Thứ năm",
-                                            "Thứ sáu",
-                                        ].map((day, index) => (
-                                            <th key={index}>{day}</th>
-                                        ))}
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[0, 1, 2, 3, 4].map((number) => (
-                                        <tr key={number}>
+                        data.schedule &&
+                        Object.keys(data.schedule).length > 0 ? (
+                            <>
+                                <Table bordered striped hover size="sm" responsive>
+                                    <thead>
+                                        <tr>
                                             {[
-                                                "mon",
-                                                "tue",
-                                                "wed",
-                                                "thu",
-                                                "fri",
-                                            ].map((item, index) => (
-                                                <td
-                                                    key={index}
-                                                    style={{
-                                                        height: "33.33px",
-                                                    }}
-                                                >
-                                                    {
-                                                        data.schedule[item][
-                                                            number
-                                                        ]
-                                                    }
-                                                </td>
+                                                "Thứ hai",
+                                                "Thứ ba",
+                                                "Thứ tư",
+                                                "Thứ năm",
+                                                "Thứ sáu",
+                                            ].map((day, index) => (
+                                                <th key={index}>{day}</th>
                                             ))}
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </Table>
-                            {!teacherId && (
-                                <NewTabLink
-                                    title="Chỉnh sửa"
-                                    to={`/updateSchedule/${classRoom}`}
-                                />
-                            )}
-                        </>
-                    ) : (
-                        <>
-                            {!teacherId && (
-                                <Alert color="primary">
-                                    Lớp học này chưa có thời khóa biểu
-                                </Alert>
-                            )}
-                            {role === "admin" && !teacherId && (
-                                <Button
-                                    color="success"
-                                    onClick={() =>
-                                        history.push(
-                                            `/updateSchedule/${classRoom}`
-                                        )
-                                    }
-                                >
-                                    Tạo mới
-                                </Button>
-                            )}
-                        </>
-                    )}
+                                    </thead>
+                                    <tbody>
+                                        {[0, 1, 2, 3, 4].map((number) => (
+                                            <tr key={number}>
+                                                {[
+                                                    "mon",
+                                                    "tue",
+                                                    "wed",
+                                                    "thu",
+                                                    "fri",
+                                                ].map((item, index) => (
+                                                    <td
+                                                        key={index}
+                                                        style={{
+                                                            height: "33.33px",
+                                                        }}
+                                                    >
+                                                        {
+                                                            data.schedule[item][
+                                                            number
+                                                            ]
+                                                        }
+                                                    </td>
+                                                ))}
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </Table>
+                                {!teacherId && role === "admin" && (
+                                    <NewTabLink
+                                        title="Chỉnh sửa"
+                                        to={`/updateSchedule/${classRoom}`}
+                                    />
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                {!teacherId && (
+                                    <Alert color="primary">
+                                        Lớp học này chưa có thời khóa biểu
+                                    </Alert>
+                                )}
+                                {role === "admin" && !teacherId && (
+                                    <Button
+                                        color="success"
+                                        onClick={() =>
+                                            history.push(
+                                                `/updateSchedule/${classRoom}`
+                                            )
+                                        }
+                                    >
+                                        Tạo mới
+                                    </Button>
+                                )}
+                            </>
+                        )}
                 </Col>
             </Row>
         </div>
