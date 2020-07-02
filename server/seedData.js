@@ -12,8 +12,7 @@ const Grade = require("./models/grade.model")
 const Semester = require("./models/semester.model")
 const Event = require("./models/event.model")
 
-const uri =
-    "mongodb://localhost:27017/test5"
+const uri = process.env.DB_OPTION === "LOCAL" ? process.env.MONGO_URL_LOCAL : process.env.ATLAS_URI
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
