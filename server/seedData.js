@@ -13,7 +13,7 @@ const Semester = require("./models/semester.model")
 const Event = require("./models/event.model")
 
 const uri =
-    "mongodb://localhost:27017"
+    "mongodb://localhost:27017/test5"
 
 mongoose.connect(uri, {
     useNewUrlParser: true,
@@ -310,15 +310,22 @@ async function createHighlight(data) {
     await newHighlight.save()
 }
 
-const highlight = {
+const highlights = [{
     title: "Kế hoạch tham quan dã ngoại trường THCS Dev School",
     content:
         "<p>Do t&igrave;nh h&igrave;nh nghỉ học c&aacute;ch ly k&eacute;o d&agrave;i, thời gian học sinh được sinh hoạt c&ugrave;ng nhau l&agrave; rất &iacute;t trong năm học n&agrave;y. V&igrave; thế nh&agrave; trường quyết định tổ chức một buổi d&atilde; ngoại k&eacute;o d&agrave;i 2 ng&agrave;y 1 đ&ecirc;m cho c&aacute;c em học sinh khối 6, 7, 8. C&aacute;c em học sinh khối 9 do thời gian c&ograve;n lại của năm học rất &iacute;t, n&ecirc;n để đảm bảo chất lượng cho kỳ thi chuyển cấp được diễn ra v&agrave;o cuối th&aacute;ng 7, c&aacute;c em sẽ học b&igrave;nh thường tại trường.</p><p>Thời gian buổi d&atilde; ngoại: 13 - 14/6/2020</p><p>Địa điểm d&atilde; ngoại: Ba V&igrave;, H&agrave; Nội</p><p>Lịch tr&igrave;nh chi tiết c&aacute;c gi&aacute;o vi&ecirc;n chủ nhiệm sẽ phổ biến đến c&aacute;c em v&agrave;o buổi sinh hoạt cuối tuần n&agrave;y.</p>",
     time: "Fri May 22 2020 18:34:23 GMT+0700 (Indochina Time)",
     isDeleted: false,
-}
+}, {
+    title: "Lịch thi cuối học kỳ 2 năm học 2019-2020",
+    content: "<p>Do t&igrave;nh h&igrave;nh đại dịch Covid n&ecirc;n năm học 2019-2020 k&eacute;o d&agrave;i hơn thường ni&ecirc;n. Hiện tại nh&agrave; trường đ&atilde; c&oacute; lịch thi học kỳ 2 năm học 2019-2020 cho to&agrave;n bộ c&aacute;c khối lớp.</p>\n\n<p>C&aacute;c em học sinh khối lớp 6, 7, 8 sẽ thi học kỳ 2 c&aacute;c m&ocirc;n từ ng&agrave;y 22/6/2020 đến ng&agrave;y 29/6/2020.</p>\n\n<p>C&aacute;c em học sinh khối 9 sẽ thi học kỳ 2 c&aacute;c m&ocirc;n từ ng&agrave;y 29/6/2020 đến ng&agrave;y 6/7/2020.</p>\n\n<p>Dự kiến lễ tổng kết năm học sẽ diễn ra v&agrave;o thứ Hai ng&agrave;y 13/7/2020, c&aacute;c em sẽ nghỉ h&egrave; đến ng&agrave;y thứ Hai ng&agrave;y 17/8/2020.</p>\n\n<p>Lịch thi học kỳ cụ thể c&aacute;c m&ocirc;n sẽ được gi&aacute;o vi&ecirc;n chủ nhiệm th&ocirc;ng b&aacute;o đến c&aacute;c em học sinh trong giờ sinh hoạt sắp tới.</p>\n",
+    time: "Mon Jun 15 2020 18:41:18 GMT+0700 (Indochina Time)",
+    isDeleted: false
+}]
 
-createHighlight(highlight).then(() => console.log("created highlight"))
+for (const highlight of highlights) {
+    createHighlight(highlight).then(() => console.log("created 1 more highlight"))
+}
 
 // create event
 console.log("Creating event")

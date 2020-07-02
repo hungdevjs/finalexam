@@ -138,50 +138,50 @@ const ConfirmTranscript = (props) => {
                 <Col md={12} className="mb-2">
                     HS 1:
                     {currentScore?.x1?.map((item, index) => (
-                        <input
-                            className="mx-2 text-center"
-                            style={{ width: "27px" }}
-                            key={index}
-                            type="number"
-                            defaultValue={item > -1 ? item : null}
-                            maxLength={2}
-                            onChange={(e) => {
-                                editTranscript("x1", index, e)
-                            }}
-                        />
-                    ))}
+                    <input
+                        className="mx-2 text-center"
+                        style={{ width: "27px" }}
+                        key={index}
+                        type="number"
+                        defaultValue={item > -1 ? item : null}
+                        maxLength={2}
+                        onChange={(e) => {
+                            editTranscript("x1", index, e)
+                        }}
+                    />
+                ))}
                 </Col>
 
                 <Col md={12} className="mb-2">
                     HS 2:
                     {currentScore?.x2?.map((item, index) => (
-                        <input
-                            className="mx-2 text-center"
-                            style={{ width: "27px" }}
-                            key={index}
-                            maxLength={2}
-                            defaultValue={item > -1 ? item : null}
-                            onChange={(e) => {
-                                editTranscript("x2", index, e)
-                            }}
-                        />
-                    ))}
+                    <input
+                        className="mx-2 text-center"
+                        style={{ width: "27px" }}
+                        key={index}
+                        maxLength={2}
+                        defaultValue={item > -1 ? item : null}
+                        onChange={(e) => {
+                            editTranscript("x2", index, e)
+                        }}
+                    />
+                ))}
                 </Col>
 
                 <Col md={12} className="mb-2">
                     HS 3:
                     {currentScore?.x3?.map((item, index) => (
-                        <input
-                            className="mx-2 text-center"
-                            style={{ width: "27px" }}
-                            key={index}
-                            maxLength={2}
-                            defaultValue={item > -1 ? item : null}
-                            onChange={(e) => {
-                                editTranscript("x3", index, e)
-                            }}
-                        />
-                    ))}
+                    <input
+                        className="mx-2 text-center"
+                        style={{ width: "27px" }}
+                        key={index}
+                        maxLength={2}
+                        defaultValue={item > -1 ? item : null}
+                        onChange={(e) => {
+                            editTranscript("x3", index, e)
+                        }}
+                    />
+                ))}
                 </Col>
             </Row>
         </ViewModal>
@@ -379,33 +379,33 @@ const ConfirmTranscript = (props) => {
                                             )}
                                         </tr>
                                     ) : (
-                                        <tr>
-                                            {[
-                                                "Số thứ tự",
-                                                "Tên học sinh",
-                                                "Toán",
-                                                "Văn",
-                                                "Anh",
-                                                "Vật lý",
-                                                "Hóa học",
-                                                "Sinh học",
-                                                "Địa",
-                                                "Sử",
-                                                "GDCD",
-                                                "Âm nhạc",
-                                                "Mỹ thuật",
-                                                "Thể dục",
-                                                "Hạnh kiểm",
-                                            ].map((item, index) => (
-                                                <th
-                                                    key={index}
-                                                    className="align-top"
-                                                >
-                                                    {item}
-                                                </th>
-                                            ))}
-                                        </tr>
-                                    )}
+                                            <tr>
+                                                {[
+                                                    "Số thứ tự",
+                                                    "Tên học sinh",
+                                                    "Toán",
+                                                    "Văn",
+                                                    "Anh",
+                                                    "Vật lý",
+                                                    "Hóa học",
+                                                    "Sinh học",
+                                                    "Địa",
+                                                    "Sử",
+                                                    "GDCD",
+                                                    "Âm nhạc",
+                                                    "Mỹ thuật",
+                                                    "Thể dục",
+                                                    "Hạnh kiểm",
+                                                ].map((item, index) => (
+                                                    <th
+                                                        key={index}
+                                                        className="align-top"
+                                                    >
+                                                        {item}
+                                                    </th>
+                                                ))}
+                                            </tr>
+                                        )}
                                 </thead>
                                 <tbody>
                                     {data.map((student, index) => (
@@ -431,7 +431,7 @@ const ConfirmTranscript = (props) => {
                                                         <>
                                                             <td>
                                                                 {
-                                                                    student.totalScore
+                                                                    student.totalScore.toFixed(2)
                                                                 }
                                                             </td>
                                                             <td>
@@ -448,47 +448,47 @@ const ConfirmTranscript = (props) => {
                                                     )}
                                                 </tr>
                                             ) : (
-                                                <tr key={student._id}>
-                                                    <td>{index + 1}</td>
-                                                    <td>
-                                                        {student.studentName}
-                                                    </td>
-                                                    {Object.values(
-                                                        student.score
-                                                    ).map((item, index) => (
-                                                        <td key={index}>
-                                                            {item.medium &&
-                                                            item.medium !== -1
-                                                                ? item.medium
-                                                                : singleMark(
-                                                                      item
-                                                                  )}
+                                                    <tr key={student._id}>
+                                                        <td>{index + 1}</td>
+                                                        <td>
+                                                            {student.studentName}
                                                         </td>
-                                                    ))}
-                                                    <td className="text-center font-weight-bold">
-                                                        {student.conduct}{" "}
-                                                        {!isOverScore && (
-                                                            <EditBtn
-                                                                title="Cập nhật hạnh kiểm"
-                                                                onClick={() => {
-                                                                    setStudent({
-                                                                        _id:
-                                                                            student._id,
-                                                                        studentName:
-                                                                            student.studentName,
-                                                                    })
-                                                                    setConduct(
-                                                                        student.conduct
-                                                                    )
-                                                                    toggleConduct(
-                                                                        !isOpenConduct
-                                                                    )
-                                                                }}
-                                                            />
-                                                        )}
-                                                    </td>
-                                                </tr>
-                                            )}
+                                                        {Object.values(
+                                                            student.score
+                                                        ).map((item, index) => (
+                                                            <td key={index}>
+                                                                {item.medium &&
+                                                                    item.medium !== -1
+                                                                    ? item.medium
+                                                                    : singleMark(
+                                                                        item
+                                                                    )}
+                                                            </td>
+                                                        ))}
+                                                        <td className="text-center font-weight-bold">
+                                                            {student.conduct}{" "}
+                                                            {!isOverScore && (
+                                                                <EditBtn
+                                                                    title="Cập nhật hạnh kiểm"
+                                                                    onClick={() => {
+                                                                        setStudent({
+                                                                            _id:
+                                                                                student._id,
+                                                                            studentName:
+                                                                                student.studentName,
+                                                                        })
+                                                                        setConduct(
+                                                                            student.conduct
+                                                                        )
+                                                                        toggleConduct(
+                                                                            !isOpenConduct
+                                                                        )
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                )}
                                         </>
                                     ))}
                                 </tbody>
@@ -586,8 +586,8 @@ const ConfirmTranscript = (props) => {
                                                         }}
                                                     />
                                                 ) : (
-                                                    student.score.medium
-                                                )}
+                                                        student.score.medium
+                                                    )}
                                             </td>
                                             {isOverYear && (
                                                 <td>{student.totalScore}</td>
